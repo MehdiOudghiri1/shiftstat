@@ -1,0 +1,2 @@
+"""Repository examples for ShiftStat."""
+

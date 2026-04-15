@@ -1,0 +1,4 @@
+# Metrics API
+
+::: shiftstat.metrics
+

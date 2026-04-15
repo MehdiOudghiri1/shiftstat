@@ -1,0 +1,4 @@
+# Reweighting API
+
+::: shiftstat.reweight
+

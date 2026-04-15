@@ -1,0 +1,10 @@
+{
+  "name": "default_shift_benchmark",
+  "dataset": "covariate_shift_classification",
+  "random_state": 13,
+  "shift_strength": 1.0,
+  "n_samples_ref": 500,
+  "n_samples_target": 500,
+  "weighting_method": "domain_classifier"
+}
+

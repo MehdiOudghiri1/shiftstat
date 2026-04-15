@@ -1,0 +1,35 @@
+site_name: ShiftStat
+site_description: Scientific tools for reliability under tabular distribution shift
+repo_url: https://github.com/open-source-labs/shiftstat
+theme:
+  name: material
+  palette:
+    primary: blue grey
+    accent: teal
+nav:
+  - Home: index.md
+  - Installation: installation.md
+  - Quickstart: quickstart.md
+  - Scientific Motivation: theory.md
+  - Detection: detection.md
+  - Reweighting: reweighting.md
+  - Examples Gallery: examples.md
+  - API Reference:
+      - Overview: api/index.md
+      - Detection: api/detect.md
+      - Reweighting: api/reweight.md
+      - Metrics: api/metrics.md
+      - Utilities: api/utils.md
+  - Contributing: contributing.md
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            docstring_style: numpy
+markdown_extensions:
+  - admonition
+  - pymdownx.highlight
+  - pymdownx.superfences
+
