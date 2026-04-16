@@ -22,4 +22,3 @@ def test_reweight_plot_smoke() -> None:
     weighter = ImportanceWeighter(random_state=10).fit(bundle.X_ref, bundle.X_target)
     assert weighter.plot("histogram") is not None
     assert weighter.plot("effective_sample_size") is not None
-

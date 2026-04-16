@@ -1,0 +1,7 @@
+[2026-04-16T11:31:22.689820+00:00] starting experiment paper_publication_suite
+config=C:\Users\medhi.oudghiri\OneDrive - Setec\temp\librairie_open_source\shiftstat\paper_assets\configs\publication_suite.yaml
+output_dir=C:\Users\medhi.oudghiri\OneDrive - Setec\temp\librairie_open_source\shiftstat\paper_assets\generated\publication_suite
+[2026-04-16T11:31:32.252627+00:00] completed scenario paper_covariate_shift
+[2026-04-16T11:31:45.966680+00:00] completed scenario paper_subgroup_failures
+[2026-04-16T11:32:07.819862+00:00] completed scenario paper_selective_shift
+rerun=python -m shiftstat.experiments "C:\Users\medhi.oudghiri\OneDrive - Setec\temp\librairie_open_source\shiftstat\paper_assets\configs\publication_suite.yaml"

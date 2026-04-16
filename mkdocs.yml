@@ -15,17 +15,38 @@ nav:
   - Reweighting: reweighting.md
   - Calibration Under Shift: calibration.md
   - Reliability Diagnostics: reliability.md
+  - Why Aggregate Metrics Can Hide Failures: aggregate_failures.md
+  - Subgroup Reliability Analysis: subgroup.md
+  - Conditional Auditing Under Shift: audit.md
+  - Selective Prediction Under Shift: selective_prediction.md
+  - Abstention Policies And Tradeoffs: abstention_tradeoffs.md
+  - Risk-Coverage Analysis: risk_coverage.md
+  - When Abstention Helps And Misleads: abstention_limits.md
+  - Practical Deployment Guidance: deployment_guidance.md
+  - Benchmarking Guide: benchmarking.md
+  - Experiment Configuration Guide: experiment_configuration.md
+  - Reproducibility Guide: reproducibility.md
+  - Publication Workflow Guide: publication_workflow.md
+  - Generating Tables And Figures: paper_artifacts.md
+  - Scientific Case Studies: scientific_case_studies.md
+  - Slice Discovery Methodology: slice_discovery.md
+  - Interpreting Diagnostics Responsibly: responsible_diagnostics.md
   - Model Evaluation Workflows: workflows.md
   - Reliability Theory Notes: reliability_theory.md
   - User Guide: user_guide.md
   - Examples Gallery: examples.md
   - API Reference:
       - Overview: api/index.md
+      - Audit: api/audit.md
+      - Bench: api/bench.md
       - Calibration: api/calibration.md
       - Detection: api/detect.md
+      - Experiments: api/experiments.md
       - Metrics: api/metrics.md
       - Reliability: api/reliability.md
       - Reweighting: api/reweight.md
+      - Selective: api/selective.md
+      - Subgroup: api/subgroup.md
       - Utilities: api/utils.md
   - Contributing: contributing.md
 plugins:

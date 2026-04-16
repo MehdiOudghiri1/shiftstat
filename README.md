@@ -1,21 +1,25 @@
 # ShiftStat
 
-ShiftStat is an open-source scientific Python library for detecting distribution shift and quantifying predictive reliability degradation in tabular machine learning systems.
+ShiftStat is an open-source scientific Python library for studying predictive reliability under tabular distribution shift.
+
+V5 turns the project into a publication-grade benchmark and experiment platform: alongside detection, weighting, calibration, subgroup auditing, and selective prediction, the library now supports repeated-seed benchmark scenarios, config-driven experiment execution, and paper-ready artifact generation.
 
 ## Why ShiftStat
 
-Classical performance metrics can stay deceptively stable while calibration, confidence behavior, and empirical reliability degrade under deployment shift. ShiftStat helps researchers and engineers study that degradation with transparent statistical diagnostics, importance weighting, recalibration tools, and structured evaluation workflows.
+Aggregate metrics can remain deceptively stable while calibration, subgroup reliability, or accepted-set risk fails under deployment shift. ShiftStat is built for the scientific question behind those failures:
 
-## Key features
+When the deployment distribution changes, which metrics drift, which slices fail first, and which operational responses actually help?
 
-- Mixed-type tabular shift detection with feature-wise tests and dataset summaries
-- Importance weighting for covariate-shift-aware evaluation
-- Calibration diagnostics including ECE, MCE, Brier decomposition helpers, and bin-wise summaries
-- Post-hoc recalibration with temperature scaling, isotonic regression, and logistic calibration
-- Reliability profiles comparing reference and target domains
-- End-to-end workflow evaluation with optional weighting and recalibration
-- Publication-friendly plots and markdown-friendly reports
-- Synthetic datasets, examples, and reliability-focused benchmark scaffolding
+## Key capabilities
+
+- Shift detection for mixed-type tabular data
+- Importance weighting and recalibration under covariate shift
+- Reliability profiles and deployment reports
+- Subgroup-aware auditing and interpretable failure-slice discovery
+- Selective prediction, abstention policies, and risk-coverage analysis
+- Reproducible benchmark scenarios with repeated-seed aggregation
+- JSON/YAML experiment manifests with logs, manifests, and artifact directories
+- CSV, markdown, LaTeX, and figure exports for preprints and software papers
 
 ## Installation
 
@@ -29,61 +33,89 @@ For development:
 pip install -e .[dev,docs,examples]
 ```
 
-## Minimal V2 example
+## Minimal V5 benchmark example
 
 ```python
-from sklearn.linear_model import LogisticRegression
+from shiftstat.bench import BenchmarkRunner, make_covariate_shift_sweep_scenario
 
-from shiftstat.datasets import make_covariate_shift_classification
-from shiftstat.reliability import evaluate_under_shift
-
-data = make_covariate_shift_classification(random_state=7, shift_strength=1.0)
-
-result = evaluate_under_shift(
-    LogisticRegression(max_iter=2000),
-    data.X_ref,
-    data.y_ref,
-    data.X_target,
-    data.y_target,
-    apply_importance_weighting=True,
-    recalibration="temperature",
-    random_state=7,
+scenario = make_covariate_shift_sweep_scenario(
+    severities=[0.2, 0.8, 1.4],
+    seeds=[7, 19, 43],
+    baseline_names=[
+        "raw_model",
+        "weighting_only",
+        "recalibration_only",
+        "confidence_abstention",
+    ],
 )
 
-print(result.summary_frame())
-print(result.to_report().to_markdown())
+result = BenchmarkRunner().run(scenario)
+paths = result.export_artifacts("paper_assets/generated/covariate_shift_demo")
+
+print(result.aggregate_frame())
+print(paths["figures"])
 ```
 
-## Scientific motivation
+## Config-driven experiments
 
-ShiftStat focuses on a central statistical learning question: when the deployment covariate distribution differs from the reference distribution, how do performance, calibration, and confidence-conditioned reliability change? V2 extends the library from shift characterization into model-facing reliability analysis under covariate shift, with explicit support for weighted diagnostics and post-hoc recalibration.
+```bash
+shiftstat-experiment paper_assets/configs/publication_suite.yaml
+```
+
+This produces:
+
+- run-level CSVs
+- aggregated benchmark summaries
+- markdown reports
+- LaTeX-ready tables
+- figure files
+- experiment manifests and logs
+
+## Architecture
+
+```mermaid
+flowchart LR
+    D[Datasets and Synthetic Scenarios]
+    M[Core Methods\nDetect / Reweight / Calibrate / Reliability]
+    A[V3 Auditing\nSubgroups / Slices]
+    S[V4 Selective Prediction\nAbstention / Risk-Coverage]
+    B[V5 Benchmarks\nScenarios / Baselines / Aggregation]
+    E[V5 Experiments\nConfigs / CLI / Manifests]
+    P[Paper Assets\nCSV / LaTeX / Figures / Markdown]
+
+    D --> M
+    M --> A
+    M --> S
+    A --> B
+    S --> B
+    M --> B
+    B --> E
+    E --> P
+```
+
+## Example benchmark artifacts
+
+Covariate-shift calibration sweep:
+
+![Covariate shift delta ECE](paper_assets/generated/publication_suite/paper_covariate_shift/figures/paper_covariate_shift_delta_ece.png)
+
+Hidden subgroup failure gap:
+
+![Worst-group accuracy gap](paper_assets/generated/publication_suite/paper_subgroup_failures/figures/paper_subgroup_failures_worst_group_accuracy_gap.png)
 
 ## Documentation
 
-Documentation lives in [docs/](docs/index.md) and includes theory notes, workflow guides, API reference pages, and runnable examples.
+Documentation lives in [docs/](docs/index.md) and includes:
 
-## Examples
+- methodological guides for subgroup auditing and selective prediction
+- V5 guides for benchmarking, experiment configuration, reproducibility, and publication workflows
+- API reference pages for `bench` and `experiments`
+- runnable examples and case studies
 
-The repository includes examples for:
+## Paper assets
 
-- feature drift detection
-- importance weighting under covariate shift
-- calibration degradation under shift
-- weighted versus unweighted calibration evaluation
-- recalibration on a semi-real tabular dataset
-- end-to-end reliability reporting
-
-## Roadmap
-
-- Extend multiclass and regression reliability diagnostics
-- Add calibration-aware benchmark suites and richer experiment aggregation
-- Expand robustness reporting to subgroup and decision-aware analyses
-- Support broader estimator interoperability and richer reporting export
-
-## Contributing
-
-Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, testing, and pull request guidance.
+The repository now includes reproducible configs and generated benchmark outputs in [paper_assets/](paper_assets/README.md). The artifact map is documented in [paper_assets/inventory.md](paper_assets/inventory.md).
 
 ## Status
 
-V2 adds calibration under shift, reliability diagnostics, model evaluation workflows, new plots, new reports, and the first reliability-focused benchmarks. Advanced robustness topics such as selective prediction, subgroup reporting, and online monitoring remain intentionally deferred.
+ShiftStat V5 adds a serious benchmark and experiment layer while keeping the project focused on statistical reliability under shift rather than generic MLOps. Multiclass benchmarking, uncertainty intervals, and richer appendix automation remain intentionally deferred.

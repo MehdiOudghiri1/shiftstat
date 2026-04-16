@@ -1,0 +1,3 @@
+# Bench API
+
+::: shiftstat.bench

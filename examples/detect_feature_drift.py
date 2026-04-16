@@ -28,4 +28,3 @@ if __name__ == "__main__":
     result = run_example()
     print(result["summary"].head())
     print(result["report_markdown"])
-

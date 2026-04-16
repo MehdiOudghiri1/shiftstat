@@ -57,4 +57,3 @@ def test_extract_feature_names_and_types() -> None:
 def test_ensure_1d_converts_series() -> None:
     series = pd.Series([1, 2, 3])
     assert ensure_1d(series).shape == (3,)
-

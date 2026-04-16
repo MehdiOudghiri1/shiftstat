@@ -1,0 +1,15 @@
+{
+  "name": "v4_selective_benchmark",
+  "random_state": 111,
+  "n_samples_ref": 250,
+  "n_samples_target": 250,
+  "severities": [0.3, 0.8, 1.2],
+  "fixed_threshold": 0.75,
+  "target_coverage": 0.8,
+  "recalibration_method": "temperature",
+  "hidden_failure_patterns": [
+    "masked_subgroup_shift",
+    "minority_subgroup_degradation"
+  ],
+  "hidden_failure_samples": 250
+}

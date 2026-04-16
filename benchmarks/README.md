@@ -1,19 +1,27 @@
-# Benchmark scaffolding
+# Benchmarks
 
-ShiftStat V2 adds the first reliability-focused benchmark runner.
+ShiftStat V5 turns the benchmark layer into a lightweight experiment platform for repeated-seed scientific studies.
 
-Included here:
+## Included entry points
 
-- `run_synthetic.py`: a synthetic experiment runner
-- `run_reliability_benchmark.py`: a reliability degradation severity sweep
-- `configs/`: JSON experiment configurations
-- `results/`: persisted benchmark outputs
+- `run_reliability_benchmark.py`: legacy V2-style severity sweep
+- `run_v3_audit_benchmark.py`: subgroup-aware audit benchmark
+- `run_selective_benchmark.py`: V4 selective benchmark
+- `run_v5_benchmark_suite.py`: config-driven V5 benchmark and artifact runner
 
-The reliability benchmark compares:
+## Configs
 
-- no correction
-- weighting only
-- recalibration only
-- weighting plus recalibration
+- `configs/reliability_sweep.json`
+- `configs/v3_audit_benchmark.json`
+- `configs/selective_benchmark.json`
+- `configs/v5_publication_suite.yaml`
 
-across a controlled covariate-shift severity sweep with a stable synthetic Bayes rule.
+## V5 benchmark focus
+
+- covariate-shift severity sweeps
+- subgroup-specific degradation scenarios
+- calibration-drift scenarios
+- selective-prediction scenarios
+- publication-friendly figure and table generation
+
+For manuscript-oriented runs, see `paper_assets/configs/` and the `shiftstat-experiment` CLI.

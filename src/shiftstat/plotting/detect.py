@@ -68,4 +68,3 @@ def plot_source_discrimination_roc(
     axis.set_ylabel("True positive rate")
     axis.legend(loc="lower right")
     return finalize_figure(axis, title="Source discrimination ROC", save_path=save_path, show=show)
-

@@ -1,0 +1,3 @@
+# Subgroup API
+
+::: shiftstat.subgroup

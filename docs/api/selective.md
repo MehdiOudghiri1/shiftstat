@@ -1,0 +1,3 @@
+# Selective API
+
+::: shiftstat.selective

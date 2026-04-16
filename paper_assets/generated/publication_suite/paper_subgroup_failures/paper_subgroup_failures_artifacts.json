@@ -1,0 +1,20 @@
+{
+  "scenario_name": "paper_subgroup_failures",
+  "generated_at_utc": "2026-04-16T11:31:45.964342+00:00",
+  "files": {
+    "json": "C:\\Users\\medhi.oudghiri\\OneDrive - Setec\\temp\\librairie_open_source\\shiftstat\\paper_assets\\generated\\publication_suite\\paper_subgroup_failures\\paper_subgroup_failures_benchmark.json",
+    "markdown": "C:\\Users\\medhi.oudghiri\\OneDrive - Setec\\temp\\librairie_open_source\\shiftstat\\paper_assets\\generated\\publication_suite\\paper_subgroup_failures\\paper_subgroup_failures_benchmark.md",
+    "runs_csv": "C:\\Users\\medhi.oudghiri\\OneDrive - Setec\\temp\\librairie_open_source\\shiftstat\\paper_assets\\generated\\publication_suite\\paper_subgroup_failures\\paper_subgroup_failures_runs.csv",
+    "summary_csv": "C:\\Users\\medhi.oudghiri\\OneDrive - Setec\\temp\\librairie_open_source\\shiftstat\\paper_assets\\generated\\publication_suite\\paper_subgroup_failures\\paper_subgroup_failures_summary.csv",
+    "latex_tables": {
+      "worst_group_accuracy_gap": "C:\\Users\\medhi.oudghiri\\OneDrive - Setec\\temp\\librairie_open_source\\shiftstat\\paper_assets\\generated\\publication_suite\\paper_subgroup_failures\\tables\\paper_subgroup_failures_worst_group_accuracy_gap.tex",
+      "worst_group_ece_gap": "C:\\Users\\medhi.oudghiri\\OneDrive - Setec\\temp\\librairie_open_source\\shiftstat\\paper_assets\\generated\\publication_suite\\paper_subgroup_failures\\tables\\paper_subgroup_failures_worst_group_ece_gap.tex",
+      "target_risk_reduction": "C:\\Users\\medhi.oudghiri\\OneDrive - Setec\\temp\\librairie_open_source\\shiftstat\\paper_assets\\generated\\publication_suite\\paper_subgroup_failures\\tables\\paper_subgroup_failures_target_risk_reduction.tex"
+    },
+    "figures": {
+      "worst_group_accuracy_gap": "C:\\Users\\medhi.oudghiri\\OneDrive - Setec\\temp\\librairie_open_source\\shiftstat\\paper_assets\\generated\\publication_suite\\paper_subgroup_failures\\figures\\paper_subgroup_failures_worst_group_accuracy_gap.png",
+      "worst_group_ece_gap": "C:\\Users\\medhi.oudghiri\\OneDrive - Setec\\temp\\librairie_open_source\\shiftstat\\paper_assets\\generated\\publication_suite\\paper_subgroup_failures\\figures\\paper_subgroup_failures_worst_group_ece_gap.png",
+      "target_risk_reduction": "C:\\Users\\medhi.oudghiri\\OneDrive - Setec\\temp\\librairie_open_source\\shiftstat\\paper_assets\\generated\\publication_suite\\paper_subgroup_failures\\figures\\paper_subgroup_failures_target_risk_reduction.png"
+    }
+  }
+}

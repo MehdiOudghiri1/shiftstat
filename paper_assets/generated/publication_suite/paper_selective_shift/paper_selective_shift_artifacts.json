@@ -1,0 +1,20 @@
+{
+  "scenario_name": "paper_selective_shift",
+  "generated_at_utc": "2026-04-16T11:32:07.818865+00:00",
+  "files": {
+    "json": "C:\\Users\\medhi.oudghiri\\OneDrive - Setec\\temp\\librairie_open_source\\shiftstat\\paper_assets\\generated\\publication_suite\\paper_selective_shift\\paper_selective_shift_benchmark.json",
+    "markdown": "C:\\Users\\medhi.oudghiri\\OneDrive - Setec\\temp\\librairie_open_source\\shiftstat\\paper_assets\\generated\\publication_suite\\paper_selective_shift\\paper_selective_shift_benchmark.md",
+    "runs_csv": "C:\\Users\\medhi.oudghiri\\OneDrive - Setec\\temp\\librairie_open_source\\shiftstat\\paper_assets\\generated\\publication_suite\\paper_selective_shift\\paper_selective_shift_runs.csv",
+    "summary_csv": "C:\\Users\\medhi.oudghiri\\OneDrive - Setec\\temp\\librairie_open_source\\shiftstat\\paper_assets\\generated\\publication_suite\\paper_selective_shift\\paper_selective_shift_summary.csv",
+    "latex_tables": {
+      "target_risk_reduction": "C:\\Users\\medhi.oudghiri\\OneDrive - Setec\\temp\\librairie_open_source\\shiftstat\\paper_assets\\generated\\publication_suite\\paper_selective_shift\\tables\\paper_selective_shift_target_risk_reduction.tex",
+      "target_selective_risk": "C:\\Users\\medhi.oudghiri\\OneDrive - Setec\\temp\\librairie_open_source\\shiftstat\\paper_assets\\generated\\publication_suite\\paper_selective_shift\\tables\\paper_selective_shift_target_selective_risk.tex",
+      "target_coverage": "C:\\Users\\medhi.oudghiri\\OneDrive - Setec\\temp\\librairie_open_source\\shiftstat\\paper_assets\\generated\\publication_suite\\paper_selective_shift\\tables\\paper_selective_shift_target_coverage.tex"
+    },
+    "figures": {
+      "target_risk_reduction": "C:\\Users\\medhi.oudghiri\\OneDrive - Setec\\temp\\librairie_open_source\\shiftstat\\paper_assets\\generated\\publication_suite\\paper_selective_shift\\figures\\paper_selective_shift_target_risk_reduction.png",
+      "target_selective_risk": "C:\\Users\\medhi.oudghiri\\OneDrive - Setec\\temp\\librairie_open_source\\shiftstat\\paper_assets\\generated\\publication_suite\\paper_selective_shift\\figures\\paper_selective_shift_target_selective_risk.png",
+      "target_coverage": "C:\\Users\\medhi.oudghiri\\OneDrive - Setec\\temp\\librairie_open_source\\shiftstat\\paper_assets\\generated\\publication_suite\\paper_selective_shift\\figures\\paper_selective_shift_target_coverage.png"
+    }
+  }
+}

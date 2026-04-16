@@ -66,4 +66,3 @@ if __name__ == "__main__":
     result = run_benchmark(config)
     path = save_result(result, root / "results")
     print(f"Saved benchmark result to {path}")
-

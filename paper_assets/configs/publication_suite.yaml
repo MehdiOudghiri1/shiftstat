@@ -1,0 +1,38 @@
+name: paper_publication_suite
+output_dir: paper_assets/generated/publication_suite
+figure_format: png
+scenarios:
+  - preset: covariate_shift_sweep
+    name: paper_covariate_shift
+    baseline_names:
+      - raw_model
+      - weighting_only
+      - recalibration_only
+      - confidence_abstention
+    seeds: [7, 19]
+    parameters:
+      severities: [0.2, 0.8, 1.4]
+      n_samples_ref: 220
+      n_samples_target: 220
+  - preset: subgroup_degradation
+    name: paper_subgroup_failures
+    baseline_names:
+      - raw_model
+      - subgroup_audit
+      - weighted_confidence_abstention
+    seeds: [11, 23]
+    parameters:
+      patterns: [masked_subgroup_shift, minority_subgroup_degradation]
+      n_samples_ref: 260
+      n_samples_target: 260
+  - preset: selective_shift
+    name: paper_selective_shift
+    baseline_names:
+      - confidence_abstention
+      - weighted_confidence_abstention
+      - recalibrated_confidence_abstention
+    seeds: [3, 13]
+    parameters:
+      severities: [0.4, 1.0]
+      n_samples_ref: 220
+      n_samples_target: 220

@@ -24,3 +24,6 @@ class ShiftStatWarning(UserWarning):
 class NumericalStabilityWarning(ShiftStatWarning):
     """Warning emitted when numerical safeguards are activated."""
 
+
+class SmallSampleWarning(ShiftStatWarning):
+    """Warning emitted when subgroup or slice-level estimates are underpowered."""

@@ -25,4 +25,3 @@ def test_weighted_metrics_sanity() -> None:
     assert weighted_mae(y_true, y_pred, sample_weight=weights) >= 0.0
     assert compute_effective_sample_size(weights) <= len(weights)
     assert source_separability_score(y_true, y_pred) >= 0.5
-

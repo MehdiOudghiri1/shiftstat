@@ -37,4 +37,3 @@ def test_weighted_mean_and_risk() -> None:
     y_pred = np.array([0.0, 0.0, 2.0])
     risk = weighted_risk(y_true, y_pred, sample_weight=weights, loss="mae")
     assert np.isclose(risk, 0.25)
-

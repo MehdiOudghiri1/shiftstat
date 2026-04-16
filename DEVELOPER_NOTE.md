@@ -1,44 +1,42 @@
 # Developer note
 
-## API changes
+## Benchmark and experiment architecture choices
 
-- Added `shiftstat.calibration` with:
-  - `CalibrationEvaluator`
-  - `TemperatureScaler`
-  - `IsotonicCalibrator`
-  - `PlattCalibrator`
-  - `compare_calibration(...)`
-- Added `shiftstat.reliability` with:
-  - `ReliabilityAnalyzer`
-  - `ReliabilityProfile`
-  - `ReliabilityShiftReport`
-  - `ShiftEvaluationResult`
-  - `evaluate_under_shift(...)`
-- Extended `shiftstat.metrics` with calibration and reliability-oriented metrics and summaries
-- Extended `shiftstat.plotting` with reliability diagrams, calibration comparisons, confidence histograms, and confidence-error curves
+- `shiftstat.bench` is intentionally lightweight:
+  - `BenchmarkScenario` defines a seeded scenario family and case grid
+  - `BaselineRegistry` holds named comparison baselines
+  - `MetricRegistry` tracks benchmark metric semantics
+  - `BenchmarkRunner` executes repeated-seed studies and aggregates outputs
+  - `BenchmarkResult` exports CSV, markdown, LaTeX, and figure artifacts
+- `shiftstat.experiments` wraps that core with JSON/YAML configs, manifests, logs, artifact directories, and a minimal CLI.
+- V5 reuses the V1-V4 scientific stack rather than replacing it:
+  - reliability workflows for raw, weighted, and recalibrated evaluation
+  - V3 subgroup auditing for hidden-failure baselines
+  - V4 selective workflows for abstention comparisons
 
-## Refactors introduced
+## Reproducibility guarantees
 
-- Package `__init__` files for `detect`, `calibration`, and `reliability` now use lazy exports to avoid circular imports while preserving the public API
-- Reliability reporting is represented through structured dataclasses rather than ad hoc dictionaries
-- Workflow orchestration is kept in a dedicated module so detection, weighting, calibration, and reporting remain separable
+- Scenario generators are seed-controlled and benchmark aggregation is deterministic given seeds, configs, and library behavior.
+- Experiment runs persist copied configs, logs, markdown summaries, JSON manifests, run-level CSVs, aggregated CSVs, and figure/table outputs.
+- The `paper_assets/` directory now provides reproducible configs and generated-output inventory so manuscript assets can be traced back to exact experiment manifests.
 
-## Scientific rationale of V2
+## Public release polish summary
 
-V1 established how much covariates move and how to reweight source samples under covariate shift. V2 asks a sharper question: when predictive probabilities are deployed under shift, how do calibration and confidence-conditioned reliability degrade, and how much can weighting or post-hoc recalibration change that conclusion?
+- Added benchmark and experiment docs pages, API reference pages, and publication-workflow guidance.
+- Added benchmark-oriented examples and a V5 benchmark-suite entrypoint.
+- Added `CHANGELOG.md`, `CITATION.cff`, issue templates, a PR template, and a release workflow.
+- Extended CI with a docs build step so documentation is checked in automation.
 
-This motivates:
+## Recommendations for preprint-ready usage
 
-- weighted and unweighted calibration analysis
-- explicit comparison between reference-domain and target-domain reliability
-- structured pre- and post-recalibration evaluation
-- benchmark scenarios centered on reliability degradation rather than only shift detectability
+- Run final experiments from committed YAML/JSON configs under `paper_assets/configs/`.
+- Use at least two to three seeds for manuscript figures and keep the exact generated artifact directories under version control or archival storage.
+- Report aggregate, worst-group, and selective metrics together when claims involve deployment robustness.
+- Treat synthetic benchmark conclusions as controlled stress tests, not direct empirical substitutes for real deployment data.
 
-## Deferred items for V3
+## Deferred items for V6
 
-- multiclass calibration and reliability support
-- richer regression reliability diagnostics
-- subgroup and conditional robustness reporting
-- selective prediction and abstention analysis
-- online monitoring and sequential reliability tracking
-- larger benchmark suites and richer experiment aggregation
+- uncertainty intervals and statistical testing for aggregated benchmark comparisons
+- richer benchmark datasets beyond synthetic tabular settings
+- multiclass and regression benchmark families
+- stronger publication tooling for automatic appendix assembly

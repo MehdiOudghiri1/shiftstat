@@ -40,4 +40,3 @@ def run_example(random_state: int = 19) -> dict[str, object]:
 
 if __name__ == "__main__":
     print(run_example())
-

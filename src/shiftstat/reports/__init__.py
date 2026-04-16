@@ -1,6 +1,16 @@
 """Reporting abstractions for detection and reweighting outputs."""
 
-from shiftstat.reliability.results import ReliabilityShiftReport
-from shiftstat.reports.summaries import DetectionReport, ReweightingReport
+from ..audit.results import AuditReport
+from ..reliability.results import ReliabilityShiftReport
+from ..selective.results import SelectiveDeploymentReport
+from ..subgroup.results import SubgroupReport
+from .summaries import DetectionReport, ReweightingReport
 
-__all__ = ["DetectionReport", "ReliabilityShiftReport", "ReweightingReport"]
+__all__ = [
+    "AuditReport",
+    "DetectionReport",
+    "ReliabilityShiftReport",
+    "ReweightingReport",
+    "SelectiveDeploymentReport",
+    "SubgroupReport",
+]

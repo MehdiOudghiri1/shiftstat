@@ -1,0 +1,15 @@
+name: paper_subgroup_case_study
+output_dir: paper_assets/generated/subgroup_case_study
+figure_format: png
+scenario:
+  preset: subgroup_degradation
+  name: paper_hidden_failure_case
+  baseline_names:
+    - raw_model
+    - subgroup_audit
+    - weighted_confidence_abstention
+  seeds: [17, 29]
+  parameters:
+    patterns: [masked_subgroup_shift]
+    n_samples_ref: 260
+    n_samples_target: 260

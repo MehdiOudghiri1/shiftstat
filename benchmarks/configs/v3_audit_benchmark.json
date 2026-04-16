@@ -1,0 +1,12 @@
+{
+  "name": "v3_hidden_failure_benchmark",
+  "n_samples_ref": 350,
+  "n_samples_target": 350,
+  "min_group_size": 20,
+  "patterns": [
+    "masked_subgroup_shift",
+    "minority_subgroup_degradation",
+    "operational_calibration_drift"
+  ],
+  "random_states": [31, 32]
+}

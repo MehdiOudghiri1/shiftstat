@@ -52,4 +52,3 @@ def validate_same_length(*arrays: ArrayLike) -> None:
             lengths.append(len(np.asarray(array)))
     if len(set(lengths)) > 1:
         raise ValidationError(f"Expected equal lengths, received lengths {lengths}.")
-

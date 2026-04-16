@@ -29,4 +29,3 @@ def run_example(random_state: int = 11) -> dict[str, float]:
 
 if __name__ == "__main__":
     print(run_example())
-

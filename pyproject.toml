@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "shiftstat"
-version = "0.2.0"
-description = "Scientific tooling for detecting and quantifying reliability under tabular distribution shift."
+version = "0.5.0"
+description = "Scientific tooling and benchmark workflows for reliability under tabular distribution shift."
 readme = "README.md"
 license = { file = "LICENSE" }
 requires-python = ">=3.10"
@@ -41,7 +41,11 @@ dependencies = [
   "scipy>=1.10",
   "scikit-learn>=1.3",
   "matplotlib>=3.7",
+  "PyYAML>=6.0",
 ]
+
+[project.scripts]
+shiftstat-experiment = "shiftstat.experiments.cli:main"
 
 [project.optional-dependencies]
 dev = [

@@ -54,4 +54,3 @@ def test_detection_report_exports() -> None:
     assert "Shift summary" in report.to_markdown()
     assert isinstance(report.to_frame(), pd.DataFrame)
     assert "dataset_summary" in report.to_dict()
-
