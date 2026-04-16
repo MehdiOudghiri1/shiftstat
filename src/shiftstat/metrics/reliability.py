@@ -101,10 +101,11 @@ def calibration_curve(
         strategy=strategy,
         sample_weight=sample_weight,
     )
-    return summary.loc[
+    selected = summary.loc[
         :,
         ["bin", "mean_confidence", "empirical_probability", "count", "weight_sum"],
-    ]  # type: ignore[no-any-return]
+    ]
+    return selected  # type: ignore[no-any-return]
 
 
 def expected_calibration_error(
