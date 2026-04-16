@@ -1,12 +1,19 @@
 # Benchmark scaffolding
 
-ShiftStat V1 ships with lightweight benchmark scaffolding rather than a full benchmark suite.
+ShiftStat V2 adds the first reliability-focused benchmark runner.
 
 Included here:
 
 - `run_synthetic.py`: a synthetic experiment runner
+- `run_reliability_benchmark.py`: a reliability degradation severity sweep
 - `configs/`: JSON experiment configurations
 - `results/`: persisted benchmark outputs
 
-The intention is to provide a stable structure for future reproducible experiments without prematurely committing to a large benchmark taxonomy in V1.
+The reliability benchmark compares:
 
+- no correction
+- weighting only
+- recalibration only
+- weighting plus recalibration
+
+across a controlled covariate-shift severity sweep with a stable synthetic Bayes rule.

@@ -207,7 +207,7 @@ def classifier_two_sample_test(
     pipeline = Pipeline(
         steps=[
             ("preprocessor", preprocessor),
-            ("classifier", LogisticRegression(max_iter=1000)),
+            ("classifier", LogisticRegression(max_iter=3000)),
         ]
     )
 

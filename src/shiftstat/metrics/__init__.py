@@ -1,5 +1,19 @@
 """Weighted metrics and shift-oriented evaluation utilities."""
 
+from shiftstat.metrics.reliability import (
+    brier_decomposition,
+    calibration_curve,
+    calibration_slope_intercept,
+    calibration_summary,
+    confidence_conditioned_error,
+    expected_calibration_error,
+    maximum_calibration_error,
+    negative_log_likelihood,
+    predictive_entropy_summary,
+    probability_bin_summary,
+    uncertainty_bucket_summary,
+    weighted_ece,
+)
 from shiftstat.metrics.weighted import (
     compute_effective_sample_size,
     source_separability_score,
@@ -11,12 +25,23 @@ from shiftstat.metrics.weighted import (
 )
 
 __all__ = [
+    "brier_decomposition",
+    "calibration_curve",
+    "calibration_slope_intercept",
+    "calibration_summary",
+    "confidence_conditioned_error",
     "compute_effective_sample_size",
+    "expected_calibration_error",
+    "maximum_calibration_error",
+    "negative_log_likelihood",
+    "predictive_entropy_summary",
+    "probability_bin_summary",
     "source_separability_score",
+    "uncertainty_bucket_summary",
     "weighted_accuracy",
     "weighted_brier_score",
+    "weighted_ece",
     "weighted_log_loss",
     "weighted_mae",
     "weighted_mse",
 ]
-

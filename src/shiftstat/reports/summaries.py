@@ -8,8 +8,8 @@ from typing import TYPE_CHECKING, Any
 import pandas as pd
 
 if TYPE_CHECKING:
-    from shiftstat.detect import ShiftDetector
-    from shiftstat.reweight import ImportanceWeighter
+    from shiftstat.detect.detector import ShiftDetector
+    from shiftstat.reweight.importance import ImportanceWeighter
 
 
 @dataclass(frozen=True)

@@ -13,12 +13,19 @@ nav:
   - Scientific Motivation: theory.md
   - Detection: detection.md
   - Reweighting: reweighting.md
+  - Calibration Under Shift: calibration.md
+  - Reliability Diagnostics: reliability.md
+  - Model Evaluation Workflows: workflows.md
+  - Reliability Theory Notes: reliability_theory.md
+  - User Guide: user_guide.md
   - Examples Gallery: examples.md
   - API Reference:
       - Overview: api/index.md
+      - Calibration: api/calibration.md
       - Detection: api/detect.md
-      - Reweighting: api/reweight.md
       - Metrics: api/metrics.md
+      - Reliability: api/reliability.md
+      - Reweighting: api/reweight.md
       - Utilities: api/utils.md
   - Contributing: contributing.md
 plugins:
@@ -32,4 +39,3 @@ markdown_extensions:
   - admonition
   - pymdownx.highlight
   - pymdownx.superfences
-

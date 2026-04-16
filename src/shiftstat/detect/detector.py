@@ -16,7 +16,7 @@ from shiftstat.detect.statistics import (
     continuous_shift_test,
 )
 from shiftstat.exceptions import NotFittedError
-from shiftstat.plotting import (
+from shiftstat.plotting.detect import (
     plot_feature_drift,
     plot_shift_severity_heatmap,
     plot_source_discrimination_roc,

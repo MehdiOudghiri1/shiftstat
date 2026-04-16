@@ -25,7 +25,7 @@ from shiftstat.metrics import (
     weighted_mae,
     weighted_mse,
 )
-from shiftstat.plotting import plot_effective_sample_size, plot_importance_weight_histogram
+from shiftstat.plotting.reweight import plot_effective_sample_size, plot_importance_weight_histogram
 from shiftstat.reports import ReweightingReport
 from shiftstat.typing import FeatureTypes, TabularLike
 from shiftstat.utils.random import random_state_to_int
@@ -250,7 +250,7 @@ class ImportanceWeighter:
                 random_state=seed,
             )
         if self.method == "logistic":
-            return LogisticRegression(max_iter=1000, random_state=seed)
+            return LogisticRegression(max_iter=3000, random_state=seed)
         raise ValueError(f"Unsupported weighting method: {self.method}.")
 
     def _check_is_fitted(self) -> None:

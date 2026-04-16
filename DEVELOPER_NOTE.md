@@ -1,25 +1,44 @@
 # Developer note
 
-## Architectural choices
+## API changes
 
-- `src/` layout with typed, estimator-style modules and a small public surface
-- Shared tabular validation and schema inference in `shiftstat.utils`
-- Clear separation between statistical computation, plotting, and reporting
-- Dataclass-based result containers for inspectable, lightweight outputs
-- Synthetic datasets and benchmarks designed to support future research experiments
+- Added `shiftstat.calibration` with:
+  - `CalibrationEvaluator`
+  - `TemperatureScaler`
+  - `IsotonicCalibrator`
+  - `PlattCalibrator`
+  - `compare_calibration(...)`
+- Added `shiftstat.reliability` with:
+  - `ReliabilityAnalyzer`
+  - `ReliabilityProfile`
+  - `ReliabilityShiftReport`
+  - `ShiftEvaluationResult`
+  - `evaluate_under_shift(...)`
+- Extended `shiftstat.metrics` with calibration and reliability-oriented metrics and summaries
+- Extended `shiftstat.plotting` with reliability diagrams, calibration comparisons, confidence histograms, and confidence-error curves
 
-## Public API decisions
+## Refactors introduced
 
-- `ShiftDetector` is the main entry point for feature-wise and dataset-level drift analysis
-- `ImportanceWeighter` estimates target-over-reference importance weights while keeping downstream evaluation separate
-- Weighted metric utilities are available as standalone functions for easy integration with scikit-learn workflows
-- Reports expose `to_markdown()`, `to_dict()`, and `to_frame()` to keep outputs notebook- and paper-friendly
+- Package `__init__` files for `detect`, `calibration`, and `reliability` now use lazy exports to avoid circular imports while preserving the public API
+- Reliability reporting is represented through structured dataclasses rather than ad hoc dictionaries
+- Workflow orchestration is kept in a dedicated module so detection, weighting, calibration, and reporting remain separable
 
-## Deferred to V2
+## Scientific rationale of V2
 
-- Calibration-aware evaluation under shift
-- Selective prediction and abstention diagnostics
-- Rich subgroup robustness reporting
-- Advanced benchmark suites and experiment orchestration
-- Deep learning and streaming-monitoring integrations
+V1 established how much covariates move and how to reweight source samples under covariate shift. V2 asks a sharper question: when predictive probabilities are deployed under shift, how do calibration and confidence-conditioned reliability degrade, and how much can weighting or post-hoc recalibration change that conclusion?
 
+This motivates:
+
+- weighted and unweighted calibration analysis
+- explicit comparison between reference-domain and target-domain reliability
+- structured pre- and post-recalibration evaluation
+- benchmark scenarios centered on reliability degradation rather than only shift detectability
+
+## Deferred items for V3
+
+- multiclass calibration and reliability support
+- richer regression reliability diagnostics
+- subgroup and conditional robustness reporting
+- selective prediction and abstention analysis
+- online monitoring and sequential reliability tracking
+- larger benchmark suites and richer experiment aggregation
