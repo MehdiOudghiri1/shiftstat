@@ -81,7 +81,7 @@ def probability_bin_summary(
                 "signed_gap": float(mean_confidence - empirical_probability),
             }
         )
-    return pd.DataFrame.from_records(records)
+    return pd.DataFrame.from_records(records)  # type: ignore[no-any-return]
 
 
 def calibration_curve(

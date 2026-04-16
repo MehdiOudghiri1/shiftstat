@@ -40,7 +40,7 @@ from shiftstat.utils.validation import ensure_1d, validate_same_length
 
 def _to_dataframe(X: TabularLike) -> pd.DataFrame:
     if isinstance(X, pd.DataFrame):
-        return X.copy()
+        return X.copy()  # type: ignore[no-any-return]
     return pd.DataFrame(np.asarray(X), columns=extract_feature_names(X))  # type: ignore[no-any-return]
 
 
