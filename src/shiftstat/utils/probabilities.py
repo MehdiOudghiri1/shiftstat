@@ -22,14 +22,15 @@ def extract_positive_class_probabilities(probabilities: np.ndarray) -> np.ndarra
         raise ValidationError(
             "Binary probability inputs must be one-dimensional or have shape (n_samples, 2)."
         )
-    return np.clip(ensure_1d(result, name="probabilities").astype(float), 1e-12, 1 - 1e-12)
+    clipped = np.clip(ensure_1d(result, name="probabilities").astype(float), 1e-12, 1 - 1e-12)
+    return np.asarray(clipped, dtype=float)  # type: ignore[no-any-return]
 
 
 def confidence_from_probabilities(probabilities: np.ndarray) -> np.ndarray:
     """Return binary classification confidence as ``max(p, 1 - p)``."""
 
     positive = extract_positive_class_probabilities(probabilities)
-    return np.maximum(positive, 1.0 - positive)
+    return np.asarray(np.maximum(positive, 1.0 - positive), dtype=float)  # type: ignore[no-any-return]
 
 
 def labels_from_probabilities(

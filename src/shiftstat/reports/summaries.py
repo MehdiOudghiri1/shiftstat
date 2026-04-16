@@ -59,7 +59,7 @@ class DetectionReport:
     def to_frame(self) -> pd.DataFrame:
         """Return the per-feature report table."""
 
-        return self.per_feature.copy()
+        return self.per_feature.copy()  # type: ignore[no-any-return]
 
 
 @dataclass(frozen=True)

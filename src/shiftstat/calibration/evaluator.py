@@ -111,7 +111,7 @@ def compare_calibration(results: dict[str, CalibrationResult]) -> pd.DataFrame:
                 "weighted": result.weighted,
             }
         )
-    return pd.DataFrame.from_records(records)
+    return pd.DataFrame.from_records(records)  # type: ignore[no-any-return]
 
 
 def _frame_records(frame: pd.DataFrame) -> list[dict[str, Any]]:

@@ -170,7 +170,7 @@ class ShiftDetector:
 
         self._check_is_fitted()
         records = [result.to_dict() for result in self.per_feature_results_]
-        return pd.DataFrame.from_records(records)
+        return pd.DataFrame.from_records(records)  # type: ignore[no-any-return]
 
     def to_report(self) -> DetectionReport:
         """Return a report abstraction for markdown, dict, and table export."""

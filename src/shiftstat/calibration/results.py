@@ -52,5 +52,4 @@ class CalibrationResult:
     def to_frame(self) -> pd.DataFrame:
         """Return bin-wise calibration diagnostics as a DataFrame."""
 
-        return pd.DataFrame.from_records(self.bin_summary)
-
+        return pd.DataFrame.from_records(self.bin_summary)  # type: ignore[no-any-return]

@@ -100,7 +100,7 @@ class ReliabilityAnalyzer:
         """Return a compact degradation summary."""
 
         self._check_is_fitted()
-        return pd.DataFrame.from_records([self.degradation_summary_.to_dict()])
+        return pd.DataFrame.from_records([self.degradation_summary_.to_dict()])  # type: ignore[no-any-return]
 
     def to_report(
         self,

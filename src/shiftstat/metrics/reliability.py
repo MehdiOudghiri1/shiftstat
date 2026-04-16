@@ -104,7 +104,7 @@ def calibration_curve(
     return summary.loc[
         :,
         ["bin", "mean_confidence", "empirical_probability", "count", "weight_sum"],
-    ]
+    ]  # type: ignore[no-any-return]
 
 
 def expected_calibration_error(
@@ -247,7 +247,7 @@ def confidence_conditioned_error(
                 "error_rate": float(np.average(errors[mask], weights=bin_weights)),
             }
         )
-    return pd.DataFrame.from_records(records)
+    return pd.DataFrame.from_records(records)  # type: ignore[no-any-return]
 
 
 def uncertainty_bucket_summary(
@@ -290,7 +290,7 @@ def uncertainty_bucket_summary(
                 "error_rate": float(np.average(errors[mask], weights=bin_weights)),
             }
         )
-    return pd.DataFrame.from_records(records)
+    return pd.DataFrame.from_records(records)  # type: ignore[no-any-return]
 
 
 def negative_log_likelihood(

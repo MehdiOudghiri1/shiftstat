@@ -58,17 +58,17 @@ class ReliabilityProfile:
     def calibration_frame(self) -> pd.DataFrame:
         """Return the calibration table as a DataFrame."""
 
-        return pd.DataFrame.from_records(self.calibration_table)
+        return pd.DataFrame.from_records(self.calibration_table)  # type: ignore[no-any-return]
 
     def confidence_frame(self) -> pd.DataFrame:
         """Return the confidence-conditioned error table as a DataFrame."""
 
-        return pd.DataFrame.from_records(self.confidence_error_table)
+        return pd.DataFrame.from_records(self.confidence_error_table)  # type: ignore[no-any-return]
 
     def uncertainty_frame(self) -> pd.DataFrame:
         """Return the uncertainty bucket table as a DataFrame."""
 
-        return pd.DataFrame.from_records(self.uncertainty_table)
+        return pd.DataFrame.from_records(self.uncertainty_table)  # type: ignore[no-any-return]
 
 
 @dataclass(frozen=True)
@@ -224,7 +224,7 @@ class ReliabilityShiftReport:
     def to_frame(self) -> pd.DataFrame:
         """Return a compact one-row degradation summary."""
 
-        return pd.DataFrame.from_records([self.degradation_summary.to_dict()])
+        return pd.DataFrame.from_records([self.degradation_summary.to_dict()])  # type: ignore[no-any-return]
 
     def to_tables(self) -> dict[str, pd.DataFrame]:
         """Return exportable report tables."""
@@ -304,7 +304,7 @@ class ShiftEvaluationResult:
         if self.recalibrated_target_profile is not None:
             record["recalibrated_target_ece"] = self.recalibrated_target_profile.ece
             record["recalibrated_target_log_loss"] = self.recalibrated_target_profile.log_loss
-        return pd.DataFrame.from_records([record])
+        return pd.DataFrame.from_records([record])  # type: ignore[no-any-return]
 
     def to_report(self) -> ReliabilityShiftReport:
         """Convert the workflow result to a report object."""
