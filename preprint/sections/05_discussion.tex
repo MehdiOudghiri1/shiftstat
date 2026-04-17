@@ -1,0 +1,22 @@
+\section{Discussion}
+
+The main message of this paper is simple: reliability under deployment shift should not be summarized by a single average score. Under covariate shift, target reliability can often be estimated from weighted source data, but this is only useful if we also ask which subgroups are being audited and how much effective sample size remains after weighting.
+
+This perspective clarifies several common points of confusion.
+
+\begin{itemize}
+  \item \textbf{Weighted source diagnostics and target diagnostics are not the same thing.} The weighted source estimate is only valid under the transport assumptions, and it becomes unstable when overlap is weak.
+  \item \textbf{A good average can hide a bad subgroup.} The hidden-failure construction makes this precise in the simplest possible way.
+  \item \textbf{Selective deployment does not remove the problem.} Once abstention is written in target-risk form, it inherits the same weighting and overlap issues as calibration estimation.
+\end{itemize}
+
+There are several directions that would make the final paper more technically ambitious.
+
+\begin{enumerate}
+  \item Replace the finite-family subgroup analysis with VC- or Rademacher-style complexity control for richer slice families.
+  \item Derive self-normalized or semiparametric bounds that sharpen the role of effective sample size.
+  \item Move from estimation error bounds to inference, for example confidence intervals on worst-group reliability or hidden-failure gaps.
+  \item Extend the covariate-shift story to label shift, concept drift, and mixed shift regimes, where weighted transport is no longer exact.
+\end{enumerate}
+
+The current repository provides a useful computational scaffold for these questions, but the scientific point is independent of the software itself. The deeper claim is conceptual: deployment robustness should be analyzed as a weighted subgroup reliability problem with explicit statistical limits, not as a single post-hoc calibration number.

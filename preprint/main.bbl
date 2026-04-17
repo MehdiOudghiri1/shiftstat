@@ -1,0 +1,34 @@
+\begin{thebibliography}{4}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Geifman and El-Yaniv(2017)]{Geifman2017Selective}
+Yonatan Geifman and Ran El-Yaniv.
+\newblock Selective classification for deep neural networks, 2017.
+\newblock URL \url{https://arxiv.org/abs/1705.08500}.
+
+\bibitem[Jones et~al.(2020)Jones, Sagawa, Koh, Kumar, and
+  Liang]{Jones2020SelectiveDisparities}
+Erik Jones, Shiori Sagawa, Pang~Wei Koh, Ananya Kumar, and Percy Liang.
+\newblock Selective classification can magnify disparities across groups, 2020.
+\newblock URL \url{https://arxiv.org/abs/2010.14134}.
+
+\bibitem[Park et~al.(2020)Park, Bastani, Weimer, and
+  Lee]{Park2020CalibratedShift}
+Sangdon Park, Osbert Bastani, James Weimer, and Insup Lee.
+\newblock Calibrated prediction with covariate shift via unsupervised domain
+  adaptation, 2020.
+\newblock URL \url{https://arxiv.org/abs/2003.00343}.
+
+\bibitem[Sugiyama et~al.(2007)Sugiyama, Krauledat, and
+  M{\"u}ller]{Sugiyama2007IWCV}
+Masashi Sugiyama, Matthias Krauledat, and Klaus-Robert M{\"u}ller.
+\newblock Covariate shift adaptation by importance weighted cross validation.
+\newblock \emph{Journal of Machine Learning Research}, 8:\penalty0 985--1005,
+  2007.
+\newblock URL \url{https://www.jmlr.org/papers/v8/sugiyama07a.html}.
+
+\end{thebibliography}

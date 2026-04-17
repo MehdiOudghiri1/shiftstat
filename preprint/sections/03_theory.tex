@@ -1,0 +1,148 @@
+\section{Theory}\label{sec:theory}
+
+\subsection{Exact transport under covariate shift}
+
+\begin{proposition}[Transport identity]\label{prop:transport}
+Under \cref{ass:covshift,ass:overlap}, for every measurable function $h:\cX \times \{0,1\}\to\RR$ such that $\EE_{\tgt}[|h(X,Y)|] < \infty$,
+\[
+\EE_{\tgt}[h(X,Y)] = \EE_{\src}[\wt(X) h(X,Y)].
+\]
+In particular, for every bin $b$ and subgroup $g\in\cG$,
+\[
+\theta_{b,g}^{\tgt}
+=
+\EE_{\src}\!\left[
+\wt(X)
+(Y-\score(X))
+\ind\{\score(X)\in I_b\}
+g(X)
+\right].
+\]
+\end{proposition}
+
+\begin{remark}
+\Cref{prop:transport} is the key identity in the paper. It says that if we want a target average, we can estimate it with a weighted source average. After that, the problem is no longer conceptual; it is statistical. We must estimate the weights, control their variability, and make sure the effective sample size does not collapse.
+\end{remark}
+
+\subsection{Uniform estimation over bins and groups}
+
+We now state a finite-family estimation result. Let $G = |\cG|$ be the number of subgroups and assume the score partition $\Bin$ is fixed in advance.
+
+\begin{assumption}[Bounded scores and weights]\label{ass:bounded}
+Almost surely under $\src$, we have $0 \le \score(X) \le 1$, $Y \in \{0,1\}$, and $0 \le \wt(X) \le W_{\max}$.
+\end{assumption}
+
+\begin{theorem}[Uniform control of weighted subgroup residuals]\label{thm:uniform}
+Assume \cref{ass:covshift,ass:overlap,ass:bounded}. Let $\widehat{\wt}$ be any estimated weight function and define
+\[
+\widehat{\theta}_{b,g}
+=
+\frac{1}{n}
+\sum_{i=1}^{n}
+\widehat{\wt}(X_i)
+(Y_i-\score(X_i))
+\ind\{\score(X_i)\in I_b\}
+g(X_i).
+\]
+Then there exists a universal constant $C>0$ such that with probability at least $1-\delta$,
+\begin{equation}\label{eq:uniform-bound}
+\max_{1\le b\le B,\ g\in\cG}
+\left|
+\widehat{\theta}_{b,g} - \theta_{b,g}^{\tgt}
+\right|
+\le
+C W_{\max}
+\sqrt{
+\frac{\log(2BG/\delta)}{n}
+}
++
+\EE_{\src}\!\left[
+\left|
+\widehat{\wt}(X)-\wt(X)
+\right|
+\right].
+\end{equation}
+\end{theorem}
+
+The bound has two pieces. The first term is the usual sampling term. It gets smaller as $n$ grows. The second term is the weight-estimation term. It is small only if $\widehat{\wt}$ is close to the true density ratio $\wt$. In other words, even with many source samples, the estimate can still be poor if the weights are inaccurate.
+
+\begin{proof}[Proof sketch]
+Write
+\[
+\widehat{\theta}_{b,g} - \theta_{b,g}^{\tgt}
+=
+\underbrace{
+\frac{1}{n}\sum_{i=1}^{n}
+\wt(X_i)\psi_{b,g}(X_i,Y_i)
+-
+\EE_{\src}[\wt(X)\psi_{b,g}(X,Y)]
+}_{\text{sampling term}}
++
+\underbrace{
+\frac{1}{n}\sum_{i=1}^{n}
+(\widehat{\wt}(X_i)-\wt(X_i))\psi_{b,g}(X_i,Y_i)
+}_{\text{weight error}},
+\]
+where $\psi_{b,g}(x,y)=(y-\score(x))\ind\{\score(x)\in I_b\}g(x)$. Since $|y-\score(x)|\le 1$, the functions $\wt \psi_{b,g}$ are uniformly bounded by $W_{\max}$. A union bound over the finite family of $BG$ functions gives the first term. The second term is bounded by $n^{-1}\sum_i |\widehat{\wt}(X_i)-\wt(X_i)|$ and then by its expectation. A sharper version can replace the first term by a self-normalized empirical process bound.
+\end{proof}
+
+\begin{corollary}[Worst-group reliability estimation]\label{cor:wce}
+Under the assumptions of \cref{thm:uniform},
+\[
+\left|
+\widehat{\WCE}_{\Bin}(\cG) - \WCE_{\tgt,\Bin}(\cG)
+\right|
+\le
+B
+\max_{1\le b\le B,\ g\in\cG}
+\left|
+\widehat{\theta}_{b,g} - \theta_{b,g}^{\tgt}
+\right|,
+\]
+where $\widehat{\WCE}_{\Bin}(\cG)=\max_{g\in\cG}\sum_{b=1}^{B}|\widehat{\theta}_{b,g}|$.
+\end{corollary}
+
+\begin{remark}[Effective sample size]
+The sampling term in \cref{eq:uniform-bound} is often better interpreted through the empirical effective sample size
+\[
+\ess
+=
+\frac{(\sum_{i=1}^{n}\widehat{\wt}_i)^2}{\sum_{i=1}^{n}\widehat{\wt}_i^2}.
+\]
+When the weights are fairly even, $\ess$ is close to $n$. When a few samples receive very large weights, $\ess$ can become much smaller than $n$. For example, one may start with $500$ source points but end up with an effective sample size closer to $80$. This is exactly the regime in which subgroup auditing becomes unstable first.
+\end{remark}
+
+\subsection{Why aggregate reliability can be non-diagnostic}
+
+\begin{proposition}[Hidden failures can be invisible in aggregate]\label{prop:hidden}
+There exist distributions $\src,\tgt$, a score function $\score$, and a subgroup family $\cG$ such that aggregate calibration is perfect while every subgroup is badly calibrated. In particular, there exists a construction with
+\[
+\Cal_{\tgt,\Bin}(\mathbf{1}) = 0
+\qquad \text{and} \qquad
+\WCE_{\tgt,\Bin}(\cG) > 0.
+\]
+\end{proposition}
+
+\begin{proof}[Construction]
+Consider two groups $g_A$ and $g_B$ with equal target mass $1/2$. Let $Y=0$ almost surely on group $A$ and $Y=1$ almost surely on group $B$. Let the score be constant: $\score(X)=1/2$ for all $X$. With a single score bin, the aggregate residual is
+\[
+\EE_{\tgt}[Y-\score(X)] = \frac{1}{2}(0-1/2)+\frac{1}{2}(1-1/2)=0,
+\]
+so aggregate calibration is perfect. But each subgroup has conditional calibration gap $1/2$, and under the moment-based definition \cref{eq:cal-def}, each subgroup contributes absolute residual mass $1/4$. Hence the aggregate diagnostic is exactly zero while subgroup diagnostics are strictly positive.
+\end{proof}
+
+\begin{remark}
+\Cref{prop:hidden} shows the basic failure mode of average metrics. Group $A$ is always overconfident, group $B$ is always underconfident, and the two errors cancel when we average them together. This is why a small aggregate ECE does not guarantee that every subgroup is safe.
+\end{remark}
+
+\subsection{Selective deployment as a transported subgroup problem}
+
+The same logic applies to abstention. Let $\loss(\score(X),Y)$ be a bounded loss, for example $0$--$1$ loss or log loss. Let $u:\cX\to\RR$ be a selection score, for example model confidence, and let
+\[
+\cA_{\tau}=\{x:u(x)\ge \tau\}
+\]
+be the accepted set at threshold $\tau$. For any subgroup $g$, the target selective-risk numerator is
+\[
+\EE_{\tgt}\!\left[\loss(\score(X),Y)\ind\{X\in \cA_{\tau}\}g(X)\right],
+\]
+which again equals a weighted source expectation under \cref{prop:transport}. So coverage, selective risk, and subgroup rejection gaps are governed by the same overlap and effective-sample-size issues as weighted reliability estimation. This helps explain why selective classification can improve accepted-set averages while worsening subgroup disparities \citep{Geifman2017Selective, Jones2020SelectiveDisparities}.

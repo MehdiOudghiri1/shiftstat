@@ -1,0 +1,125 @@
+\section{Problem Setting}
+
+\subsection{Source and target distributions}
+
+Let $\src$ denote the source distribution and let $\tgt$ denote the target distribution. Here $X\in\cX$ is the feature vector and $Y\in\{0,1\}$ is the binary label. We observe labeled source samples
+\[
+(X_1,Y_1), \dots, (X_n,Y_n) \sim \src,
+\]
+and unlabeled or lightly labeled target covariates
+\[
+X'_1, \dots, X'_m \sim \tgt_X.
+\]
+We study a fixed score function $\score:\cX \to [0,1]$. In examples, $\score(X)$ is the model's predicted probability of class $1$.
+
+\begin{assumption}[Covariate shift]\label{ass:covshift}
+The conditional label mechanism is unchanged:
+\[
+\src(Y \given X) = \tgt(Y \given X),
+\]
+while the marginal feature distribution may change:
+\[
+\src_X \neq \tgt_X.
+\]
+\end{assumption}
+
+\begin{assumption}[Overlap]\label{ass:overlap}
+The target covariate distribution is absolutely continuous with respect to the source covariate distribution, so the density ratio
+\[
+\wt(x) = \frac{d\tgt_X}{d\src_X}(x)
+\]
+exists and is finite almost surely under $\src$.
+\end{assumption}
+
+These are standard assumptions in the covariate-shift literature \citep{Sugiyama2007IWCV, Park2020CalibratedShift}. Their appeal is that target expectations can be written as weighted source expectations.
+
+\subsection{Groups, bins, and moment-based reliability}
+
+Let $\cG$ be a finite family of subgroup indicators $g:\cX \to \{0,1\}$. In applications, each $g$ may represent a categorical slice, a discretized numerical range, or an intersectional subgroup. Let
+\[
+\Bin = \{I_1,\dots,I_B\}
+\]
+be a fixed partition of the score range $[0,1]$.
+
+\begin{example}[Simple subgroup family]
+If the application is hospital risk prediction, one may take
+\[
+g_{\text{cardiology}}(x)=\ind\{\text{department}=\text{cardiology}\}
+\]
+or
+\[
+g_{\text{high-age}}(x)=\ind\{\text{age}\ge 75\}.
+\]
+If the model score is binned into intervals such as $[0,0.2)$, $[0.2,0.4)$, and so on, then we can ask whether the model is well calibrated inside each bin and inside each subgroup.
+\end{example}
+
+For each bin $I_b$ and subgroup indicator $g \in \cG$, define the target calibration residual moment
+\begin{equation}\label{eq:theta-def}
+\theta_{b,g}^{\tgt}
+=
+\EE_{\tgt}\!\left[
+(Y-\score(X))
+\ind\{\score(X)\in I_b\}
+g(X)
+\right].
+\end{equation}
+
+This quantity is the signed calibration error contributed by group $g$ inside score bin $b$. If $\theta_{b,g}^{\tgt}>0$, then the model is underconfident on that subgroup-bin cell on average. If $\theta_{b,g}^{\tgt}<0$, then it is overconfident. We use this moment because it is mathematically simple and still captures the same intuition as binned calibration.
+
+\begin{definition}[Groupwise binned reliability]
+For a subgroup $g \in \cG$, define
+\begin{equation}\label{eq:cal-def}
+\Cal_{\tgt,\Bin}(g)
+=
+\sum_{b=1}^{B}
+\left|
+\theta_{b,g}^{\tgt}
+\right|.
+\end{equation}
+\end{definition}
+
+The aggregate population is represented by the constant indicator $\mathbf{1}(x)=1$. Thus $\Cal_{\tgt,\Bin}(\mathbf{1})$ is the aggregate binned reliability discrepancy, while
+\begin{equation}\label{eq:wce-def}
+\WCE_{\tgt,\Bin}(\cG)
+=
+\max_{g\in\cG}
+\Cal_{\tgt,\Bin}(g)
+\end{equation}
+is the worst-group reliability discrepancy.
+
+\begin{definition}[Hidden-failure gap]
+The hidden-failure gap is
+\begin{equation}\label{eq:hfg-def}
+\HFG_{\tgt,\Bin}(\cG)
+=
+\WCE_{\tgt,\Bin}(\cG)
+-
+\Cal_{\tgt,\Bin}(\mathbf{1}).
+\end{equation}
+\end{definition}
+
+Large values of $\HFG_{\tgt,\Bin}(\cG)$ mean that the overall metric is hiding a large subgroup failure. In the experiments we also report standard ECE-style metrics, which are easier to read in practice but serve the same purpose.
+
+\subsection{Weighted estimators}
+
+If oracle weights were available, a natural estimator of \cref{eq:theta-def} would be
+\begin{equation}\label{eq:theta-hat}
+\widehat{\theta}_{b,g}
+=
+\frac{1}{n}
+\sum_{i=1}^{n}
+\wt(X_i)
+(Y_i-\score(X_i))
+\ind\{\score(X_i)\in I_b\}
+g(X_i).
+\end{equation}
+
+This is just a weighted average over source samples. Intuitively, a source point gets a large weight if that kind of point is common in the target population and rare in the source population. For example, if a certain patient profile is about twice as common after deployment, then source samples with that profile should receive a weight near $2$.
+
+With estimated weights $\widehat{\wt}$, we replace $\wt$ by $\widehat{\wt}$. This gives empirical estimators of $\Cal_{\tgt,\Bin}(g)$ and $\WCE_{\tgt,\Bin}(\cG)$ by plugging in $\widehat{\theta}_{b,g}$.
+
+The same idea extends beyond calibration. Let $u(X)$ be a selection score, for example confidence, and let
+\[
+\cA_{\tau}=\{x:u(x)\ge \tau\}
+\]
+be the set of accepted examples. Then weighted transport also applies to accepted-set risk and accepted-set coverage. This matters when we interpret the selective-prediction experiments in \cref{sec:experiments}.

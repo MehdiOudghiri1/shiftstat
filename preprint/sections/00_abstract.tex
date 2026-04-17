@@ -1,0 +1,5 @@
+Models are often tested on one population and then deployed on another. After this shift, the model can still look reliable on average while failing badly on a subgroup. This paper studies that problem for binary prediction under covariate shift.
+
+Our goal is simple. We want to estimate reliability on the target population using source data, and we want to understand when average metrics hide subgroup failures. Under covariate shift, target quantities can be written as importance-weighted source quantities. Using this idea, we define subgroup-aware reliability, worst-group reliability, and a hidden-failure gap that measures how much aggregate evaluation misses.
+
+We then derive estimation guarantees and show a basic negative result: aggregate calibration can look perfect even when subgroup calibration is poor. We also study these ideas in controlled tabular experiments, where the same patterns appear in practice. The main message is that reliability under shift should be studied as a weighted subgroup problem, not as a single average score.

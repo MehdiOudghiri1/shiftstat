@@ -1,0 +1,63 @@
+\section{Appendix}
+
+\subsection{Proof of \cref{prop:transport}}
+
+For any integrable measurable function $h$,
+\[
+\EE_{\src}[\wt(X)h(X,Y)]
+=
+\int h(x,y)\frac{d\tgt_X}{d\src_X}(x)\, d\src(x,y).
+\]
+Since under \cref{ass:covshift} the conditional law of $Y$ given $X=x$ is the same under $\src$ and $\tgt$, we may write
+\[
+d\src(x,y)=d\src_X(x)\,d\src(y\given x)
+\qquad\text{and}\qquad
+d\tgt(x,y)=d\tgt_X(x)\,d\tgt(y\given x),
+\]
+with $d\src(y\given x)=d\tgt(y\given x)$. Therefore
+\[
+\frac{d\tgt_X}{d\src_X}(x)\, d\src_X(x)\, d\src(y\given x)
+=
+d\tgt_X(x)\, d\tgt(y\given x)
+=
+d\tgt(x,y),
+\]
+which yields
+\[
+\EE_{\src}[\wt(X)h(X,Y)] = \EE_{\tgt}[h(X,Y)].
+\]
+Choosing
+\[
+h(x,y)=(y-\score(x))\ind\{\score(x)\in I_b\}g(x)
+\]
+gives the stated formula for $\theta_{b,g}^{\tgt}$.
+
+\subsection{Further explanation of the hidden-failure construction}
+
+The construction in \cref{prop:hidden} is intentionally simple because the phenomenon itself is simple. If subgroup-specific errors have opposite signs, they can cancel in the aggregate. In the two-group example:
+
+\begin{itemize}
+  \item group $A$ is maximally overconfident relative to the constant score $1/2$;
+  \item group $B$ is maximally underconfident relative to the same score;
+  \item the aggregate average is perfectly calibrated because the two signed residuals cancel.
+\end{itemize}
+
+This cancellation logic survives in much richer settings. The synthetic subgroup benchmarks in the repository are essentially structured versions of the same idea, now combined with prevalence shift and score heterogeneity.
+
+\subsection{Experimental provenance}
+
+The preliminary results cited in the main text come from the committed benchmark artifacts:
+
+\begin{itemize}
+  \item \path{../paper_assets/generated/publication_suite/paper_covariate_shift/}
+  \item \path{../paper_assets/generated/publication_suite/paper_subgroup_failures/}
+  \item \path{../paper_assets/generated/publication_suite/paper_selective_shift/}
+\end{itemize}
+
+The pilot suite is driven by:
+
+\begin{itemize}
+  \item \path{../paper_assets/configs/publication_suite.yaml}
+\end{itemize}
+
+For the finished paper, the experimental section should be regenerated with a larger seed budget and explicit ablations on overlap and density-ratio quality.

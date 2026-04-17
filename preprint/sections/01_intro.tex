@@ -1,0 +1,65 @@
+\section{Introduction}
+
+A model is usually tested on one population and then deployed on another. That change in population can be enough to break reliability. A model may still look acceptable on average, but become unreliable on a subgroup that matters in practice.
+
+Here is a simple example. Suppose a hospital model predicts the probability of complications after a procedure. On the validation set, patients from all departments are mixed together, and the model looks well calibrated overall. After deployment, the patient mix changes: one department becomes much more common, and that department is exactly where the model is overconfident. The overall score may still look decent, but the deployment problem is real.
+
+This paper studies that situation in a clean theoretical setting. Here $X$ is the feature vector, $Y\in\{0,1\}$ is the label, and the model outputs a score
+\[
+\score(X)\in[0,1].
+\]
+If the model says $0.8$, we would like that to mean ``about $80\%$ chance of being correct'' or ``about $80\%$ chance of class $1$.'' In simple terms, calibration asks whether predicted probabilities match empirical frequencies.
+
+For one bin of scores, an intuitive calibration gap is
+\[
+\text{gap} \approx |\text{observed frequency} - \text{predicted probability}|.
+\]
+Overall calibration is then some average of these gaps across bins. The problem is that this is still an average. If one subgroup is strongly overconfident and another is strongly underconfident, the two effects can cancel out.
+
+We therefore focus on \emph{worst-group reliability}. If $\cG$ is a family of subgroups, the quantity of interest is roughly
+\[
+\text{worst-group error}
+\;=\;
+\max_{g\in\cG} \text{error on group } g.
+\]
+We also look at the difference between worst-group error and overall error:
+\[
+\text{hidden-failure gap}
+\;=\;
+\text{worst-group error} - \text{overall error}.
+\]
+If this gap is large, then the aggregate metric is hiding something important.
+
+Our second ingredient is distribution shift. We write $\src$ for the source distribution and $\tgt$ for the target distribution. We work under the standard covariate-shift assumption
+\[
+\src(Y \given X)=\tgt(Y \given X),
+\qquad
+\src_X \neq \tgt_X.
+\]
+In words: the mix of inputs changes, but the label mechanism given the input stays the same. In that case, target expectations can be expressed using source data and a weight
+\[
+\wt(x)=\frac{d\tgt_X}{d\src_X}(x).
+\]
+So the basic rule is
+\[
+\text{target average} \approx \frac{1}{n}\sum_{i=1}^n \wt(X_i)\,h(X_i,Y_i),
+\]
+for an appropriate quantity $h$. This is the key mathematical idea in the paper. It says that target reliability is a weighted source problem.
+
+Once we write the problem this way, three things become clear.
+
+\begin{enumerate}
+  \item Target reliability can be estimated by weighted source averages.
+  \item Worst-group reliability is harder than aggregate reliability because rare groups and unstable weights reduce usable sample size.
+  \item Aggregate calibration can be misleading even when the target average looks good.
+\end{enumerate}
+
+The rest of the paper makes this precise. We define subgroup-aware target reliability quantities, derive weighted transport identities, and prove estimation bounds that separate sampling error from density-ratio estimation error. We also give a simple construction showing that aggregate calibration can be perfect while subgroup calibration is poor.
+
+The contribution of the paper is therefore simple. It is not a new software interface. It is a scientific viewpoint:
+
+\begin{quote}
+reliability under deployment shift should be analyzed as a weighted subgroup estimation problem, not as a single average metric.
+\end{quote}
+
+The experiments are there to test this viewpoint in controlled settings, not to replace the theory. They show the same qualitative pattern throughout the paper: as shift grows, weighting becomes statistically harder, and subgroup failures become easier to miss if one only reports average metrics.
