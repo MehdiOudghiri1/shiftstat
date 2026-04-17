@@ -1,39 +1,75 @@
-# ShiftStat
+<div align="center">
+  <h1>ShiftStat</h1>
+  <p><strong>Scientific Python tooling for reliability under tabular distribution shift</strong></p>
+  <p>Detection, weighting, recalibration, subgroup auditing, selective prediction, and reproducible benchmark workflows for tabular ML systems.</p>
+  <p>
+    <a href="#quickstart">Quickstart</a> |
+    <a href="docs/index.md">Documentation</a> |
+    <a href="docs/examples.md">Examples</a> |
+    <a href="paper_assets/README.md">Paper Assets</a> |
+    <a href="CONTRIBUTING.md">Contributing</a>
+  </p>
+</div>
 
-ShiftStat is an open-source scientific Python library for studying predictive reliability under tabular distribution shift.
+<p align="center">
+  <img src="paper_assets/generated/publication_suite/paper_covariate_shift/figures/paper_covariate_shift_delta_ece.png" width="48%" alt="Covariate shift delta ECE benchmark figure" />
+  <img src="paper_assets/generated/publication_suite/paper_subgroup_failures/figures/paper_subgroup_failures_worst_group_accuracy_gap.png" width="48%" alt="Worst-group accuracy gap benchmark figure" />
+</p>
 
-V5 turns the project into a publication-grade benchmark and experiment platform: alongside detection, weighting, calibration, subgroup auditing, and selective prediction, the library now supports repeated-seed benchmark scenarios, config-driven experiment execution, and paper-ready artifact generation.
+> Aggregate metrics can stay stable while calibration, subgroup reliability, or accepted-set risk quietly fails after deployment shift. ShiftStat is built to make those failures visible, compare interventions, and export reproducible evidence.
 
-## Why ShiftStat
+## At a glance
 
-Aggregate metrics can remain deceptively stable while calibration, subgroup reliability, or accepted-set risk fails under deployment shift. ShiftStat is built for the scientific question behind those failures:
+| Item | Details |
+| --- | --- |
+| Package | `shiftstat` |
+| Version | `0.5.0` |
+| Python | `>=3.10` |
+| Focus | Scientific evaluation of predictive reliability under tabular distribution shift |
+| Includes | Core diagnostics, high-level workflows, benchmark scenarios, config-driven experiments, plots, and publication-ready artifacts |
+| Install | `pip install shiftstat` |
 
-When the deployment distribution changes, which metrics drift, which slices fail first, and which operational responses actually help?
+## What ShiftStat covers
 
-## Key capabilities
+| Scientific layer | What it helps answer | Main entry points |
+| --- | --- | --- |
+| Shift detection | Did the target distribution move, and which features changed most? | `ShiftDetector`, `shiftstat.detect`, `shiftstat.plotting` |
+| Reweighting and recalibration | Can we correct for covariate shift or recalibrate scores? | `ImportanceWeighter`, `CalibrationEvaluator`, `TemperatureScaler` |
+| Reliability workflows | How do reference and target reliability compare end to end? | `evaluate_under_shift`, `ReliabilityAnalyzer` |
+| Subgroup auditing | Which operational slices degrade first, and are failures concentrated? | `SubgroupAnalyzer`, `ReliabilityAuditor`, `SliceDiscoverer` |
+| Selective prediction | Does abstention improve accepted-set risk under shift? | `evaluate_selective_under_shift`, `SelectivePredictor`, `AbstentionPolicy` |
+| Benchmarks and experiments | Which interventions help across scenarios, seeds, and benchmark families? | `BenchmarkRunner`, `BenchmarkScenario`, `run_experiment`, `shiftstat-experiment` |
+| Reporting and artifacts | How do we export tables, figures, markdown summaries, and manifests? | `BenchmarkResult.export_artifacts(...)`, `paper_assets/`, `shiftstat.plotting` |
 
-- Shift detection for mixed-type tabular data
-- Importance weighting and recalibration under covariate shift
-- Reliability profiles and deployment reports
-- Subgroup-aware auditing and interpretable failure-slice discovery
-- Selective prediction, abstention policies, and risk-coverage analysis
-- Reproducible benchmark scenarios with repeated-seed aggregation
-- JSON/YAML experiment manifests with logs, manifests, and artifact directories
-- CSV, markdown, LaTeX, and figure exports for preprints and software papers
+## Quickstart
 
-## Installation
+### 1. Evaluate selective deployment under shift
 
-```bash
-pip install shiftstat
+```python
+from sklearn.linear_model import LogisticRegression
+
+from shiftstat.datasets import make_covariate_shift_classification
+from shiftstat.selective import evaluate_selective_under_shift
+
+bundle = make_covariate_shift_classification(random_state=3)
+
+result = evaluate_selective_under_shift(
+    LogisticRegression(max_iter=2000),
+    bundle.X_ref,
+    bundle.y_ref,
+    bundle.X_target,
+    bundle.y_target,
+    apply_importance_weighting=True,
+    use_weighted_threshold_tuning=True,
+    target_coverage=0.8,
+    random_state=3,
+)
+
+print(result.summary_frame())
+print(result.to_report().to_markdown())
 ```
 
-For development:
-
-```bash
-pip install -e .[dev,docs,examples]
-```
-
-## Minimal V5 benchmark example
+### 2. Run a repeated-seed benchmark from Python
 
 ```python
 from shiftstat.bench import BenchmarkRunner, make_covariate_shift_sweep_scenario
@@ -50,72 +86,97 @@ scenario = make_covariate_shift_sweep_scenario(
 )
 
 result = BenchmarkRunner().run(scenario)
-paths = result.export_artifacts("paper_assets/generated/covariate_shift_demo")
+artifacts = result.export_artifacts("paper_assets/generated/covariate_shift_demo")
 
 print(result.aggregate_frame())
-print(paths["figures"])
+print(artifacts["figures"])
 ```
 
-## Config-driven experiments
+### 3. Run a config-driven experiment
 
 ```bash
 shiftstat-experiment paper_assets/configs/publication_suite.yaml
 ```
 
-This produces:
+This writes ordinary files that can be inspected, versioned, and cited:
 
-- run-level CSVs
-- aggregated benchmark summaries
-- markdown reports
-- LaTeX-ready tables
+- per-scenario run CSVs
+- aggregated summary CSVs
+- markdown summaries
+- LaTeX tables
 - figure files
-- experiment manifests and logs
+- manifests, copied configs, and run logs
 
-## Architecture
+## How the project fits together
 
 ```mermaid
 flowchart LR
     D[Datasets and Synthetic Scenarios]
-    M[Core Methods\nDetect / Reweight / Calibrate / Reliability]
-    A[V3 Auditing\nSubgroups / Slices]
-    S[V4 Selective Prediction\nAbstention / Risk-Coverage]
-    B[V5 Benchmarks\nScenarios / Baselines / Aggregation]
-    E[V5 Experiments\nConfigs / CLI / Manifests]
-    P[Paper Assets\nCSV / LaTeX / Figures / Markdown]
+    C[Core Modules\nDetect / Reweight / Calibrate / Reliability]
+    A[Audit and Subgroup Analysis]
+    S[Selective Prediction]
+    B[Benchmarks]
+    E[Experiments and CLI]
+    P[Plots, Tables, and Paper Assets]
 
-    D --> M
-    M --> A
-    M --> S
+    D --> C
+    C --> A
+    C --> S
     A --> B
     S --> B
-    M --> B
+    C --> B
     B --> E
     E --> P
 ```
 
-## Example benchmark artifacts
+## Repository map
 
-Covariate-shift calibration sweep:
+| Path | What lives there |
+| --- | --- |
+| [src/shiftstat](src/shiftstat) | Typed library code for detection, metrics, reweighting, calibration, reliability, subgroup analysis, selective prediction, benchmarks, experiments, plotting, and reports |
+| [docs](docs/index.md) | MkDocs documentation, theory notes, workflow guides, API reference, and case-study material |
+| [examples](examples) | Runnable scripts covering drift detection, weighting, recalibration, subgroup failures, selective deployment, benchmarks, and paper artifact generation |
+| [benchmarks](benchmarks) | Benchmark runners plus JSON and YAML configs for benchmark suites |
+| [paper_assets](paper_assets/README.md) | Reproducible experiment configs, generated tables and figures, and an artifact inventory |
+| [tests](tests) | Regression suite spanning the V1-V5 feature layers |
 
-![Covariate shift delta ECE](paper_assets/generated/publication_suite/paper_covariate_shift/figures/paper_covariate_shift_delta_ece.png)
+## Where to go next
 
-Hidden subgroup failure gap:
+| If you want to... | Start here |
+| --- | --- |
+| Install and get moving | [docs/installation.md](docs/installation.md) and [docs/quickstart.md](docs/quickstart.md) |
+| Understand the scientific motivation | [docs/theory.md](docs/theory.md) and [docs/reliability_theory.md](docs/reliability_theory.md) |
+| Audit hidden subgroup failures | [docs/subgroup.md](docs/subgroup.md), [docs/audit.md](docs/audit.md), and [examples/discover_failure_slices.py](examples/discover_failure_slices.py) |
+| Study abstention and risk-coverage tradeoffs | [docs/selective_prediction.md](docs/selective_prediction.md), [docs/risk_coverage.md](docs/risk_coverage.md), and [examples/abstention_under_shift.py](examples/abstention_under_shift.py) |
+| Run repeated-seed benchmarks | [docs/benchmarking.md](docs/benchmarking.md) and [examples/benchmark_covariate_sweep.py](examples/benchmark_covariate_sweep.py) |
+| Use config-driven experiments | [docs/experiment_configuration.md](docs/experiment_configuration.md) and [paper_assets/configs](paper_assets/configs) |
+| Build figures and tables for a paper | [docs/paper_artifacts.md](docs/paper_artifacts.md), [docs/publication_workflow.md](docs/publication_workflow.md), and [paper_assets/inventory.md](paper_assets/inventory.md) |
+| Contribute to the codebase | [CONTRIBUTING.md](CONTRIBUTING.md), [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md), and [mkdocs.yml](mkdocs.yml) |
 
-![Worst-group accuracy gap](paper_assets/generated/publication_suite/paper_subgroup_failures/figures/paper_subgroup_failures_worst_group_accuracy_gap.png)
+## Development
 
-## Documentation
+```bash
+pip install -e .[dev,docs,examples]
+pytest
+ruff check .
+mypy src
+mkdocs build
+```
 
-Documentation lives in [docs/](docs/index.md) and includes:
+On Windows PowerShell, activate a virtual environment with:
 
-- methodological guides for subgroup auditing and selective prediction
-- V5 guides for benchmarking, experiment configuration, reproducibility, and publication workflows
-- API reference pages for `bench` and `experiments`
-- runnable examples and case studies
+```powershell
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+pip install -e .[dev,docs,examples]
+```
 
-## Paper assets
+## Project status
 
-The repository now includes reproducible configs and generated benchmark outputs in [paper_assets/](paper_assets/README.md). The artifact map is documented in [paper_assets/inventory.md](paper_assets/inventory.md).
+ShiftStat `0.5.0` is the V5 release. It adds the benchmark framework, config-driven experiments, publication-friendly exports, and repository-level paper assets on top of the earlier detection, weighting, calibration, subgroup-auditing, and selective-prediction layers.
 
-## Status
+Uncertainty intervals, multiclass benchmarking, and richer appendix automation are intentionally still deferred.
 
-ShiftStat V5 adds a serious benchmark and experiment layer while keeping the project focused on statistical reliability under shift rather than generic MLOps. Multiclass benchmarking, uncertainty intervals, and richer appendix automation remain intentionally deferred.
+## Citation and license
+
+ShiftStat is released under the BSD 3-Clause License. If you use it in scientific work, please cite the software record in [CITATION.cff](CITATION.cff). Release history lives in [CHANGELOG.md](CHANGELOG.md).
