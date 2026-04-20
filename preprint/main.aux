@@ -3,81 +3,107 @@
 \providecommand\HyField@AuxAddToFields[1]{}
 \providecommand\HyField@AuxAddToCoFields[2]{}
 \@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}\protected@file@percent }
-\citation{Sugiyama2007IWCV,Park2020CalibratedShift}
-\@writefile{toc}{\contentsline {section}{\numberline {2}Problem Setting}{3}{section.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Source and target distributions}{3}{subsection.2.1}\protected@file@percent }
-\newlabel{ass:covshift}{{1}{3}{Covariate shift}{assumption.1}{}}
-\newlabel{ass:covshift@cref}{{[assumption][1][]1}{[1][3][]3}{}{}{}}
-\newlabel{ass:overlap}{{2}{3}{Overlap}{assumption.2}{}}
-\newlabel{ass:overlap@cref}{{[assumption][2][]2}{[1][3][]3}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Groups, bins, and moment-based reliability}{3}{subsection.2.2}\protected@file@percent }
-\newlabel{eq:theta-def}{{2.1}{4}{Groups, bins, and moment-based reliability}{equation.2.1}{}}
-\newlabel{eq:theta-def@cref}{{[equation][1][2]2.1}{[1][3][]4}{}{}{}}
-\newlabel{eq:cal-def}{{2.2}{4}{Groupwise binned reliability}{equation.2.2}{}}
-\newlabel{eq:cal-def@cref}{{[equation][2][2]2.2}{[1][4][]4}{}{}{}}
-\newlabel{eq:wce-def}{{2.3}{4}{Groups, bins, and moment-based reliability}{equation.2.3}{}}
-\newlabel{eq:wce-def@cref}{{[equation][3][2]2.3}{[1][4][]4}{}{}{}}
-\newlabel{eq:hfg-def}{{2.4}{4}{Hidden-failure gap}{equation.2.4}{}}
-\newlabel{eq:hfg-def@cref}{{[equation][4][2]2.4}{[1][4][]4}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Weighted estimators}{4}{subsection.2.3}\protected@file@percent }
-\newlabel{eq:theta-hat}{{2.5}{4}{Weighted estimators}{equation.2.5}{}}
-\newlabel{eq:theta-hat@cref}{{[equation][5][2]2.5}{[1][4][]4}{}{}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {3}Theory}{5}{section.3}\protected@file@percent }
-\newlabel{sec:theory}{{3}{5}{Theory}{section.3}{}}
-\newlabel{sec:theory@cref}{{[section][3][]3}{[1][5][]5}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Exact transport under covariate shift}{5}{subsection.3.1}\protected@file@percent }
-\newlabel{prop:transport}{{1}{5}{Transport identity}{proposition.1}{}}
-\newlabel{prop:transport@cref}{{[proposition][1][]1}{[1][5][]5}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Uniform estimation over bins and groups}{5}{subsection.3.2}\protected@file@percent }
-\newlabel{ass:bounded}{{3}{5}{Bounded scores and weights}{assumption.3}{}}
-\newlabel{ass:bounded@cref}{{[assumption][3][]3}{[1][5][]5}{}{}{}}
-\newlabel{thm:uniform}{{1}{5}{Uniform control of weighted subgroup residuals}{theorem.1}{}}
-\newlabel{thm:uniform@cref}{{[theorem][1][]1}{[1][5][]5}{}{}{}}
-\newlabel{eq:uniform-bound}{{3.1}{5}{Uniform control of weighted subgroup residuals}{equation.3.1}{}}
-\newlabel{eq:uniform-bound@cref}{{[equation][1][3]3.1}{[1][5][]5}{}{}{}}
-\newlabel{cor:wce}{{1}{6}{Worst-group reliability estimation}{corollary.1}{}}
-\newlabel{cor:wce@cref}{{[corollary][1][]1}{[1][6][]6}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Why aggregate reliability can be non-diagnostic}{6}{subsection.3.3}\protected@file@percent }
-\newlabel{prop:hidden}{{2}{6}{Hidden failures can be invisible in aggregate}{proposition.2}{}}
-\newlabel{prop:hidden@cref}{{[proposition][2][]2}{[1][6][]6}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.1}Main Results}{3}{subsection.1.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Result 1: target subgroup-bin reliability is transported by importance weighting.}{3}{section*.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Result 2: subgroup-bin variance is governed by local effective sample size.}{3}{section*.2}\protected@file@percent }
+\citation{Sugiyama2007IWCV,Polo2022ESS}
+\@writefile{toc}{\contentsline {paragraph}{Result 3: false worst-group alarms are controlled by the minimum local ESS, not by global ESS alone.}{4}{section*.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Result 4: global ESS can be badly misleading.}{4}{section*.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Result 5: experiments show both sides of the problem.}{4}{section*.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {2}Problem Setting}{4}{section.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Source data, target data, and covariate shift}{4}{subsection.2.1}\protected@file@percent }
+\newlabel{ass:covshift}{{1}{4}{Covariate shift}{assumption.1}{}}
+\newlabel{ass:covshift@cref}{{[assumption][1][]1}{[1][4][]4}{}{}{}}
+\newlabel{ass:overlap}{{2}{4}{Overlap}{assumption.2}{}}
+\newlabel{ass:overlap@cref}{{[assumption][2][]2}{[1][4][]4}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Groups, bins, and cell-level reliability}{5}{subsection.2.2}\protected@file@percent }
+\newlabel{eq:mu-def}{{2.1}{5}{Groups, bins, and cell-level reliability}{equation.2.1}{}}
+\newlabel{eq:mu-def@cref}{{[equation][1][2]2.1}{[1][5][]5}{}{}{}}
+\newlabel{eq:theta-def}{{2.2}{5}{Groups, bins, and cell-level reliability}{equation.2.2}{}}
+\newlabel{eq:theta-def@cref}{{[equation][2][2]2.2}{[1][5][]5}{}{}{}}
+\newlabel{eq:r-def}{{2.3}{5}{Groups, bins, and cell-level reliability}{equation.2.3}{}}
+\newlabel{eq:r-def@cref}{{[equation][3][2]2.3}{[1][5][]5}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Worst-group reliability and hidden failures}{6}{subsection.2.3}\protected@file@percent }
+\newlabel{eq:cal-def}{{2.4}{6}{Worst-group reliability and hidden failures}{equation.2.4}{}}
+\newlabel{eq:cal-def@cref}{{[equation][4][2]2.4}{[1][5][]6}{}{}{}}
+\newlabel{eq:wce-def}{{2.5}{6}{Worst-group reliability and hidden failures}{equation.2.5}{}}
+\newlabel{eq:wce-def@cref}{{[equation][5][2]2.5}{[1][6][]6}{}{}{}}
+\newlabel{eq:hfg-def}{{2.6}{6}{Worst-group reliability and hidden failures}{equation.2.6}{}}
+\newlabel{eq:hfg-def@cref}{{[equation][6][2]2.6}{[1][6][]6}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4}Weighted estimators and local effective sample size}{6}{subsection.2.4}\protected@file@percent }
+\newlabel{eq:muhat-def}{{2.7}{6}{Weighted estimators and local effective sample size}{equation.2.7}{}}
+\newlabel{eq:muhat-def@cref}{{[equation][7][2]2.7}{[1][6][]6}{}{}{}}
+\newlabel{eq:thetahat-def}{{2.8}{6}{Weighted estimators and local effective sample size}{equation.2.8}{}}
+\newlabel{eq:thetahat-def@cref}{{[equation][8][2]2.8}{[1][6][]6}{}{}{}}
+\newlabel{eq:rhat-def}{{2.9}{6}{Weighted estimators and local effective sample size}{equation.2.9}{}}
+\newlabel{eq:rhat-def@cref}{{[equation][9][2]2.9}{[1][6][]6}{}{}{}}
+\newlabel{eq:local-ess-def}{{2.10}{6}{Weighted estimators and local effective sample size}{equation.2.10}{}}
+\newlabel{eq:local-ess-def@cref}{{[equation][10][2]2.10}{[1][6][]6}{}{}{}}
+\newlabel{eq:global-ess-def}{{2.11}{7}{Weighted estimators and local effective sample size}{equation.2.11}{}}
+\newlabel{eq:global-ess-def@cref}{{[equation][11][2]2.11}{[1][6][]7}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3}Theory}{7}{section.3}\protected@file@percent }
+\newlabel{sec:theory}{{3}{7}{Theory}{section.3}{}}
+\newlabel{sec:theory@cref}{{[section][3][]3}{[1][7][]7}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Transport of subgroup-bin reliability}{7}{subsection.3.1}\protected@file@percent }
+\newlabel{prop:transport}{{1}{7}{Transport identity for subgroup-bin reliability}{proposition.1}{}}
+\newlabel{prop:transport@cref}{{[proposition][1][]1}{[1][7][]7}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Local ESS is the correct variance scale}{7}{subsection.3.2}\protected@file@percent }
+\newlabel{ass:variance}{{3}{8}{Bounded conditional residual variance}{assumption.3}{}}
+\newlabel{ass:variance@cref}{{[assumption][3][]3}{[1][7][]8}{}{}{}}
+\newlabel{thm:local-ess}{{1}{8}{Local ESS governs subgroup-bin variance}{theorem.1}{}}
+\newlabel{thm:local-ess@cref}{{[theorem][1][]1}{[1][8][]8}{}{}{}}
+\newlabel{eq:local-variance}{{3.1}{8}{Local ESS governs subgroup-bin variance}{equation.3.1}{}}
+\newlabel{eq:local-variance@cref}{{[equation][1][3]3.1}{[1][8][]8}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}False worst-group alarms under clean covariate shift}{8}{subsection.3.3}\protected@file@percent }
+\newlabel{cor:false-alarm}{{1}{8}{False-alarm bound for worst-group audits}{corollary.1}{}}
+\newlabel{cor:false-alarm@cref}{{[corollary][1][]1}{[1][8][]8}{}{}{}}
+\newlabel{eq:false-alarm-bound}{{3.2}{8}{False-alarm bound for worst-group audits}{equation.3.2}{}}
+\newlabel{eq:false-alarm-bound@cref}{{[equation][2][3]3.2}{[1][8][]8}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Why global ESS can be non-diagnostic}{9}{subsection.3.4}\protected@file@percent }
+\newlabel{prop:global-misleading}{{2}{9}{Global ESS can remain large while one audited cell degenerates}{proposition.2}{}}
+\newlabel{prop:global-misleading@cref}{{[proposition][2][]2}{[1][9][]9}{}{}{}}
+\newlabel{eq:global-counterexample}{{3.3}{9}{Global ESS can remain large while one audited cell degenerates}{equation.3.3}{}}
+\newlabel{eq:global-counterexample@cref}{{[equation][3][3]3.3}{[1][9][]9}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.5}Real hidden failures still matter}{9}{subsection.3.5}\protected@file@percent }
+\newlabel{prop:hidden}{{3}{9}{Aggregate calibration can hide genuine subgroup failure}{proposition.3}{}}
+\newlabel{prop:hidden@cref}{{[proposition][3][]3}{[1][9][]9}{}{}{}}
 \citation{Geifman2017Selective,Jones2020SelectiveDisparities}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Selective deployment as a transported subgroup problem}{7}{subsection.3.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {4}Preliminary Experiments}{7}{section.4}\protected@file@percent }
-\newlabel{sec:experiments}{{4}{7}{Preliminary Experiments}{section.4}{}}
-\newlabel{sec:experiments@cref}{{[section][4][]4}{[1][7][]7}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Experimental protocol}{7}{subsection.4.1}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Preliminary benchmark summary extracted from the committed publication suite. These numbers are not the final experimental campaign; they are the current strongest evidence already present in the repository.}}{8}{table.caption.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.6}Estimated weights and selective deployment}{10}{subsection.3.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4}Experiments}{10}{section.4}\protected@file@percent }
+\newlabel{sec:experiments}{{4}{10}{Experiments}{section.4}{}}
+\newlabel{sec:experiments@cref}{{[section][4][]4}{[1][10][]10}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Experiment 1: false alarms under pure covariate shift}{10}{subsection.4.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Main local-ESS experiment. The model is calibrated by construction, so the true worst-group error is zero. Reported worst-group values are therefore false alarms created by weighted noise.}}{11}{table.caption.7}\protected@file@percent }
 \providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
-\newlabel{tab:pilot-summary}{{1}{8}{Preliminary benchmark summary extracted from the committed publication suite. These numbers are not the final experimental campaign; they are the current strongest evidence already present in the repository}{table.caption.1}{}}
-\newlabel{tab:pilot-summary@cref}{{[table][1][]1}{[1][7][]8}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Key empirical patterns}{8}{subsection.4.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Effective sample size degrades as shift severity increases.}{8}{section*.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Aggregate target error can look moderate while worst-group gaps are large.}{8}{section*.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Selective policies improve accepted-set averages but require subgroup-aware interpretation.}{8}{section*.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}How the final paper should extend these experiments}{8}{subsection.4.3}\protected@file@percent }
-\newlabel{fig:covariate-ece}{{1a}{9}{Calibration change across covariate-shift severity}{figure.caption.5}{}}
-\newlabel{fig:covariate-ece@cref}{{[subfigure][1][1]1a}{[1][8][]9}{}{}{}}
-\newlabel{sub@fig:covariate-ece}{{a}{9}{Calibration change across covariate-shift severity}{figure.caption.5}{}}
-\newlabel{sub@fig:covariate-ece@cref}{{[subfigure][1][1]1a}{[1][8][]9}{}{}{}}
-\newlabel{fig:subgroup-ece}{{1b}{9}{Worst-group calibration gap in hidden-failure scenarios}{figure.caption.5}{}}
-\newlabel{fig:subgroup-ece@cref}{{[subfigure][2][1]1b}{[1][8][]9}{}{}{}}
-\newlabel{sub@fig:subgroup-ece}{{b}{9}{Worst-group calibration gap in hidden-failure scenarios}{figure.caption.5}{}}
-\newlabel{sub@fig:subgroup-ece@cref}{{[subfigure][2][1]1b}{[1][8][]9}{}{}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Two pilot figures from the repository's benchmark suite. The left panel shows how a calibration-oriented metric changes as shift severity increases. The right panel shows that worst-group ECE gaps stay large in subgroup-failure scenarios.}}{9}{figure.caption.5}\protected@file@percent }
-\newlabel{fig:pilot-main}{{1}{9}{Two pilot figures from the repository's benchmark suite. The left panel shows how a calibration-oriented metric changes as shift severity increases. The right panel shows that worst-group ECE gaps stay large in subgroup-failure scenarios}{figure.caption.5}{}}
-\newlabel{fig:pilot-main@cref}{{[figure][1][]1}{[1][8][]9}{}{}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Target risk reduction in the selective-shift benchmark. Even when abstention improves average accepted-set risk, it should still be read together with subgroup rejection behavior and accepted-set calibration.}}{9}{figure.caption.6}\protected@file@percent }
-\newlabel{fig:selective-risk}{{2}{9}{Target risk reduction in the selective-shift benchmark. Even when abstention improves average accepted-set risk, it should still be read together with subgroup rejection behavior and accepted-set calibration}{figure.caption.6}{}}
-\newlabel{fig:selective-risk@cref}{{[figure][2][]2}{[1][8][]9}{}{}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {5}Discussion}{9}{section.5}\protected@file@percent }
+\newlabel{tab:local-ess-main}{{1}{11}{Main local-ESS experiment. The model is calibrated by construction, so the true worst-group error is zero. Reported worst-group values are therefore false alarms created by weighted noise}{table.caption.7}{}}
+\newlabel{tab:local-ess-main@cref}{{[table][1][]1}{[1][11][]11}{}{}{}}
+\@writefile{toc}{\contentsline {paragraph}{Results at a glance.}{11}{section*.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Local ESS predicts subgroup-bin noise more directly than global ESS.}{11}{section*.8}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Why the experiment matters.}{11}{section*.10}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Left: global ESS declines with shift severity, but the lower tail of local ESS collapses much faster. Right: false worst-group alarms become common as shift grows, even though the model is calibrated by construction. Logistic density-ratio weights show the same qualitative pattern.}}{12}{figure.caption.9}\protected@file@percent }
+\newlabel{fig:local-ess-main}{{1}{12}{Left: global ESS declines with shift severity, but the lower tail of local ESS collapses much faster. Right: false worst-group alarms become common as shift grows, even though the model is calibrated by construction. Logistic density-ratio weights show the same qualitative pattern}{figure.caption.9}{}}
+\newlabel{fig:local-ess-main@cref}{{[figure][1][]1}{[1][11][]12}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Worst-group ECE gap in the repository's subgroup-degradation benchmark suite. These are genuine hidden failures, not false alarms.}}{12}{figure.caption.11}\protected@file@percent }
+\newlabel{fig:hidden-failures}{{2}{12}{Worst-group ECE gap in the repository's subgroup-degradation benchmark suite. These are genuine hidden failures, not false alarms}{figure.caption.11}{}}
+\newlabel{fig:hidden-failures@cref}{{[figure][2][]2}{[1][12][]12}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Experiment 2: real hidden failures still occur}{12}{subsection.4.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Interpretation.}{12}{section*.12}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Reproducibility}{13}{subsection.4.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5}Discussion}{13}{section.5}\protected@file@percent }
+\citation{Yang2024DRCalibration,Wu2024MCOOD}
 \bibstyle{plainnat}
 \bibdata{refs}
 \bibcite{Geifman2017Selective}{{1}{2017}{{Geifman and El-Yaniv}}{{}}}
 \bibcite{Jones2020SelectiveDisparities}{{2}{2020}{{Jones et~al.}}{{Jones, Sagawa, Koh, Kumar, and Liang}}}
-\bibcite{Park2020CalibratedShift}{{3}{2020}{{Park et~al.}}{{Park, Bastani, Weimer, and Lee}}}
+\bibcite{Polo2022ESS}{{3}{2023}{{Polo and Vicente}}{{}}}
 \bibcite{Sugiyama2007IWCV}{{4}{2007}{{Sugiyama et~al.}}{{Sugiyama, Krauledat, and M{\"u}ller}}}
-\@writefile{toc}{\contentsline {section}{\numberline {A}Appendix}{11}{appendix.A}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.1}Proof of \cref  {prop:transport}}{11}{subsection.A.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.2}Further explanation of the hidden-failure construction}{11}{subsection.A.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.3}Experimental provenance}{11}{subsection.A.3}\protected@file@percent }
-\gdef \@abspage@last{12}
+\bibcite{Wu2024MCOOD}{{5}{2024}{{Wu et~al.}}{{Wu, Liu, Cui, and Wu}}}
+\bibcite{Yang2024DRCalibration}{{6}{2024}{{Yang et~al.}}{{Yang, Kuchibhotla, and Tchetgen~Tchetgen}}}
+\@writefile{toc}{\contentsline {section}{\numberline {A}Appendix}{15}{appendix.A}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.1}Proof of \cref  {prop:transport}}{15}{subsection.A.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.2}Proof of \cref  {thm:local-ess}}{15}{subsection.A.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.3}Proof of \cref  {cor:false-alarm}}{16}{subsection.A.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.4}Further explanation of \cref  {prop:global-misleading}}{16}{subsection.A.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.5}Further explanation of \cref  {prop:hidden}}{17}{subsection.A.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.6}Experimental provenance}{17}{subsection.A.6}\protected@file@percent }
+\gdef \@abspage@last{17}

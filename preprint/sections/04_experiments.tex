@@ -1,88 +1,81 @@
-\section{Preliminary Experiments}\label{sec:experiments}
+\section{Experiments}\label{sec:experiments}
 
-\subsection{Experimental protocol}
-
-The current draft uses the repository's existing synthetic benchmark suite as a controlled pilot study. The runs are generated from \path{paper_assets/configs/publication_suite.yaml} and cover three scenario families:
-
+The experiments follow the paper's two-sided claim.
 \begin{itemize}
-  \item \textbf{Covariate-shift sweep}: varying shift severity in a binary tabular classification task.
-  \item \textbf{Subgroup degradation}: hidden failure modes concentrated in minority or masked subgroups.
-  \item \textbf{Selective shift}: abstention-based deployment policies under increasing shift.
+  \item First, even under pure covariate shift, worst-group audits can create false subgroup alarms when local weighted support collapses.
+  \item Second, real hidden subgroup failures still exist, so the right response is not to stop auditing subgroups but to audit them with local overlap diagnostics.
 \end{itemize}
 
-Each scenario currently uses only two seeds in the committed artifact suite, so the results below are best read as a serious pilot rather than a final statistical study. They are still useful because they match the main objects of the theory: effective sample size, target calibration, worst-group gaps, and selective risk.
+\subsection{Experiment 1: false alarms under pure covariate shift}
 
-To make the scenarios concrete:
+The main experimental study is new and is saved in \path{preprint/research/local_ess_study.py}.
+It uses \path{src/shiftstat/datasets/synthetic.py} and intentionally chooses the cleanest possible setting: the data are generated under pure covariate shift, and the prediction score is the true conditional probability. In other words,
+\[
+Y\given X \sim \mathrm{Bernoulli}(\score(X))
+\]
+under both source and target. The model is therefore calibrated by construction.
+
+This design removes the usual ambiguity. If a worst-group audit reports a large subgroup-bin calibration gap in this experiment, that is a false alarm caused by weighted finite-sample noise.
+
+The audit family is intentionally richer than a single pre-specified slice. We use:
 \begin{itemize}
-  \item in the covariate-shift sweep, the same prediction task is kept fixed while the target covariates are moved farther away from the source covariates;
-  \item in the subgroup benchmarks, failure is concentrated in one subgroup even when overall metrics remain moderate;
-  \item in the selective benchmark, the model may reject low-confidence examples and we measure the risk on the accepted set.
+  \item threshold groups based on \(x_0,x_1,x_2\);
+  \item negative-tail and positive-tail slices;
+  \item pairwise positive-tail intersections;
+  \item seven score bins.
 \end{itemize}
 
-\subsection{Key empirical patterns}
+We run the study in two modes:
+\begin{itemize}
+  \item \textbf{Oracle weights:} exact density-ratio weights from the Gaussian covariate-shift generator, over \(200\) random seeds.
+  \item \textbf{Learned weights:} logistic density-ratio estimation through the library's \texttt{ImportanceWeighter}, over \(50\) random seeds at the middle shift severities.
+\end{itemize}
+
+The main empirical result is simple: as shift grows, lower-tail local ESS collapses much faster than global ESS, and false worst-group alarms become common even though the true worst-group error is zero.
 
 \begin{table}[t]
 \centering
-\caption{Preliminary benchmark summary extracted from the committed publication suite. These numbers are not the final experimental campaign; they are the current strongest evidence already present in the repository.}
-\label{tab:pilot-summary}
-\begin{tabular}{p{0.29\linewidth}p{0.17\linewidth}p{0.46\linewidth}}
+\caption{Main local-ESS experiment. The model is calibrated by construction, so the true worst-group error is zero. Reported worst-group values are therefore false alarms created by weighted noise.}
+\label{tab:local-ess-main}
+\begin{tabular}{p{0.12\linewidth}p{0.11\linewidth}p{0.14\linewidth}p{0.14\linewidth}p{0.15\linewidth}p{0.14\linewidth}p{0.14\linewidth}}
 \toprule
-Scenario & Setting & Observation \\
+Weights & Shift & Median global ESS & Median lower-tail local ESS & Median false worst-group error & False-alarm rate $>0.05$ & False-alarm rate $>0.10$ \\
 \midrule
-Covariate shift & severity $0.20$ & effective sample size $\approx 179.8$; raw target ECE $\approx 0.075$; recalibrated target ECE $\approx 0.064$ \\
-Covariate shift & severity $1.40$ & effective sample size $\approx 60.9$; raw target ECE $\approx 0.064$; recalibrated target ECE $\approx 0.057$ \\
-Masked subgroup shift & audit baseline & worst-group accuracy gap $\approx 0.137$; worst-group ECE gap $\approx 0.182$ \\
-Minority subgroup degradation & audit baseline & worst-group accuracy gap $\approx 0.140$; worst-group ECE gap $\approx 0.217$ \\
-Selective shift & severity $0.40$ & weighted confidence abstention keeps coverage $\approx 0.707$ with target risk reduction $\approx 0.079$ and selective ECE $\approx 0.070$ \\
-Selective shift & severity $1.00$ & weighted confidence abstention keeps coverage $\approx 0.759$ with target risk reduction $\approx 0.061$ and selective ECE $\approx 0.084$ \\
+Oracle & $0.4$ & $312.0$ & $2.76$ & $0.040$ & $0.19$ & $0.00$ \\
+Oracle & $0.8$ & $94.7$ & $1.44$ & $0.070$ & $0.80$ & $0.14$ \\
+Oracle & $1.2$ & $27.2$ & $1.05$ & $0.110$ & $0.89$ & $0.55$ \\
+Oracle & $1.6$ & $10.9$ & $1.00$ & $0.138$ & $0.89$ & $0.69$ \\
+Logistic & $0.8$ & $103.0$ & $1.38$ & $0.071$ & $0.82$ & $0.06$ \\
+Logistic & $1.2$ & $50.2$ & $1.00$ & $0.099$ & $0.92$ & $0.48$ \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\paragraph{Effective sample size degrades as shift severity increases.}
-The covariate-shift benchmark exhibits a clear collapse in effective sample size, from roughly $180$ at severity $0.20$ to roughly $61$ at severity $1.40$. This matches \cref{thm:uniform}: even if weighted transport is valid in principle, the estimation problem becomes harder when a few source points carry most of the weight.
-
-\paragraph{Aggregate target error can look moderate while worst-group gaps are large.}
-In the hidden subgroup scenarios, the subgroup-audit baseline reports worst-group ECE gaps of about $0.182$ and $0.217$, together with worst-group accuracy gaps around $0.14$. In simple terms, the average target metric looks much better than the worst affected subgroup. This is exactly the hidden-failure phenomenon formalized earlier.
-
-\paragraph{Selective policies improve accepted-set averages but require subgroup-aware interpretation.}
-In the selective-shift pilot, weighted and recalibrated abstention policies retain roughly $71\%$ to $76\%$ coverage while reducing target selective risk. The weighted policy also achieves better accepted-set calibration than the recalibrated confidence baseline at both severities in the committed suite. The lesson is simple: abstention can help, but it should still be evaluated with subgroup-aware target metrics.
+The saved study also reports correlation diagnostics. Under oracle weights, the pooled correlation between \(\log(1+{\ess}_{b,g})\) and the absolute subgroup-bin normalized gap is about \(-0.49\), whereas the corresponding pooled correlation for global ESS is only about \(-0.30\). Within each fixed shift level, lower-tail local ESS also predicts worst-group noise more strongly than global ESS. This is the empirical analogue of \cref{cor:false-alarm}.
 
 \begin{figure}[t]
 \centering
-\begin{subfigure}{0.48\linewidth}
-  \centering
-  \includegraphics[width=\linewidth]{../paper_assets/generated/publication_suite/paper_covariate_shift/figures/paper_covariate_shift_delta_ece.png}
-  \caption{Calibration change across covariate-shift severity.}
-  \label{fig:covariate-ece}
-\end{subfigure}
-\hfill
-\begin{subfigure}{0.48\linewidth}
-  \centering
-  \includegraphics[width=\linewidth]{../paper_assets/generated/publication_suite/paper_subgroup_failures/figures/paper_subgroup_failures_worst_group_ece_gap.png}
-  \caption{Worst-group calibration gap in hidden-failure scenarios.}
-  \label{fig:subgroup-ece}
-\end{subfigure}
-\caption{Two pilot figures from the repository's benchmark suite. The left panel shows how a calibration-oriented metric changes as shift severity increases. The right panel shows that worst-group ECE gaps stay large in subgroup-failure scenarios.}
-\label{fig:pilot-main}
+\includegraphics[width=0.9\linewidth]{figures/local_ess_main.png}
+\caption{Left: global ESS declines with shift severity, but the lower tail of local ESS collapses much faster. Right: false worst-group alarms become common as shift grows, even though the model is calibrated by construction. Logistic density-ratio weights show the same qualitative pattern.}
+\label{fig:local-ess-main}
 \end{figure}
 
-\begin{figure}[t]
-\centering
-\includegraphics[width=0.66\linewidth]{../paper_assets/generated/publication_suite/paper_selective_shift/figures/paper_selective_shift_target_risk_reduction.png}
-\caption{Target risk reduction in the selective-shift benchmark. Even when abstention improves average accepted-set risk, it should still be read together with subgroup rejection behavior and accepted-set calibration.}
-\label{fig:selective-risk}
-\end{figure}
+Since there is no true subgroup miscalibration in the data-generating process, the only reason for a large worst-group estimate is statistical instability. The experiment therefore makes the false-alarm mechanism directly visible.
 
-\subsection{How the final paper should extend these experiments}
+\subsection{Experiment 2: real hidden failures still occur}
 
-The current pilot is enough to support the theoretical framing, but not enough for a finished preprint. The final experimental section should strengthen the manuscript in four ways:
+The local-ESS study explains false alarms. It does not remove the need for subgroup auditing. To show that, we keep the repository's subgroup-degradation benchmarks as a second experiment.
 
-\begin{enumerate}
-  \item increase the number of seeds so uncertainty intervals become meaningful;
-  \item add ablations on density-ratio quality and explicit overlap violation;
-  \item vary subgroup family complexity, from single features to intersectional slices;
-  \item include at least one non-synthetic or semi-real tabular benchmark where subgroup prevalence shift is operationally plausible.
-\end{enumerate}
+These scenarios come from \path{src/shiftstat/datasets/audit_synthetic.py}. Here the target process is changed in a subgroup-specific way, so the subgroup failures are real rather than noise-driven. Two representative cases are:
+\begin{itemize}
+  \item \textbf{Masked subgroup shift:} worst-group ECE gap \(\approx 0.182\).
+  \item \textbf{Minority subgroup degradation:} worst-group ECE gap \(\approx 0.217\).
+\end{itemize}
 
-These extensions would turn the current manuscript from a strong theory draft with executable evidence into a much more convincing empirical paper.
+Taken together, the two experiments say exactly what the theory says.
+\begin{itemize}
+  \item Worst-group auditing is necessary because aggregate metrics can hide real subgroup failures.
+  \item Worst-group auditing is not self-authenticating because local overlap collapse can also create false subgroup alarms.
+\end{itemize}
+
+The practical implication is therefore simple: whenever a worst-group audit is reported under covariate shift, the report should also include local support diagnostics such as subgroup-bin effective sample sizes or lower-tail summaries of those quantities.

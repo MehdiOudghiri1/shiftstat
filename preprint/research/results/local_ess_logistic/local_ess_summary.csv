@@ -1,0 +1,3 @@
+weight_mode,shift_strength,median_global_ess,median_q10_local_ess,median_local_ess,median_worst_group_noise,p90_worst_group_noise,false_alarm_rate_005,false_alarm_rate_010
+logistic,0.8,102.99370637519621,1.3829580028111,5.964485878232756,0.07096459329889812,0.09757500807426157,0.82,0.06
+logistic,1.2,50.1902482394597,1.0,3.639571887420094,0.09920929732263262,0.14226244851628797,0.92,0.48

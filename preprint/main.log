@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.4.2)  17 APR 2026 16:28
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.4.2)  20 APR 2026 14:20
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -792,84 +792,109 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 
-(sections/00_abstract.tex) (sections/01_intro.tex
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10.95> on input line 7.
- [1
+(sections/00_abstract.tex) (sections/01_intro.tex [1
 
 {C:/Users/medhi.oudghiri/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/U
 sers/medhi.oudghiri/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-ec.enc}
-{C:/Users/medhi.oudghiri/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-ma
-thit.enc}{C:/Users/medhi.oudghiri/AppData/Local/Programs/MiKTeX/fonts/enc/dvips
-/lm/lm-mathsy.enc}{C:/Users/medhi.oudghiri/AppData/Local/Programs/MiKTeX/fonts/
-enc/dvips/lm/lm-rm.enc}])
-(sections/02_setting.tex [2{C:/Users/medhi.oudghiri/AppData/Local/Programs/MiKT
-eX/fonts/enc/dvips/lm/lm-mathex.enc}] [3] [4]) (sections/03_theory.tex [5]
-[6]) (sections/04_experiments.tex
-LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 8
-.
+]
+LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 1
+1.
 
 (C:\Users\medhi.oudghiri\AppData\Local\Programs\MiKTeX\tex/latex/lm\ts1lmr.fd
 File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
-[7{C:/Users/medhi.oudghiri/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-
-ts1.enc}]
-<../paper_assets/generated/publication_suite/paper_covariate_shift/figures/pape
-r_covariate_shift_delta_ece.png, id=176, 534.141pt x 297.9495pt>
-File: ../paper_assets/generated/publication_suite/paper_covariate_shift/figures
-/paper_covariate_shift_delta_ece.png Graphic file (type png)
-<use ../paper_assets/generated/publication_suite/paper_covariate_shift/figures/
-paper_covariate_shift_delta_ece.png>
-Package pdftex.def Info: ../paper_assets/generated/publication_suite/paper_cova
-riate_shift/figures/paper_covariate_shift_delta_ece.png  used on input line 55.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <10.95> on input line 17.
 
-(pdftex.def)             Requested size: 225.4804pt x 125.77441pt.
+[2{C:/Users/medhi.oudghiri/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-
+ts1.enc}{C:/Users/medhi.oudghiri/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/
+lm/lm-mathit.enc}{C:/Users/medhi.oudghiri/AppData/Local/Programs/MiKTeX/fonts/e
+nc/dvips/lm/lm-mathsy.enc}{C:/Users/medhi.oudghiri/AppData/Local/Programs/MiKTe
+X/fonts/enc/dvips/lm/lm-rm.enc}{C:/Users/medhi.oudghiri/AppData/Local/Programs/
+MiKTeX/fonts/enc/dvips/lm/lm-mathex.enc}] [3]) (sections/02_setting.tex
+[4] [5] [6]) (sections/03_theory.tex [7] [8] [9]) (sections/04_experiments.tex
+[10]
+Underfull \hbox (badness 10000) in paragraph at lines 46--46
+[]|\T1/lmr/m/n/10.95 (+20) Median false
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 46--46
+\T1/lmr/m/n/10.95 (+20) worst-group
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 46--46
+[]|\T1/lmr/m/n/10.95 (+20) False-alarm
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 46--47
+[]|\T1/lmr/m/n/10.95 (+20) False-alarm
+ []
+
+
+Overfull \hbox (55.80862pt too wide) in paragraph at lines 44--56
+ [][] 
+ []
+
+<figures/local_ess_main.png, id=230, 742.7385pt x 294.336pt>
+File: figures/local_ess_main.png Graphic file (type png)
+<use figures/local_ess_main.png>
+Package pdftex.def Info: figures/local_ess_main.png  used on input line 63.
+(pdftex.def)             Requested size: 422.77664pt x 167.5397pt.
+[11]
 <../paper_assets/generated/publication_suite/paper_subgroup_failures/figures/pa
-per_subgroup_failures_worst_group_ece_gap.png, id=178, 534.141pt x 297.621pt>
+per_subgroup_failures_worst_group_ece_gap.png, id=240, 534.141pt x 297.621pt>
 File: ../paper_assets/generated/publication_suite/paper_subgroup_failures/figur
 es/paper_subgroup_failures_worst_group_ece_gap.png Graphic file (type png)
 <use ../paper_assets/generated/publication_suite/paper_subgroup_failures/figure
 s/paper_subgroup_failures_worst_group_ece_gap.png>
 Package pdftex.def Info: ../paper_assets/generated/publication_suite/paper_subg
 roup_failures/figures/paper_subgroup_failures_worst_group_ece_gap.png  used on 
-input line 62.
-(pdftex.def)             Requested size: 225.4804pt x 125.63574pt.
-<../paper_assets/generated/publication_suite/paper_selective_shift/figures/pape
-r_selective_shift_target_risk_reduction.png, id=179, 534.141pt x 297.9495pt>
-File: ../paper_assets/generated/publication_suite/paper_selective_shift/figures
-/paper_selective_shift_target_risk_reduction.png Graphic file (type png)
-<use ../paper_assets/generated/publication_suite/paper_selective_shift/figures/
-paper_selective_shift_target_risk_reduction.png>
-Package pdftex.def Info: ../paper_assets/generated/publication_suite/paper_sele
-ctive_shift/figures/paper_selective_shift_target_risk_reduction.png  used on in
-put line 72.
-(pdftex.def)             Requested size: 310.04002pt x 172.9472pt.
- [8]) (sections/05_discussion.tex [9 <../paper_assets/generated/publication_sui
-te/paper_covariate_shift/figures/paper_covariate_shift_delta_ece.png> <../paper
-_assets/generated/publication_suite/paper_subgroup_failures/figures/paper_subgr
-oup_failures_worst_group_ece_gap.png> <../paper_assets/generated/publication_su
-ite/paper_selective_shift/figures/paper_selective_shift_target_risk_reduction.p
-ng>]) (main.bbl) (sections/appendix_a.tex
+input line 83.
+(pdftex.def)             Requested size: 291.2458pt x 162.28423pt.
+ [12 <./figures/local_ess_main.png> <../paper_assets/generated/publication_suit
+e/paper_subgroup_failures/figures/paper_subgroup_failures_worst_group_ece_gap.p
+ng>]) (sections/05_discussion.tex [13]) (main.bbl) (sections/appendix_a.tex
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\new@ifnextchar' on input line 3.
 
-[10]) [11] [12] (main.aux)
+[14]
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\new@ifnextchar' on input line 42.
+
+[15]
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\new@ifnextchar' on input line 98.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\new@ifnextchar' on input line 118.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\new@ifnextchar' on input line 131.
+
+[16]) [17] (main.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2025-12-24>
  ***********
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 3D3966C8401E7EF2221A63CB6EAF614D;3842.
+(rerunfilecheck)             Checksum: DE733B5CBAFF37B8C5C9DD8DFAE7C08D;5535.
  ) 
 Here is how much of TeX's memory you used:
- 18357 strings out of 467871
- 312769 string characters out of 5414021
- 782000 words of memory out of 5000000
- 46680 multiletter control sequences out of 15000+600000
- 715556 words of font info for 195 fonts, out of 8000000 for 9000
+ 18396 strings out of 467871
+ 311865 string characters out of 5414021
+ 785000 words of memory out of 5000000
+ 46685 multiletter control sequences out of 15000+600000
+ 716136 words of font info for 200 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 80i,11n,82p,1003b,621s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 80i,11n,82p,1003b,601s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Users/medhi.oudghiri/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/
 lmbx10.pfb><C:/Users/medhi.oudghiri/AppData/Local/Programs/MiKTeX/fonts/type1/p
 ublic/lm/lmbx12.pfb><C:/Users/medhi.oudghiri/AppData/Local/Programs/MiKTeX/font
@@ -887,9 +912,9 @@ pe1/public/lm/lmsy8.pfb><C:/Users/medhi.oudghiri/AppData/Local/Programs/MiKTeX/
 fonts/type1/public/lm/lmtt10.pfb><C:/Users/medhi.oudghiri/AppData/Local/Program
 s/MiKTeX/fonts/type1/public/lm/lmtt12.pfb><C:/Users/medhi.oudghiri/AppData/Loca
 l/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on main.pdf (12 pages, 588638 bytes).
+Output written on main.pdf (17 pages, 578600 bytes).
 PDF statistics:
- 320 PDF objects out of 1000 (max. 8388607)
- 73 named destinations out of 1000 (max. 500000)
- 48296 words of extra memory for PDF output out of 51595 (max. 10000000)
+ 403 PDF objects out of 1000 (max. 8388607)
+ 97 named destinations out of 1000 (max. 500000)
+ 48347 words of extra memory for PDF output out of 51595 (max. 10000000)
 

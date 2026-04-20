@@ -1,0 +1,16 @@
+{
+  "corr_log_local_ess_vs_abs_normalized_gap": -0.4733367290774451,
+  "corr_log_global_ess_vs_abs_normalized_gap": -0.14318037256405555,
+  "corr_log_q10_local_ess_vs_worst_group_noise": -0.5778990470823469,
+  "corr_log_global_ess_vs_worst_group_noise": -0.5200060275863118,
+  "within_shift_worst_group_noise_correlations": {
+    "logistic:0.8": {
+      "corr_log_q10_local_ess": -0.6152562560646262,
+      "corr_log_global_ess": -0.24182607576661447
+    },
+    "logistic:1.2": {
+      "corr_log_q10_local_ess": -0.5285065421068826,
+      "corr_log_global_ess": -0.21540166244740871
+    }
+  }
+}

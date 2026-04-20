@@ -1,65 +1,84 @@
 \section{Introduction}
 
-A model is usually tested on one population and then deployed on another. That change in population can be enough to break reliability. A model may still look acceptable on average, but become unreliable on a subgroup that matters in practice.
+A model is usually validated on one population and then deployed on another. After deployment, the input mix changes, so the reliability checks performed before launch no longer match the environment where the model is used. In reliability work, the usual concern is that an average calibration score can look fine even when one subgroup is failing badly.
 
-Here is a simple example. Suppose a hospital model predicts the probability of complications after a procedure. On the validation set, patients from all departments are mixed together, and the model looks well calibrated overall. After deployment, the patient mix changes: one department becomes much more common, and that department is exactly where the model is overconfident. The overall score may still look decent, but the deployment problem is real.
+That concern is real, but it is only half of the story. A subgroup-aware audit can also produce a large subgroup gap that is not a real deployment failure at all.
 
-This paper studies that situation in a clean theoretical setting. Here $X$ is the feature vector, $Y\in\{0,1\}$ is the label, and the model outputs a score
+The difficulty is that this logic mixes two different phenomena:
+\begin{itemize}
+  \item a \emph{real hidden failure}, where the model is genuinely unreliable on one subgroup;
+  \item a \emph{false alarm}, where the weighted estimate for one subgroup is unstable because that subgroup has very little effective support after reweighting.
+\end{itemize}
+
+This paper is about separating those two cases: real hidden failures and false subgroup alarms.
+
+We work in the standard covariate-shift setting. The source distribution is \(P\), the target distribution is \(Q\), the feature vector is \(X\), the label is \(Y\in\{0,1\}\), and the model outputs a score
 \[
 \score(X)\in[0,1].
 \]
-If the model says $0.8$, we would like that to mean ``about $80\%$ chance of being correct'' or ``about $80\%$ chance of class $1$.'' In simple terms, calibration asks whether predicted probabilities match empirical frequencies.
+If the model says \(0.8\), we would like that to mean ``about \(80\%\) chance of class \(1\).'' Calibration asks whether predicted probabilities match empirical frequencies.
 
-For one bin of scores, an intuitive calibration gap is
+For one score bin, an intuitive calibration gap is
 \[
 \text{gap} \approx |\text{observed frequency} - \text{predicted probability}|.
 \]
-Overall calibration is then some average of these gaps across bins. The problem is that this is still an average. If one subgroup is strongly overconfident and another is strongly underconfident, the two effects can cancel out.
+If the model predicts \(0.8\) for many cases but only \(60\%\) of them are positive, the gap in that score range is about \(0.2\).
 
-We therefore focus on \emph{worst-group reliability}. If $\cG$ is a family of subgroups, the quantity of interest is roughly
+Under covariate shift, target averages can be written as weighted source averages. The basic weight is the density ratio
 \[
-\text{worst-group error}
-\;=\;
-\max_{g\in\cG} \text{error on group } g.
+\wt(x)=\frac{dQ_X}{dP_X}(x),
 \]
-We also look at the difference between worst-group error and overall error:
+which tells us how much more common \(x\) is in deployment than in the source sample. This gives the usual transport rule
 \[
-\text{hidden-failure gap}
-\;=\;
-\text{worst-group error} - \text{overall error}.
+\text{target average}
+\approx
+\frac{1}{n}\sum_{i=1}^n \wt(X_i)\,h(X_i,Y_i)
 \]
-If this gap is large, then the aggregate metric is hiding something important.
+for an appropriate quantity \(h\).
 
-Our second ingredient is distribution shift. We write $\src$ for the source distribution and $\tgt$ for the target distribution. We work under the standard covariate-shift assumption
+At first sight, this suggests a simple solution: estimate worst-group reliability by weighting the source sample and then report the largest subgroup gap. The standard instability diagnostic for this step is the global effective sample size
 \[
-\src(Y \given X)=\tgt(Y \given X),
-\qquad
-\src_X \neq \tgt_X.
+\ess
+=
+\frac{(\sum_i \wt_i)^2}{\sum_i \wt_i^2}.
 \]
-In words: the mix of inputs changes, but the label mechanism given the input stays the same. In that case, target expectations can be expressed using source data and a weight
-\[
-\wt(x)=\frac{d\tgt_X}{d\src_X}(x).
-\]
-So the basic rule is
-\[
-\text{target average} \approx \frac{1}{n}\sum_{i=1}^n \wt(X_i)\,h(X_i,Y_i),
-\]
-for an appropriate quantity $h$. This is the key mathematical idea in the paper. It says that target reliability is a weighted source problem.
+If \(\ess\) is small, the weighted analysis is noisy. If \(\ess\) is large, the audit may look trustworthy.
 
-Once we write the problem this way, three things become clear.
+The main claim of the paper is that this global diagnostic is not enough for worst-group auditing. Worst-group reliability is built from many subgroup-bin cells, and one such cell can have almost no weighted support even when the full weighted sample still looks acceptable. The right object is therefore a \emph{local} effective sample size. For one score bin \(b\) and one subgroup \(g\), define the active cell indicator
+\[
+A_i(b,g)=\ind\{\score(X_i)\in I_b\}g(X_i),
+\]
+and the corresponding local effective sample size
+\[
+{\ess}_{b,g}
+=
+\frac{\bigl(\sum_i \wt_i A_i(b,g)\bigr)^2}{\sum_i \wt_i^2 A_i(b,g)}.
+\]
+This is the usual effective sample size formula restricted to one subgroup-bin cell. It answers the more relevant question: after weighting, how much information is left for the cell that drives the worst-group audit?
 
 \begin{enumerate}
-  \item Target reliability can be estimated by weighted source averages.
-  \item Worst-group reliability is harder than aggregate reliability because rare groups and unstable weights reduce usable sample size.
-  \item Aggregate calibration can be misleading even when the target average looks good.
+  \item Weighted transport is still the starting point, because it connects source data to target reliability under covariate shift.
+  \item The main statistical bottleneck is local overlap, because worst-group reliability is determined cell by cell.
+  \item A subgroup-aware audit can fail in two directions: it can miss a real hidden failure, but it can also create a false subgroup alarm when local weighted support is too weak.
 \end{enumerate}
 
-The rest of the paper makes this precise. We define subgroup-aware target reliability quantities, derive weighted transport identities, and prove estimation bounds that separate sampling error from density-ratio estimation error. We also give a simple construction showing that aggregate calibration can be perfect while subgroup calibration is poor.
+The paper keeps both sides in view. We still prove the usual hidden-failure statement: aggregate calibration can look perfect while subgroup calibration is poor. But the more novel result is about the other direction. For a subgroup-bin residual estimator, the exact conditional variance scale is \(1/{\ess}_{b,g}\). This leads to a false-alarm bound for worst-group audits in terms of the minimum local effective sample size across audited cells. We also construct weighted samples where global ESS remains large while one subgroup-bin cell has local ESS equal to one.
 
-The contribution of the paper is therefore simple. It is not a new software interface. It is a scientific viewpoint:
+The experiments match the theory. In a pure covariate-shift benchmark where the model is calibrated by construction, false worst-group alarms become common as shift severity grows because lower-tail local ESS collapses much faster than global ESS. In separate subgroup-degradation benchmarks, real hidden failures remain large. The practical message is therefore not to avoid worst-group auditing, but to pair it with local overlap diagnostics.
 
-\begin{quote}
-reliability under deployment shift should be analyzed as a weighted subgroup estimation problem, not as a single average metric.
-\end{quote}
+\subsection{Main Results}
 
-The experiments are there to test this viewpoint in controlled settings, not to replace the theory. They show the same qualitative pattern throughout the paper: as shift grows, weighting becomes statistically harder, and subgroup failures become easier to miss if one only reports average metrics.
+\paragraph{Result 1: target subgroup-bin reliability is transported by importance weighting.}
+Under covariate shift, both subgroup-bin residual mass and subgroup-bin conditional calibration gap can be written as weighted source quantities. This is the formal bridge from source data to target reliability.
+
+\paragraph{Result 2: subgroup-bin variance is governed by local effective sample size.}
+For the self-normalized weighted subgroup-bin residual estimator, the conditional variance is controlled by a subgroup-bin local ESS. This is the main technical point in the paper.
+
+\paragraph{Result 3: false worst-group alarms are controlled by the minimum local ESS, not by global ESS alone.}
+When the model is perfectly calibrated on the audited cells, the probability that a worst-group audit exceeds a threshold is bounded by a sum of inverse local ESS terms. A global ESS diagnostic cannot replace this bound.
+
+\paragraph{Result 4: global ESS can be badly misleading.}
+We construct weighted samples where one subgroup-bin cell is effectively supported by a single weighted point while the overall weighted sample still has large global ESS.
+
+\paragraph{Result 5: experiments show both sides of the problem.}
+In pure covariate shift, weak local overlap creates false subgroup alarms. In separate subgroup-degradation benchmarks, genuine hidden failures remain large. The right lesson is to pair subgroup auditing with local support diagnostics.

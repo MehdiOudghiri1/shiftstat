@@ -2,62 +2,158 @@
 
 \subsection{Proof of \cref{prop:transport}}
 
-For any integrable measurable function $h$,
-\[
-\EE_{\src}[\wt(X)h(X,Y)]
-=
-\int h(x,y)\frac{d\tgt_X}{d\src_X}(x)\, d\src(x,y).
-\]
-Since under \cref{ass:covshift} the conditional law of $Y$ given $X=x$ is the same under $\src$ and $\tgt$, we may write
-\[
-d\src(x,y)=d\src_X(x)\,d\src(y\given x)
-\qquad\text{and}\qquad
-d\tgt(x,y)=d\tgt_X(x)\,d\tgt(y\given x),
-\]
-with $d\src(y\given x)=d\tgt(y\given x)$. Therefore
-\[
-\frac{d\tgt_X}{d\src_X}(x)\, d\src_X(x)\, d\src(y\given x)
-=
-d\tgt_X(x)\, d\tgt(y\given x)
-=
-d\tgt(x,y),
-\]
-which yields
-\[
-\EE_{\src}[\wt(X)h(X,Y)] = \EE_{\tgt}[h(X,Y)].
-\]
-Choosing
-\[
-h(x,y)=(y-\score(x))\ind\{\score(x)\in I_b\}g(x)
-\]
-gives the stated formula for $\theta_{b,g}^{\tgt}$.
+We prove the two transported moments and then divide them to obtain the ratio form for \(r_{b,g}^Q\).
 
-\subsection{Further explanation of the hidden-failure construction}
+For the cell mass, apply the standard change-of-measure identity with
+\[
+h(x,y)=A_{b,g}(x).
+\]
+Then
+\[
+\EE_P[\wt(X)A_{b,g}(X)]
+=
+\EE_Q[A_{b,g}(X)]
+=
+\mu_{b,g}^Q.
+\]
 
-The construction in \cref{prop:hidden} is intentionally simple because the phenomenon itself is simple. If subgroup-specific errors have opposite signs, they can cancel in the aggregate. In the two-group example:
+For the residual mass, choose
+\[
+h(x,y)=(y-\score(x))A_{b,g}(x).
+\]
+The same identity gives
+\[
+\EE_P[\wt(X)(Y-\score(X))A_{b,g}(X)]
+=
+\EE_Q[(Y-\score(X))A_{b,g}(X)]
+=
+\theta_{b,g}^Q.
+\]
 
+If \(\mu_{b,g}^Q>0\), then \cref{eq:r-def} implies
+\[
+r_{b,g}^Q
+=
+\frac{\theta_{b,g}^Q}{\mu_{b,g}^Q}
+=
+\frac{\EE_P[\wt(X)(Y-\score(X))A_{b,g}(X)]}{\EE_P[\wt(X)A_{b,g}(X)]}.
+\]
+
+\subsection{Proof of \cref{thm:local-ess}}
+
+Fix a subgroup-bin cell \((b,g)\) and abbreviate \(A_i=A_{b,g}(X_i)\), \(\wt_i=\wt(X_i)\), and \(\score_i=\score(X_i)\). Conditional on \(X_{1:n}\), the denominator
+\[
+S_A=\sum_{i=1}^{n}\wt_iA_i
+\]
+is deterministic and positive by assumption. Therefore
+\[
+\widehat r_{b,g}
+=
+\sum_{i=1}^{n}\alpha_i(Y_i-\score_i),
+\qquad
+\alpha_i=\frac{\wt_iA_i}{S_A}.
+\]
+So \(\widehat r_{b,g}\) is a weighted average with normalized weights \(\alpha_i\).
+
+Taking conditional expectation gives
+\[
+\EE[\widehat r_{b,g}\given X_{1:n}]
+=
+\sum_{i=1}^{n}\alpha_i\,\EE[Y_i-\score_i\given X_i]
+=
+\frac{\sum_{i=1}^{n}\wt_iA_i\,\EE[Y_i-\score_i\given X_i]}{\sum_{i=1}^{n}\wt_iA_i}
+=
+\bar r_{b,g}(X_{1:n}).
+\]
+
+Because the observations are conditionally independent given the features,
+\[
+\Var(\widehat r_{b,g}\given X_{1:n})
+=
+\sum_{i=1}^{n}\alpha_i^2\Var(Y_i-\score_i\given X_i).
+\]
+Substituting the definition of \(\alpha_i\) yields
+\[
+\Var(\widehat r_{b,g}\given X_{1:n})
+=
+\frac{\sum_{i=1}^{n}\wt_i^2A_i^2\Var(Y_i-\score_i\given X_i)}{\left(\sum_{i=1}^{n}\wt_iA_i\right)^2}.
+\]
+Since \(A_i\in\{0,1\}\), we have \(A_i^2=A_i\), so
+\[
+\Var(\widehat r_{b,g}\given X_{1:n})
+=
+\frac{\sum_{i=1}^{n}\wt_i^2A_i\Var(Y_i-\score_i\given X_i)}{\left(\sum_{i=1}^{n}\wt_iA_i\right)^2}.
+\]
+Using the bound \(\Var(Y-\score(X)\given X=x)\le \sigma_{b,g}^2\) on the active cell gives
+\[
+\Var(\widehat r_{b,g}\given X_{1:n})
+\le
+\sigma_{b,g}^2\,
+\frac{\sum_{i=1}^{n}\wt_i^2A_i}{\left(\sum_{i=1}^{n}\wt_iA_i\right)^2}
+=
+\frac{\sigma_{b,g}^2}{{\ess}_{b,g}}.
+\]
+This proves \cref{thm:local-ess}.
+
+\subsection{Proof of \cref{cor:false-alarm}}
+
+Under the additional assumption in \cref{cor:false-alarm}, we have
+\[
+\EE[Y_i-\score_i\given X_i]=0
+\]
+whenever \(A_i=1\). By \cref{thm:local-ess},
+\[
+\EE[\widehat r_{b,g}\given X_{1:n}]=0
+\]
+for every audited cell with positive denominator. Chebyshev's inequality therefore gives
+\[
+\PP\!\left(|\widehat r_{b,g}|>t\middle|X_{1:n}\right)
+\le
+\frac{\Var(\widehat r_{b,g}\given X_{1:n})}{t^2}
+\le
+\frac{\sigma_{b,g}^2}{t^2{\ess}_{b,g}}.
+\]
+Applying a union bound over all \(B|\cG|\) audited cells yields \cref{eq:false-alarm-bound}. The second display in the corollary follows by replacing each local ESS by the smallest one and each variance bound by \(\sigma_{\max}^2\).
+
+\subsection{Further explanation of \cref{prop:global-misleading}}
+
+The counterexample is deterministic because the point does not depend on any stochastic subtlety. The sample can be globally well weighted and locally degenerate at the same time.
+
+Take one active cell point with weight \(N\pi\) and \(N-1\) inactive points with equal weight \(N(1-\pi)/(N-1)\). Then:
 \begin{itemize}
-  \item group $A$ is maximally overconfident relative to the constant score $1/2$;
-  \item group $B$ is maximally underconfident relative to the same score;
-  \item the aggregate average is perfectly calibrated because the two signed residuals cancel.
+  \item the weighted target mass of the active cell is exactly \(\pi\);
+  \item the active cell is supported by only one weighted point, so its local ESS is exactly \(1\);
+  \item the full sample still spreads most of its mass across many inactive points, so the global ESS can remain large.
 \end{itemize}
 
-This cancellation logic survives in much richer settings. The synthetic subgroup benchmarks in the repository are essentially structured versions of the same idea, now combined with prevalence shift and score heterogeneity.
+This construction is enough to show that a large global ESS does not rule out a statistically meaningless subgroup-bin estimate.
+
+\subsection{Further explanation of \cref{prop:hidden}}
+
+The hidden-failure construction and the local-ESS construction diagnose different problems.
+
+\begin{itemize}
+  \item \Cref{prop:hidden} is about \emph{real hidden harm}: opposite-sign subgroup errors cancel in the aggregate.
+  \item \Cref{prop:global-misleading} and \cref{cor:false-alarm} are about \emph{false subgroup alarms}: the subgroup estimate is unstable because the cell has too little weighted information.
+\end{itemize}
+
+The final paper needs both statements. Without \cref{prop:hidden}, there is no reason to audit subgroups. Without \cref{cor:false-alarm}, there is no reason to distrust an unstable subgroup alarm.
 
 \subsection{Experimental provenance}
 
-The preliminary results cited in the main text come from the committed benchmark artifacts:
-
+The new local-ESS study is generated by:
 \begin{itemize}
-  \item \path{../paper_assets/generated/publication_suite/paper_covariate_shift/}
-  \item \path{../paper_assets/generated/publication_suite/paper_subgroup_failures/}
-  \item \path{../paper_assets/generated/publication_suite/paper_selective_shift/}
+  \item \path{preprint/research/local_ess_study.py}
 \end{itemize}
 
-The pilot suite is driven by:
-
+The rendered outputs used in the main text are:
 \begin{itemize}
-  \item \path{../paper_assets/configs/publication_suite.yaml}
+  \item \path{preprint/research/results/local_ess_oracle/}
+  \item \path{preprint/research/results/local_ess_logistic/}
+  \item \path{preprint/figures/local_ess_main.png}
 \end{itemize}
 
-For the finished paper, the experimental section should be regenerated with a larger seed budget and explicit ablations on overlap and density-ratio quality.
+The supporting hidden-failure figure comes from:
+\begin{itemize}
+  \item \path{paper_assets/generated/publication_suite/paper_subgroup_failures/}
+\end{itemize}
