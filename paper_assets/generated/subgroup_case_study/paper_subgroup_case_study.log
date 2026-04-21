@@ -1,5 +1,0 @@
-[2026-04-16T11:31:22.684251+00:00] starting experiment paper_subgroup_case_study
-config=C:\Users\medhi.oudghiri\OneDrive - Setec\temp\librairie_open_source\shiftstat\paper_assets\configs\subgroup_case_study.yaml
-output_dir=C:\Users\medhi.oudghiri\OneDrive - Setec\temp\librairie_open_source\shiftstat\paper_assets\generated\subgroup_case_study
-[2026-04-16T11:31:28.015612+00:00] completed scenario paper_hidden_failure_case
-rerun=python -m shiftstat.experiments "C:\Users\medhi.oudghiri\OneDrive - Setec\temp\librairie_open_source\shiftstat\paper_assets\configs\subgroup_case_study.yaml"

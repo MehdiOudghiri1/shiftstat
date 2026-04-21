@@ -73,13 +73,16 @@ So for a subgroup with target mass `5%`, the global ESS can still be around `400
 
 Script:
 
-- [local_ess_study.py](/C:/Users/medhi.oudghiri/OneDrive%20-%20Setec/temp/librairie_open_source/shiftstat/preprint/research/local_ess_study.py)
+- `preprint/research/local_ess_study.py`
 
 Generated outputs:
 
-- [oracle summary](/C:/Users/medhi.oudghiri/OneDrive - Setec/temp/librairie_open_source/shiftstat/preprint/research/results/local_ess_oracle/local_ess_summary.csv)
-- [oracle diagnostics](/C:/Users/medhi.oudghiri/OneDrive - Setec/temp/librairie_open_source/shiftstat/preprint/research/results/local_ess_oracle/local_ess_diagnostics.json)
-- [logistic summary](/C:/Users/medhi.oudghiri/OneDrive - Setec/temp/librairie_open_source/shiftstat/preprint/research/results/local_ess_logistic/local_ess_summary.csv)
+- `preprint/research/results/local_ess_oracle/local_ess_summary.csv`
+- `preprint/research/results/local_ess_oracle/local_ess_diagnostics.json`
+- `preprint/research/results/local_ess_logistic/local_ess_summary.csv`
+
+The `preprint/research/results/` directory is a regenerated local-output
+directory and is not tracked by git.
 
 The experiment uses `make_covariate_shift_classification`, where the model is calibrated by construction under pure covariate shift. That means the true subgroup-bin residuals are zero. Any estimated worst-group reliability signal is therefore a false alarm caused by finite-sample weighted noise.
 

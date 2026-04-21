@@ -5,13 +5,11 @@ This directory is the V5 bridge between ShiftStat benchmarks and a future prepri
 ## Layout
 
 - `configs/`: reproducible experiment manifests used to generate benchmark tables and figures
-- `generated/`: saved outputs produced by the experiment runner
+- `generated/`: ignored local outputs produced by the experiment runner
 - `inventory.md`: short map from experiments to figures and tables
 
-Generated assets already included in this repository:
-
-- `generated/publication_suite/`
-- `generated/subgroup_case_study/`
+Generated assets are not kept in git. The committed source of truth is the
+config file plus the code version used to run it.
 
 ## Reproduction
 
@@ -20,3 +18,5 @@ shiftstat-experiment paper_assets/configs/publication_suite.yaml
 ```
 
 Generated artifacts are intentionally ordinary files so they can be inspected, versioned, and cited in appendices.
+For archival releases, attach generated outputs to a release or external
+archive rather than committing local benchmark payloads to the library tree.

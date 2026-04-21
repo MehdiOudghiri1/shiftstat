@@ -6,6 +6,7 @@ __pycache__/
 .mypy_cache/
 .ruff_cache/
 .coverage
+coverage.xml
 htmlcov/
 build/
 dist/
@@ -21,7 +22,9 @@ env/
 .ipynb_checkpoints/
 
 # Benchmark outputs
+artifacts/
 benchmarks/results/*.json
+paper_assets/generated/
 
 # Data caches and paper build artifacts
 data/
@@ -32,6 +35,7 @@ preprint/*.log
 preprint/*.out
 preprint/*.synctex.gz
 preprint/research/cache/
+preprint/research/results/
 
 # IDEs
 .idea/

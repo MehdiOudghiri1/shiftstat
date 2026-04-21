@@ -11,11 +11,6 @@
   </p>
 </div>
 
-<p align="center">
-  <img src="paper_assets/generated/publication_suite/paper_covariate_shift/figures/paper_covariate_shift_delta_ece.png" width="48%" alt="Covariate shift delta ECE benchmark figure" />
-  <img src="paper_assets/generated/publication_suite/paper_subgroup_failures/figures/paper_subgroup_failures_worst_group_accuracy_gap.png" width="48%" alt="Worst-group accuracy gap benchmark figure" />
-</p>
-
 > Aggregate metrics can stay stable while calibration, subgroup reliability, or accepted-set risk quietly fails after deployment shift. ShiftStat is built to make those failures visible, compare interventions, and export reproducible evidence.
 
 ## Certified worst-group audits under covariate shift
@@ -124,7 +119,7 @@ scenario = make_covariate_shift_sweep_scenario(
 )
 
 result = BenchmarkRunner().run(scenario)
-artifacts = result.export_artifacts("paper_assets/generated/covariate_shift_demo")
+artifacts = result.export_artifacts("artifacts/covariate_shift_demo")
 
 print(result.aggregate_frame())
 print(artifacts["figures"])

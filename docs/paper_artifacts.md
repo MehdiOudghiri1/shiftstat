@@ -29,4 +29,9 @@ shiftstat-experiment paper_assets/configs/publication_suite.yaml
 
 - Main text: aggregated summary figures and selected LaTeX tables
 - Appendix: per-seed CSVs, full manifests, and experiment configs
-- Repository companion material: complete generated directories under `paper_assets/generated/`
+- Repository companion material: committed configs plus archived generated
+  directories from a release or external storage location
+
+Generated directories under `paper_assets/generated/` are ignored by git during
+normal development so local CSVs, logs, and machine-specific manifests do not
+pollute the library repository.

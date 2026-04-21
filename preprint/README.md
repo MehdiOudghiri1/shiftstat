@@ -37,14 +37,14 @@ The script tries `latexmk`, then `tectonic`, then a basic `pdflatex` + `bibtex` 
 
 ## Provenance of current figures and numbers
 
-The draft currently reuses generated benchmark artifacts from:
+The draft uses committed manuscript figures under `figures/`. The scripts in
+`research/` can regenerate the study summaries used to build those figures.
+Generated CSV/JSON/log outputs are intentionally ignored by git under:
 
-- `../paper_assets/generated/publication_suite/`
+- `research/results/`
 
-and experimental summaries from:
+The broader package benchmark artifacts can be regenerated from:
 
-- `../paper_assets/generated/publication_suite/paper_covariate_shift/paper_covariate_shift_summary.csv`
-- `../paper_assets/generated/publication_suite/paper_subgroup_failures/paper_subgroup_failures_summary.csv`
-- `../paper_assets/generated/publication_suite/paper_selective_shift/paper_selective_shift_summary.csv`
+- `../paper_assets/configs/publication_suite.yaml`
 
 These results are used as a strong initial draft, not as the final experimental campaign. A final paper should expand the seed count, add ablations, and likely add at least one real dataset or semi-real benchmark.
