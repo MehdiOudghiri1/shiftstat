@@ -1,6 +1,5 @@
 """Publication-friendly plotting utilities."""
 
-from .benchmark import plot_benchmark_metric_sweep
 from .audit import (
     plot_aggregate_vs_subgroup,
     plot_discovered_slice_summary,
@@ -9,6 +8,7 @@ from .audit import (
     plot_subgroup_metric_heatmap,
     plot_worst_group_comparison,
 )
+from .benchmark import plot_benchmark_metric_sweep
 from .calibration import (
     plot_calibration_comparison,
     plot_confidence_histogram,

@@ -7,7 +7,6 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import pandas as pd
 
-
 ROOT = Path(__file__).resolve().parents[1]
 ORACLE_CSV = ROOT / "research" / "results" / "local_ess_oracle" / "local_ess_summary.csv"
 LOGISTIC_CSV = ROOT / "research" / "results" / "local_ess_logistic" / "local_ess_summary.csv"

@@ -1,84 +1,59 @@
 \section{Introduction}
 
-A model is usually validated on one population and then deployed on another. After deployment, the input mix changes, so the reliability checks performed before launch no longer match the environment where the model is used. In reliability work, the usual concern is that an average calibration score can look fine even when one subgroup is failing badly.
+Consider a validation team auditing a risk model before deployment in a new population. The average calibration error looks acceptable. The global effective sample size after importance weighting is large enough that the audit seems usable. But the dashboard highlights one subgroup-bin cell as the worst: perhaps high-score patients in one hospital service line, or high-confidence decisions for a demographic intersection in a public-service model. The estimated gap is large enough to trigger a real action: subgroup investigation, recalibration, temporary suppression of the score, or model rollback.
 
-That concern is real, but it is only half of the story. A subgroup-aware audit can also produce a large subgroup gap that is not a real deployment failure at all.
+What should the team conclude? There are two very different possibilities. The alarm may be a real subgroup failure that the aggregate metric hides. Or it may be an artifact: the target population puts mass on that subgroup-bin cell, but the weighted source audit set contains only a few effective labels there. In the first case, ignoring the alarm is dangerous. In the second, acting on it is also dangerous, because the audit has mistaken local overlap collapse for model failure.
 
-The difficulty is that this logic mixes two different phenomena:
+This paper studies that distinction under covariate shift. We observe labeled source data from \(P\), target covariates from \(Q_X\), and assume
+\[
+P(Y\given X)=Q(Y\given X),
+\qquad
+P_X\neq Q_X .
+\]
+Importance weighting by \(w(x)=dQ_X/dP_X(x)\) is the standard way to transport source labels to the target population. That step answers one question: what target moment should be estimated? It does not answer the audit question: is the reported worst subgroup alarm supported by enough local evidence to be trusted?
+
+The gap between these questions is the central issue. A global shifted-risk estimate averages over the full weighted source sample. A worst-group audit instead takes a maximum over many subgroup-bin cells. The selected cell is often chosen precisely because its estimate is extreme, and extreme local estimates are most likely to occur where support is weak. Thus a global effective sample size can be reassuring while the alarm-driving cell is effectively supported by one or two weighted labels.
+
+For a subgroup-bin cell \(c\), let \(A_c(X_i)\) indicate whether source point \(i\) falls in that cell. The relevant information scale is the local effective sample size
+\[
+{\ess}_c
+=
+\frac{\bigl(\sum_i w_iA_c(X_i)\bigr)^2}
+{\sum_i w_i^2A_c(X_i)}.
+\]
+This is the ordinary weighted ESS, but computed only inside the cell that may be reported as the worst. It has a direct interpretation: how many effectively independent weighted labels support the local alarm? If this number is small, a large point estimate is not yet evidence.
+
+The practical conclusion is simple. A covariate-shift audit should not report only
+\[
+\max_{c\in\cC}|\widehat r_c|>\tau ,
+\]
+where \(\tau\) is a tolerance and \(\widehat r_c\) is a weighted cell residual. It should report a certified excess after subtracting a simultaneous local uncertainty radius. If the point estimate is large but the certified excess is zero, the right conclusion is not ``no failure.'' It is ``insufficient evidence.''
+
+\subsection{What Existing Tools Do Not Decide}
+
+Several mature literatures touch this problem, but each answers a different question.
+
 \begin{itemize}
-  \item a \emph{real hidden failure}, where the model is genuinely unreliable on one subgroup;
-  \item a \emph{false alarm}, where the weighted estimate for one subgroup is unstable because that subgroup has very little effective support after reweighting.
+  \item The literature on \textbf{covariate shift and importance weighting} explains how to transport shifted risks or fixed target moments \citep{Sugiyama2007IWCV,Cortes2010IW,Polo2022ESS}. It does not by itself say whether the selected worst subgroup-bin alarm has enough local weighted labels to be trusted.
+  \item The literature on \textbf{calibration, conformal prediction, and uncertainty under shift} provides shift-aware validity guarantees for scores or prediction sets \citep{Guo2017Calibration,Park2020CalibratedShift,Tibshirani2019WeightedCP,Yang2024DRCalibration}. The object here is different: a maximum subgroup-bin residual after weighting, search, and local overlap variation.
+  \item The literature on \textbf{multicalibration and subgroup auditing} explains why aggregate metrics can hide subgroup failures \citep{HebertJohnson2018Multicalibration,Kearns2018FairnessGerrymandering,Wu2024MCOOD,Zhang2024FairRiskControl}. Our question is how to distinguish a true subgroup failure from an unsupported shifted subgroup alarm.
+  \item The literature on \textbf{slice discovery and post-selection inference} shows that adaptive search invalidates naive validation unless inference accounts for search \citep{Chung2019SliceFinder,Eyuboglu2022Domino,Berk2013PostSelection,Dwork2015ReusableHoldout,Angelopoulos2021LearnThenTest}. We add the covariate-shift ingredients: local ESS and learned density-ratio nuisance inside the selected cell.
 \end{itemize}
 
-This paper is about separating those two cases: real hidden failures and false subgroup alarms.
+The paper is therefore not primarily a new density-ratio estimator, a new subgroup discovery algorithm, or a new calibration metric. It is an inference framework for deciding when a shifted worst-group alarm is evidence. The key object is local support inside the reported subgroup-bin cell.
 
-We work in the standard covariate-shift setting. The source distribution is \(P\), the target distribution is \(Q\), the feature vector is \(X\), the label is \(Y\in\{0,1\}\), and the model outputs a score
-\[
-\score(X)\in[0,1].
-\]
-If the model says \(0.8\), we would like that to mean ``about \(80\%\) chance of class \(1\).'' Calibration asks whether predicted probabilities match empirical frequencies.
+\subsection{Contributions}
 
-For one score bin, an intuitive calibration gap is
-\[
-\text{gap} \approx |\text{observed frequency} - \text{predicted probability}|.
-\]
-If the model predicts \(0.8\) for many cases but only \(60\%\) of them are positive, the gap in that score range is about \(0.2\).
+The through-line is:
+\begin{quote}
+under covariate shift, worst-group alarms are trustworthy only when they are locally supported and statistically certified.
+\end{quote}
 
-Under covariate shift, target averages can be written as weighted source averages. The basic weight is the density ratio
-\[
-\wt(x)=\frac{dQ_X}{dP_X}(x),
-\]
-which tells us how much more common \(x\) is in deployment than in the source sample. This gives the usual transport rule
-\[
-\text{target average}
-\approx
-\frac{1}{n}\sum_{i=1}^n \wt(X_i)\,h(X_i,Y_i)
-\]
-for an appropriate quantity \(h\).
+We make this claim precise in four steps.
 
-At first sight, this suggests a simple solution: estimate worst-group reliability by weighting the source sample and then report the largest subgroup gap. The standard instability diagnostic for this step is the global effective sample size
-\[
-\ess
-=
-\frac{(\sum_i \wt_i)^2}{\sum_i \wt_i^2}.
-\]
-If \(\ess\) is small, the weighted analysis is noisy. If \(\ess\) is large, the audit may look trustworthy.
-
-The main claim of the paper is that this global diagnostic is not enough for worst-group auditing. Worst-group reliability is built from many subgroup-bin cells, and one such cell can have almost no weighted support even when the full weighted sample still looks acceptable. The right object is therefore a \emph{local} effective sample size. For one score bin \(b\) and one subgroup \(g\), define the active cell indicator
-\[
-A_i(b,g)=\ind\{\score(X_i)\in I_b\}g(X_i),
-\]
-and the corresponding local effective sample size
-\[
-{\ess}_{b,g}
-=
-\frac{\bigl(\sum_i \wt_i A_i(b,g)\bigr)^2}{\sum_i \wt_i^2 A_i(b,g)}.
-\]
-This is the usual effective sample size formula restricted to one subgroup-bin cell. It answers the more relevant question: after weighting, how much information is left for the cell that drives the worst-group audit?
-
-\begin{enumerate}
-  \item Weighted transport is still the starting point, because it connects source data to target reliability under covariate shift.
-  \item The main statistical bottleneck is local overlap, because worst-group reliability is determined cell by cell.
-  \item A subgroup-aware audit can fail in two directions: it can miss a real hidden failure, but it can also create a false subgroup alarm when local weighted support is too weak.
-\end{enumerate}
-
-The paper keeps both sides in view. We still prove the usual hidden-failure statement: aggregate calibration can look perfect while subgroup calibration is poor. But the more novel result is about the other direction. For a subgroup-bin residual estimator, the exact conditional variance scale is \(1/{\ess}_{b,g}\). This leads to a false-alarm bound for worst-group audits in terms of the minimum local effective sample size across audited cells. We also construct weighted samples where global ESS remains large while one subgroup-bin cell has local ESS equal to one.
-
-The experiments match the theory. In a pure covariate-shift benchmark where the model is calibrated by construction, false worst-group alarms become common as shift severity grows because lower-tail local ESS collapses much faster than global ESS. In separate subgroup-degradation benchmarks, real hidden failures remain large. The practical message is therefore not to avoid worst-group auditing, but to pair it with local overlap diagnostics.
-
-\subsection{Main Results}
-
-\paragraph{Result 1: target subgroup-bin reliability is transported by importance weighting.}
-Under covariate shift, both subgroup-bin residual mass and subgroup-bin conditional calibration gap can be written as weighted source quantities. This is the formal bridge from source data to target reliability.
-
-\paragraph{Result 2: subgroup-bin variance is governed by local effective sample size.}
-For the self-normalized weighted subgroup-bin residual estimator, the conditional variance is controlled by a subgroup-bin local ESS. This is the main technical point in the paper.
-
-\paragraph{Result 3: false worst-group alarms are controlled by the minimum local ESS, not by global ESS alone.}
-When the model is perfectly calibrated on the audited cells, the probability that a worst-group audit exceeds a threshold is bounded by a sum of inverse local ESS terms. A global ESS diagnostic cannot replace this bound.
-
-\paragraph{Result 4: global ESS can be badly misleading.}
-We construct weighted samples where one subgroup-bin cell is effectively supported by a single weighted point while the overall weighted sample still has large global ESS.
-
-\paragraph{Result 5: experiments show both sides of the problem.}
-In pure covariate shift, weak local overlap creates false subgroup alarms. In separate subgroup-degradation benchmarks, genuine hidden failures remain large. The right lesson is to pair subgroup auditing with local support diagnostics.
+\begin{itemize}
+  \item We formulate worst-group reliability auditing as localized weighted moment inference over subgroup-bin cells.
+  \item We prove an identifiability boundary: without source support in the target cell, no method using source labels and target covariates can uniformly certify target reliability there.
+  \item We give a local certificate theorem for finite audit families. The confidence radius is controlled by cellwise ESS, extends to cross-fitted learned weights through a cellwise nuisance term, and separates conditional finite-sample claims from population-target claims.
+  \item We show empirically that the distinction changes decisions: naive and global-ESS-gated audits produce unsupported subgroup alarms, while local certificates refuse artifacts, retain power when overlap is adequate, and change decisions in Adult Census and ACS public-service audits.
+\end{itemize}

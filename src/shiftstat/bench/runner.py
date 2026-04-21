@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from datetime import datetime, timezone
-from typing import Any
+from typing import Any, cast
 
 import pandas as pd
 
@@ -82,7 +82,7 @@ class BenchmarkRunner:
             metric for metric in self.metric_registry.names() if metric in frame.columns
         ]
         if not metric_names:
-            return frame.to_dict(orient="records")  # type: ignore[no-any-return]
+            return cast(list[dict[str, Any]], frame.to_dict(orient="records"))
 
         aggregated = (
             frame.groupby(group_columns, dropna=False)[metric_names]
@@ -107,4 +107,4 @@ class BenchmarkRunner:
         aggregated["n_runs"] = (
             frame.groupby(group_columns, dropna=False)["seed"].nunique().reset_index(drop=True)
         )
-        return aggregated.to_dict(orient="records")  # type: ignore[no-any-return]
+        return cast(list[dict[str, Any]], aggregated.to_dict(orient="records"))

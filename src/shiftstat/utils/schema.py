@@ -56,8 +56,10 @@ def infer_feature_types(
     if isinstance(X_validated, pd.DataFrame):
         for feature_name in feature_names:
             dtype = X_validated[feature_name].dtype
-            if feature_name in categorical_name_set or is_bool_dtype(dtype) or not is_numeric_dtype(
-                dtype
+            if (
+                feature_name in categorical_name_set
+                or is_bool_dtype(dtype)
+                or not is_numeric_dtype(dtype)
             ):
                 feature_types[feature_name] = "categorical"
             else:

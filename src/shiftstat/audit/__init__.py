@@ -6,7 +6,12 @@ from typing import Any
 
 __all__ = [
     "AuditReport",
+    "CertifiedAuditConfig",
+    "CertifiedAuditReport",
+    "CertifiedCellResult",
+    "CertifiedWorstGroupAuditor",
     "ConditionalReliabilityAuditor",
+    "AuditDecision",
     "ReliabilityAuditor",
     "SliceDiscoverer",
     "discover_failure_slices",
@@ -30,4 +35,27 @@ def __getattr__(name: str) -> Any:
         from .results import AuditReport
 
         return AuditReport
+    if name in {
+        "AuditDecision",
+        "CertifiedAuditConfig",
+        "CertifiedAuditReport",
+        "CertifiedCellResult",
+        "CertifiedWorstGroupAuditor",
+    }:
+        from shiftstat.certification import (
+            AuditDecision,
+            CertifiedAuditConfig,
+            CertifiedAuditReport,
+            CertifiedCellResult,
+            CertifiedWorstGroupAuditor,
+        )
+
+        mapping = {
+            "AuditDecision": AuditDecision,
+            "CertifiedAuditConfig": CertifiedAuditConfig,
+            "CertifiedAuditReport": CertifiedAuditReport,
+            "CertifiedCellResult": CertifiedCellResult,
+            "CertifiedWorstGroupAuditor": CertifiedWorstGroupAuditor,
+        }
+        return mapping[name]
     raise AttributeError(f"module 'shiftstat.audit' has no attribute {name!r}")

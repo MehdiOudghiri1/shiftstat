@@ -12,10 +12,10 @@ from sklearn.preprocessing import OneHotEncoder
 
 from ..metrics import confidence_conditioned_error
 from ..reliability.analyzer import ReliabilityAnalyzer
+from ..subgroup import SubgroupAnalyzer, group_by_feature, group_metrics
 from ..utils.schema import align_tabular_inputs, extract_feature_names, infer_feature_types
 from .discovery import SliceDiscoverer
 from .results import AuditReport
-from ..subgroup import SubgroupAnalyzer, group_by_feature, group_metrics
 
 
 def _as_frame(X: Any) -> pd.DataFrame:
@@ -409,7 +409,9 @@ class ConditionalReliabilityAuditor:
                 (target_degradation["slice_name"] == worst["slice_name"])
                 & (target_degradation["group"] == worst["group"])
             ]
-            worst_delta = float(match[f"delta_{metric}"].iloc[0]) if not match.empty else float("nan")
+            worst_delta = (
+                float(match[f"delta_{metric}"].iloc[0]) if not match.empty else float("nan")
+            )
             rows.append(
                 {
                     "metric": metric,
@@ -492,7 +494,9 @@ class ConditionalReliabilityAuditor:
         degradation = self.subgroup_analyzer_.degradation_ranking()
         supported = degradation.loc[degradation["supported_both"]].copy()
         aggregate = self.aggregate_analyzer_.degradation_summary_
-        worst_delta_accuracy = float(supported["delta_accuracy"].min()) if not supported.empty else 0.0
+        worst_delta_accuracy = (
+            float(supported["delta_accuracy"].min()) if not supported.empty else 0.0
+        )
         worst_delta_ece = float(supported["delta_ece"].max()) if not supported.empty else 0.0
         supported_coverage = float(
             self.subgroup_analyzer_.stability_diagnostics()["target_supported_coverage"].mean()
@@ -508,7 +512,8 @@ class ConditionalReliabilityAuditor:
             else 0.0
         )
         return {
-            "masked_accuracy_drop": aggregate.delta_accuracy > -0.03 and worst_delta_accuracy < -0.08,
+            "masked_accuracy_drop": aggregate.delta_accuracy > -0.03
+            and worst_delta_accuracy < -0.08,
             "masked_calibration_drift": aggregate.delta_ece < 0.02 and worst_delta_ece > 0.05,
             "concentrated_failures": (
                 top_slice_failure_share > 0.35 or top_slice_concentration > 1.75
@@ -518,15 +523,22 @@ class ConditionalReliabilityAuditor:
 
     def _build_caveats(self) -> list[str]:
         caveats = [
-            "Subgroup and slice diagnostics are descriptive deployment-risk audits, not fairness-compliance determinations.",
-            "Shift-severity bins are based on an in-sample domain classifier and should be interpreted as relative exposure scores.",
+            (
+                "Subgroup and slice diagnostics are descriptive deployment-risk audits, "
+                "not fairness-compliance determinations."
+            ),
+            (
+                "Shift-severity bins are based on an in-sample domain classifier and "
+                "should be interpreted as relative exposure scores."
+            ),
         ]
         caveats.extend(self.subgroup_report_.warnings)
         if hasattr(self, "slice_discoverer_"):
             caveats.extend(self.slice_discoverer_.caveats_)
         if self.hidden_failure_flags_.get("limited_support_coverage", False):
             caveats.append(
-                "A meaningful share of target samples falls below the default subgroup support thresholds."
+                "A meaningful share of target samples falls below the default subgroup "
+                "support thresholds."
             )
         return _deduplicate_preserve_order(caveats)
 
@@ -534,20 +546,25 @@ class ConditionalReliabilityAuditor:
         implications: list[str] = []
         if self.hidden_failure_flags_.get("masked_accuracy_drop", False):
             implications.append(
-                "Aggregate accuracy looks materially safer than at least one supported subgroup, so monitoring should include the worst-group slice."
+                "Aggregate accuracy looks materially safer than at least one supported "
+                "subgroup, so monitoring should include the worst-group slice."
             )
         if self.hidden_failure_flags_.get("masked_calibration_drift", False):
             implications.append(
-                "Aggregate calibration understates subgroup calibration drift; thresholding or triage policies should be stress-tested on the affected slices."
+                "Aggregate calibration understates subgroup calibration drift; "
+                "thresholding or triage policies should be stress-tested on the "
+                "affected slices."
             )
         if not self.discovered_slices_.empty:
             top_slice = self.discovered_slices_.iloc[0]
             implications.append(
-                f"The highest-concentration failure slice is {top_slice['slice_label']} with rule `{top_slice['rule']}`."
+                "The highest-concentration failure slice is "
+                f"{top_slice['slice_label']} with rule `{top_slice['rule']}`."
             )
         if self.hidden_failure_flags_.get("limited_support_coverage", False):
             implications.append(
-                "Several conclusions rest on incomplete subgroup support, so additional targeted data collection would improve audit coverage."
+                "Several conclusions rest on incomplete subgroup support, so additional "
+                "targeted data collection would improve audit coverage."
             )
         return implications
 

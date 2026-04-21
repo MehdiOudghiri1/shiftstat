@@ -14,4 +14,3 @@ TabularLike: TypeAlias = npt.NDArray[np.generic] | pd.DataFrame
 VectorLike: TypeAlias = npt.NDArray[np.generic] | pd.Series | Sequence[float] | Sequence[int]
 FeatureName: TypeAlias = str
 FeatureTypes: TypeAlias = dict[str, str]
-

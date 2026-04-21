@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.4.2)  20 APR 2026 14:20
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.4.2)  21 APR 2026 17:17
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -599,7 +599,7 @@ Package hyperref Info: Option `colorlinks' set `true' on input line 23.
 )
 \c@remark=\count335
  (style/macros.tex)
-LaTeX Font Info:    Trying to load font information for T1+lmr on input line 13
+LaTeX Font Info:    Trying to load font information for T1+lmr on input line 12
 .
 
 (C:\Users\medhi.oudghiri\AppData\Local\Programs\MiKTeX\tex/latex/lm\t1lmr.fd
@@ -612,24 +612,24 @@ File: l3backend-pdftex.def 2025-10-09 L3 backend support: PDF output (pdfTeX)
 ) (main.aux)
 \openout1 = `main.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 13.
-LaTeX Font Info:    ... okay on input line 13.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 13.
-LaTeX Font Info:    ... okay on input line 13.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 13.
-LaTeX Font Info:    ... okay on input line 13.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 13.
-LaTeX Font Info:    ... okay on input line 13.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 13.
-LaTeX Font Info:    ... okay on input line 13.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 13.
-LaTeX Font Info:    ... okay on input line 13.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 13.
-LaTeX Font Info:    ... okay on input line 13.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 13.
-LaTeX Font Info:    ... okay on input line 13.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 13.
-LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 12.
+LaTeX Font Info:    ... okay on input line 12.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 12.
+LaTeX Font Info:    ... okay on input line 12.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 12.
+LaTeX Font Info:    ... okay on input line 12.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 12.
+LaTeX Font Info:    ... okay on input line 12.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 12.
+LaTeX Font Info:    ... okay on input line 12.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 12.
+LaTeX Font Info:    ... okay on input line 12.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 12.
+LaTeX Font Info:    ... okay on input line 12.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 12.
+LaTeX Font Info:    ... okay on input line 12.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 12.
+LaTeX Font Info:    ... okay on input line 12.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -665,13 +665,13 @@ LaTeX Font Info:    ... okay on input line 13.
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-LaTeX Info: Redefining \microtypecontext on input line 13.
-Package microtype Info: Applying patch `item' on input line 13.
-Package microtype Info: Applying patch `toc' on input line 13.
-Package microtype Info: Applying patch `eqnum' on input line 13.
-Package microtype Info: Applying patch `footnote' on input line 13.
-Package microtype Info: Applying patch `verbatim' on input line 13.
-LaTeX Info: Redefining \microtypesetup on input line 13.
+LaTeX Info: Redefining \microtypecontext on input line 12.
+Package microtype Info: Applying patch `item' on input line 12.
+Package microtype Info: Applying patch `toc' on input line 12.
+Package microtype Info: Applying patch `eqnum' on input line 12.
+Package microtype Info: Applying patch `footnote' on input line 12.
+Package microtype Info: Applying patch `verbatim' on input line 12.
+LaTeX Info: Redefining \microtypesetup on input line 12.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using default protrusion set `alltext'.
@@ -725,41 +725,41 @@ File: epstopdf-sys.cfg 2021/03/18 v2.0 Configuration of epstopdf for MiKTeX
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: hyperref package is loaded.
 Package caption Info: End \AtBeginDocument code.
-Package hyperref Info: Link coloring ON on input line 13.
+Package hyperref Info: Link coloring ON on input line 12.
  (main.out) (main.out)
 \@outlinefile=\write3
 \openout3 = `main.out'.
 
 LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 1
-6.
+5.
 
 (C:\Users\medhi.oudghiri\AppData\Local\Programs\MiKTeX\tex/latex/lm\ot1lmr.fd
 File: ot1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    Trying to load font information for OML+lmm on input line 1
-6.
+5.
 
 (C:\Users\medhi.oudghiri\AppData\Local\Programs\MiKTeX\tex/latex/lm\omllmm.fd
 File: omllmm.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    Trying to load font information for OMS+lmsy on input line 
-16.
+15.
 
 (C:\Users\medhi.oudghiri\AppData\Local\Programs\MiKTeX\tex/latex/lm\omslmsy.fd
 File: omslmsy.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    Trying to load font information for OMX+lmex on input line 
-16.
+15.
 (C:\Users\medhi.oudghiri\AppData\Local\Programs\MiKTeX\tex/latex/lm\omxlmex.fd
 File: omxlmex.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <12> on input line 16.
+(Font)              <12> on input line 15.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <8> on input line 16.
+(Font)              <8> on input line 15.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <6> on input line 16.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 16.
+(Font)              <6> on input line 15.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 15.
 
 
 (C:\Users\medhi.oudghiri\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.
@@ -770,7 +770,7 @@ File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 sa.cfg
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 16.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 15.
 
 
 (C:\Users\medhi.oudghiri\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.
@@ -782,7 +782,7 @@ sb.cfg
 File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 )
 LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 1
-6.
+5.
 
 (C:\Users\medhi.oudghiri\AppData\Local\Programs\MiKTeX\tex/latex/lm\t1lmtt.fd
 File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
@@ -797,124 +797,142 @@ Package microtype Info: Loading generic protrusion settings for font family
 {C:/Users/medhi.oudghiri/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/U
 sers/medhi.oudghiri/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-ec.enc}
 ]
-LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 1
-1.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <10.95> on input line 7.
+LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 3
+7.
 
 (C:\Users\medhi.oudghiri\AppData\Local\Programs\MiKTeX\tex/latex/lm\ts1lmr.fd
 File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10.95> on input line 17.
-
 [2{C:/Users/medhi.oudghiri/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-
-ts1.enc}{C:/Users/medhi.oudghiri/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/
-lm/lm-mathit.enc}{C:/Users/medhi.oudghiri/AppData/Local/Programs/MiKTeX/fonts/e
-nc/dvips/lm/lm-mathsy.enc}{C:/Users/medhi.oudghiri/AppData/Local/Programs/MiKTe
-X/fonts/enc/dvips/lm/lm-rm.enc}{C:/Users/medhi.oudghiri/AppData/Local/Programs/
-MiKTeX/fonts/enc/dvips/lm/lm-mathex.enc}] [3]) (sections/02_setting.tex
-[4] [5] [6]) (sections/03_theory.tex [7] [8] [9]) (sections/04_experiments.tex
-[10]
-Underfull \hbox (badness 10000) in paragraph at lines 46--46
-[]|\T1/lmr/m/n/10.95 (+20) Median false
+mathit.enc}{C:/Users/medhi.oudghiri/AppData/Local/Programs/MiKTeX/fonts/enc/dvi
+ps/lm/lm-rm.enc}{C:/Users/medhi.oudghiri/AppData/Local/Programs/MiKTeX/fonts/en
+c/dvips/lm/lm-mathsy.enc}{C:/Users/medhi.oudghiri/AppData/Local/Programs/MiKTeX
+/fonts/enc/dvips/lm/lm-mathex.enc}{C:/Users/medhi.oudghiri/AppData/Local/Progra
+ms/MiKTeX/fonts/enc/dvips/lm/lm-ts1.enc}]) (sections/02_setting.tex [3])
+(sections/03_theory.tex [4] [5] [6] [7]) (sections/04_experiments.tex
+<figures/certified_audit_main.png, id=214, 794.97pt x 573.99057pt>
+File: figures/certified_audit_main.png Graphic file (type png)
+<use figures/certified_audit_main.png>
+Package pdftex.def Info: figures/certified_audit_main.png  used on input line 1
+9.
+(pdftex.def)             Requested size: 460.35791pt x 332.39801pt.
+ [8]
+[9 <./figures/certified_audit_main.png>]
+<figures/estimated_weight_and_search.png, id=230, 823.32208pt x 533.13023pt>
+File: figures/estimated_weight_and_search.png Graphic file (type png)
+<use figures/estimated_weight_and_search.png>
+Package pdftex.def Info: figures/estimated_weight_and_search.png  used on input
+ line 56.
+(pdftex.def)             Requested size: 460.35791pt x 298.09534pt.
+ [10 <./figures/estimated_weight_and_search.png>]
+<figures/adult_case_study.png, id=240, 829.43723pt x 412.77289pt>
+File: figures/adult_case_study.png Graphic file (type png)
+<use figures/adult_case_study.png>
+Package pdftex.def Info: figures/adult_case_study.png  used on input line 71.
+(pdftex.def)             Requested size: 460.35791pt x 229.10425pt.
+<figures/acs_external_validation.png, id=245, 953.40808pt x 420.83377pt>
+File: figures/acs_external_validation.png Graphic file (type png)
+<use figures/acs_external_validation.png>
+Package pdftex.def Info: figures/acs_external_validation.png  used on input lin
+e 103.
+(pdftex.def)             Requested size: 460.35791pt x 203.20512pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 124--124
+[]|\T1/lmr/m/n/10.95 (+20) Neither the label-only nor
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 46--46
-\T1/lmr/m/n/10.95 (+20) worst-group
+Underfull \hbox (badness 10000) in paragraph at lines 124--124
+\T1/lmr/m/n/10.95 (+20) sensitivity-adjusted cer-tifi-cate
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 46--46
-[]|\T1/lmr/m/n/10.95 (+20) False-alarm
+Underfull \hbox (badness 1558) in paragraph at lines 124--124
+[]|\T1/lmr/m/n/10.95 (+20) Later tar-get la-bels sup-port the
+ []
+
+) (sections/05_discussion.tex [11 <./figures/adult_case_study.png>] [12]
+[13 <./figures/acs_external_validation.png>]) [14] (main.bbl [15]
+Underfull \hbox (badness 3482) in paragraph at lines 129--136
+[]\T1/lmr/m/n/10.95 (+20) Ryan J. Tib-shi-rani, Rina Foygel Bar-ber, Em-manuel 
+J. Can-dès, and Aa-ditya Ram-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 46--47
-[]|\T1/lmr/m/n/10.95 (+20) False-alarm
+Underfull \hbox (badness 3179) in paragraph at lines 129--136
+\T1/lmr/m/n/10.95 (+20) das.  Con-for-mal pre-dic-tion un-der co-vari-ate shift
+.  In \T1/lmr/m/it/10.95 (+20) Ad-vances in Neu-ral In-for-
  []
 
 
-Overfull \hbox (55.80862pt too wide) in paragraph at lines 44--56
- [][] 
+Underfull \hbox (badness 1527) in paragraph at lines 129--136
+\T1/lmr/m/it/10.95 (+20) ma-tion Pro-cess-ing Sys-tems\T1/lmr/m/n/10.95 (+20) ,
+ vol-ume 32, 2019.  URL [][]$\T1/lmtt/m/n/10.95 https : / / papers . nips . cc 
+/ paper /
  []
 
-<figures/local_ess_main.png, id=230, 742.7385pt x 294.336pt>
-File: figures/local_ess_main.png Graphic file (type png)
-<use figures/local_ess_main.png>
-Package pdftex.def Info: figures/local_ess_main.png  used on input line 63.
-(pdftex.def)             Requested size: 422.77664pt x 167.5397pt.
-[11]
-<../paper_assets/generated/publication_suite/paper_subgroup_failures/figures/pa
-per_subgroup_failures_worst_group_ece_gap.png, id=240, 534.141pt x 297.621pt>
-File: ../paper_assets/generated/publication_suite/paper_subgroup_failures/figur
-es/paper_subgroup_failures_worst_group_ece_gap.png Graphic file (type png)
-<use ../paper_assets/generated/publication_suite/paper_subgroup_failures/figure
-s/paper_subgroup_failures_worst_group_ece_gap.png>
-Package pdftex.def Info: ../paper_assets/generated/publication_suite/paper_subg
-roup_failures/figures/paper_subgroup_failures_worst_group_ece_gap.png  used on 
-input line 83.
-(pdftex.def)             Requested size: 291.2458pt x 162.28423pt.
- [12 <./figures/local_ess_main.png> <../paper_assets/generated/publication_suit
-e/paper_subgroup_failures/figures/paper_subgroup_failures_worst_group_ece_gap.p
-ng>]) (sections/05_discussion.tex [13]) (main.bbl) (sections/appendix_a.tex
+) (sections/appendix_a.tex
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\new@ifnextchar' on input line 3.
 
-[14]
+[16]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\new@ifnextchar' on input line 42.
+(hyperref)                removing `\new@ifnextchar' on input line 15.
 
-[15]
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\new@ifnextchar' on input line 98.
-
+[17]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\new@ifnextchar' on input line 118.
+(hyperref)                removing `\new@ifnextchar' on input line 114.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\new@ifnextchar' on input line 131.
+(hyperref)                removing `\new@ifnextchar' on input line 126.
 
-[16]) [17] (main.aux)
+[18] [19] [20]) [21] (main.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2025-12-24>
  ***********
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: DE733B5CBAFF37B8C5C9DD8DFAE7C08D;5535.
+(rerunfilecheck)             Checksum: 92A4794255AB9A7DDC2CA9E0CBF498D5;5169.
  ) 
 Here is how much of TeX's memory you used:
- 18396 strings out of 467871
- 311865 string characters out of 5414021
- 785000 words of memory out of 5000000
- 46685 multiletter control sequences out of 15000+600000
- 716136 words of font info for 200 fonts, out of 8000000 for 9000
+ 18474 strings out of 467871
+ 313423 string characters out of 5414021
+ 783000 words of memory out of 5000000
+ 46724 multiletter control sequences out of 15000+600000
+ 718881 words of font info for 226 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 80i,11n,82p,1003b,601s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 80i,15n,82p,1003b,601s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Users/medhi.oudghiri/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/
 lmbx10.pfb><C:/Users/medhi.oudghiri/AppData/Local/Programs/MiKTeX/fonts/type1/p
 ublic/lm/lmbx12.pfb><C:/Users/medhi.oudghiri/AppData/Local/Programs/MiKTeX/font
 s/type1/public/lm/lmex10.pfb><C:/Users/medhi.oudghiri/AppData/Local/Programs/Mi
 KTeX/fonts/type1/public/lm/lmmi10.pfb><C:/Users/medhi.oudghiri/AppData/Local/Pr
-ograms/MiKTeX/fonts/type1/public/lm/lmmi8.pfb><C:/Users/medhi.oudghiri/AppData/
-Local/Programs/MiKTeX/fonts/type1/public/lm/lmr10.pfb><C:/Users/medhi.oudghiri/
-AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr12.pfb><C:/Users/medhi.o
-udghiri/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr17.pfb><C:/Users
-/medhi.oudghiri/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr8.pfb><C
-:/Users/medhi.oudghiri/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmri
-10.pfb><C:/Users/medhi.oudghiri/AppData/Local/Programs/MiKTeX/fonts/type1/publi
-c/lm/lmsy10.pfb><C:/Users/medhi.oudghiri/AppData/Local/Programs/MiKTeX/fonts/ty
-pe1/public/lm/lmsy8.pfb><C:/Users/medhi.oudghiri/AppData/Local/Programs/MiKTeX/
-fonts/type1/public/lm/lmtt10.pfb><C:/Users/medhi.oudghiri/AppData/Local/Program
-s/MiKTeX/fonts/type1/public/lm/lmtt12.pfb><C:/Users/medhi.oudghiri/AppData/Loca
-l/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on main.pdf (17 pages, 578600 bytes).
+ograms/MiKTeX/fonts/type1/public/lm/lmmi12.pfb><C:/Users/medhi.oudghiri/AppData
+/Local/Programs/MiKTeX/fonts/type1/public/lm/lmmi6.pfb><C:/Users/medhi.oudghiri
+/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmmi8.pfb><C:/Users/medhi.
+oudghiri/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr10.pfb><C:/User
+s/medhi.oudghiri/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr12.pfb>
+<C:/Users/medhi.oudghiri/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lm
+r17.pfb><C:/Users/medhi.oudghiri/AppData/Local/Programs/MiKTeX/fonts/type1/publ
+ic/lm/lmr6.pfb><C:/Users/medhi.oudghiri/AppData/Local/Programs/MiKTeX/fonts/typ
+e1/public/lm/lmr8.pfb><C:/Users/medhi.oudghiri/AppData/Local/Programs/MiKTeX/fo
+nts/type1/public/lm/lmri10.pfb><C:/Users/medhi.oudghiri/AppData/Local/Programs/
+MiKTeX/fonts/type1/public/lm/lmsy10.pfb><C:/Users/medhi.oudghiri/AppData/Local/
+Programs/MiKTeX/fonts/type1/public/lm/lmsy8.pfb><C:/Users/medhi.oudghiri/AppDat
+a/Local/Programs/MiKTeX/fonts/type1/public/lm/lmtt10.pfb><C:/Users/medhi.oudghi
+ri/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmtt12.pfb><C:/Users/med
+hi.oudghiri/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/m
+sam10.pfb><C:/Users/medhi.oudghiri/AppData/Local/Programs/MiKTeX/fonts/type1/pu
+blic/amsfonts/symbols/msbm10.pfb>
+Output written on main.pdf (21 pages, 1476497 bytes).
 PDF statistics:
- 403 PDF objects out of 1000 (max. 8388607)
- 97 named destinations out of 1000 (max. 500000)
- 48347 words of extra memory for PDF output out of 51595 (max. 10000000)
+ 456 PDF objects out of 1000 (max. 8388607)
+ 87 named destinations out of 1000 (max. 500000)
+ 49365 words of extra memory for PDF output out of 51595 (max. 10000000)
 

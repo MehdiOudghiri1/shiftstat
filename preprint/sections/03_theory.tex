@@ -1,181 +1,183 @@
-\section{Theory}\label{sec:theory}
+\section{Theory: From Local Support to Certified Alarms}\label{sec:theory}
 
-\subsection{Transport of subgroup-bin reliability}
+The theory has one main message. Transport identifies the target residual, but local support determines whether the corresponding alarm can be certified.
 
-\begin{proposition}[Transport identity for subgroup-bin reliability]\label{prop:transport}
-Under \cref{ass:covshift,ass:overlap}, for every bin \(b\) and subgroup \(g\in\cG\),
+\subsection{The Identifiability Boundary}
+
+The first result explains why local overlap is not merely a numerical diagnostic. If the target cell has no source support, the target residual in that cell is not identified by source labels and target covariates.
+
+\begin{proposition}[No local overlap, no certification]\label{prop:no-overlap}
+Let \(A\subseteq\cX\) be a subgroup-bin cell with \(Q_X(A)=\pi>0\) and \(P_X(A)=0\). For any \(\Delta\in(0,1)\), there exist two covariate-shift worlds \((P_0,Q_0)\) and \((P_1,Q_1)\) such that the observable law of the labeled source sample and unlabeled target covariates is identical in the two worlds, but
 \[
-\mu_{b,g}^Q
-=
-\EE_P[\wt(X)A_{b,g}(X)]
+r_A^{Q_1}-r_A^{Q_0}=\Delta .
 \]
-and
-\[
-\theta_{b,g}^Q
-=
-\EE_P[\wt(X)(Y-\score(X))A_{b,g}(X)].
-\]
-If \(\mu_{b,g}^Q>0\), then
-\[
-r_{b,g}^Q
-=
-\frac{\EE_P[\wt(X)(Y-\score(X))A_{b,g}(X)]}{\EE_P[\wt(X)A_{b,g}(X)]}.
-\]
+Consequently, no audit using only those observations can uniformly certify target reliability in \(A\).
 \end{proposition}
 
-The numerator is the weighted source residual mass for one subgroup-bin cell, and the denominator is the weighted source estimate of that cell's target mass.
+The point is simple. Target covariates can reveal that a cell exists in deployment, but if source labels never appear there, the conditional label law inside that cell is unconstrained by the audit data. A finite-sample version is immediate: when \(P_X(A)=O(1/n)\), there is constant probability that the source audit set contains no label from \(A\). Honest inference must remain wide on that event.
 
-\subsection{Local ESS is the correct variance scale}
+\subsection{The Main Certificate}
 
-We now study the estimator that matters most for worst-group auditing:
+Now suppose the cell has observed support. Write
 \[
-\widehat r_{b,g}
-=
-\frac{\sum_{i=1}^{n}\wt_i(Y_i-\score_i)A_i}{\sum_{i=1}^{n}\wt_iA_i},
+Z_i=Y_i-s(X_i),
+\qquad
+m_i=\EE[Z_i\given X_i].
 \]
-where for short we write \(\wt_i=\wt(X_i)\), \(\score_i=\score(X_i)\), and \(A_i=A_{b,g}(X_i)\).
-
-\begin{assumption}[Bounded conditional residual variance]\label{ass:variance}
-For each audited cell \((b,g)\), the conditional residual variance
+For any nonnegative audit weights \(v_i\), define
 \[
-\Var(Y-\score(X)\given X=x)
-\]
-is bounded on that cell by a finite constant \(\sigma_{b,g}^2\).
-\end{assumption}
-
-\begin{theorem}[Local ESS governs subgroup-bin variance]\label{thm:local-ess}
-Assume \cref{ass:covshift,ass:overlap,ass:variance}. Fix a subgroup-bin cell \((b,g)\) and suppose \(\sum_{i=1}^{n}\wt_iA_i>0\). Define the conditional weighted mean residual
-\[
-\bar r_{b,g}(X_{1:n})
+\widehat r_c(v)
 =
-\frac{\sum_{i=1}^{n}\wt_iA_i\,\EE[Y_i-\score_i\given X_i]}{\sum_{i=1}^{n}\wt_iA_i}.
-\]
-Then, conditional on \(X_1,\dots,X_n\),
-\[
-\EE[\widehat r_{b,g}\given X_{1:n}]
-=
-\bar r_{b,g}(X_{1:n})
+\frac{\sum_i v_iA_c(X_i)Z_i}{\sum_i v_iA_c(X_i)}
 \]
 and
-\begin{equation}\label{eq:local-variance}
-\Var(\widehat r_{b,g}\given X_{1:n})
+\[
+\widehat{\ess}_c(v)
 =
-\frac{\sum_{i=1}^{n}\wt_i^2A_i\,\Var(Y_i-\score_i\given X_i)}{\left(\sum_{i=1}^{n}\wt_iA_i\right)^2}
-\le
-\frac{\sigma_{b,g}^2}{{\ess}_{b,g}}.
+\frac{\bigl(\sum_i v_iA_c(X_i)\bigr)^2}
+{\sum_i v_i^2A_c(X_i)}.
+\]
+The conditional target of this weighted mean is
+\[
+\bar r_c(v)
+=
+\frac{\sum_i v_iA_c(X_i)m_i}{\sum_i v_iA_c(X_i)} .
+\]
+This is the right finite-sample object when the source covariates and target covariates have been observed. Population certification adds one more transport term below.
+
+\begin{assumption}[Label-independent audit weights]\label{ass:label-independent-weights}
+Conditional on the source and target covariates and on any randomness used to fit the weights, the audit weights \(v_i\) are fixed and the labels \(Y_i\) are independent. This holds for oracle weights \(v_i=w(X_i)\). It also holds for learned weights \(v_i=\widehat w_i\) when the weight assigned to source point \(i\) is trained without using \(Y_i\), for example by source-side cross-fitting.
+\end{assumption}
+
+Learned weights also require a local nuisance bound. For each cell, let
+\[
+S_c=\sum_i w(X_i)A_c(X_i),
+\qquad
+\Delta_c=\sum_i|\widehat w_i-w(X_i)|A_c(X_i).
+\]
+Assume a conservative envelope \(\rho_c\) satisfies
+\begin{equation}\label{eq:rho-envelope}
+\rho_c\ge \frac{2\Delta_c}{S_c-\Delta_c},
+\qquad S_c>\Delta_c .
 \end{equation}
+For oracle weights, set \(\rho_c=0\).
+
+\begin{theorem}[Locally certified subgroup-bin inference]\label{thm:main-certificate}
+Assume \cref{ass:label-independent-weights}. Let \(M=|\cC|\), \(Y_i\in\{0,1\}\), \(s(X_i)\in[0,1]\), and suppose all audited denominators are positive. Then, conditional on the covariates and fitted weights,
+\[
+\PP\left(
+\forall c\in\cC:
+\left|\widehat r_c(v)-\bar r_c(v)\right|
+\le
+\sqrt{\frac{\log(2M/\delta_1)}{2\widehat{\ess}_c(v)}}
+\right)
+\ge
+1-\delta_1 .
+\]
+If \(v_i=\widehat w_i\) are learned weights satisfying \cref{eq:rho-envelope}, then on the same event,
+\[
+\forall c\in\cC:
+\left|\widehat r_c(\widehat w)-\bar r_c(w)\right|
+\le
+\sqrt{\frac{\log(2M/\delta_1)}{2\widehat{\ess}_c(\widehat w)}}
+\;+\;\rho_c .
+\]
+Finally, suppose \(0\le w(X)\le W\). Let
+\[
+\epsilon_n(\delta_2)=2W\sqrt{\frac{\log(4M/\delta_2)}{2n}},
+\qquad
+\gamma_c(\delta_2)=
+\frac{2\epsilon_n(\delta_2)}{\mu_c^Q-\epsilon_n(\delta_2)}
+\]
+for cells with \(\mu_c^Q>\epsilon_n(\delta_2)\). Then, with probability at least \(1-\delta_1-\delta_2\),
+\[
+\forall c\in\cC:
+\left|\widehat r_c(\widehat w)-r_c^Q\right|
+\le
+\underbrace{
+\sqrt{\frac{\log(2M/\delta_1)}{2\widehat{\ess}_c(\widehat w)}}
+}_{\textnormal{local label noise}}
++
+\underbrace{\rho_c}_{\textnormal{weight nuisance}}
++
+\underbrace{\gamma_c(\delta_2)}_{\textnormal{source design}}.
+\]
+The oracle-weight case is recovered by taking \(\widehat w=w\) and \(\rho_c=0\).
 \end{theorem}
 
-Inside one audited cell, \(\widehat r_{b,g}\) is just a weighted average of residuals. The variance of a weighted average is the sum of squared normalized weights times the conditional residual variances, which is why \({\ess}_{b,g}\), not the global \(\ess\), is the right information scale.
+The theorem separates three sources of uncertainty. The first is the unavoidable label noise in the selected local cell, and its scale is exactly local ESS. The second is density-ratio error; cross-fitting makes the label-noise argument valid but does not make \(\rho_c\) small. The third is the difference between the observed finite source covariate design and the population target residual \(r_c^Q\). In many audits the conditional guarantee is the most transparent report; population claims require the additional \(\gamma_c\) term or a sharper empirical-process analysis.
 
-\subsection{False worst-group alarms under clean covariate shift}
+The proof has the same structure. Conditional on the covariates and fitted weights, the estimator is a weighted average of independent Bernoulli residuals. Hoeffding's inequality gives a radius controlled by the sum of squared normalized weights, which is \(1/\widehat{\ess}_c\). The learned-weight part is a deterministic ratio perturbation: if the estimated weights differ from the oracle weights by \(\Delta_c\) inside the cell, the conditional target can move by at most \(2\Delta_c/(S_c-\Delta_c)\). The population term applies the same ratio perturbation to the empirical source design.
 
-The previous theorem becomes especially sharp when the model is locally well calibrated. That is exactly the setting used in our new synthetic experiment.
-
-\begin{corollary}[False-alarm bound for worst-group audits]\label{cor:false-alarm}
-Assume the conditions of \cref{thm:local-ess}. Suppose that for every audited cell \((b,g)\),
+The nuisance term is best interpreted as a local robustness penalty, not as another sampling variance. It asks: how much could the cellwise residual target move if the learned density ratio is replaced by a plausible oracle ratio? When a model-based log-ratio error bound is available, the theorem gives a direct conversion. If
 \[
-\EE[Y-\score(X)\given X=x]=0
-\qquad\text{whenever } A_{b,g}(x)=1.
-\]
-Then for any threshold \(t>0\),
-\begin{equation}\label{eq:false-alarm-bound}
-\PP\!\left(
-\max_{1\le b\le B,\ g\in\cG}
-|\widehat r_{b,g}|>t
-\;\middle|\;
-X_{1:n}
-\right)
-\le
-\sum_{b=1}^{B}\sum_{g\in\cG}\frac{\sigma_{b,g}^2}{t^2{\ess}_{b,g}}.
-\end{equation}
-In particular, if
-\[
-{\ess}_{\min}^{\mathrm{local}}
-=
-\min_{1\le b\le B,\ g\in\cG}{\ess}_{b,g},
+\sup_{i:A_c(X_i)=1}
+\left|\log \widehat w_i-\log w(X_i)\right|
+\le \kappa_c ,
+\qquad \kappa_c<\log 2,
 \]
 then
 \[
-\PP\!\left(
-\max_{b,g}|\widehat r_{b,g}|>t
-\;\middle|\;
-X_{1:n}
-\right)
+\rho_c
 \le
-\frac{BG\,\sigma_{\max}^2}{t^2{\ess}_{\min}^{\mathrm{local}}},
+\frac{2(e^{\kappa_c}-1)}{2-e^{\kappa_c}} .
 \]
-where \(\sigma_{\max}^2=\max_{b,g}\sigma_{b,g}^2\).
+In most deployments, such a bound is not available from first principles. The practical substitute is a sensitivity envelope: fit a collection \(\mathcal W\) of cross-fitted density-ratio models using different regularization levels, clipping thresholds, feature sets, and resampling perturbations, and compute
+\[
+\widehat\rho_c^{\mathrm{sens}}
+=
+\max_{\widetilde w\in\mathcal W}
+\frac{
+2\sum_i|\widehat w_i-\widetilde w_i|A_c(X_i)
+}{
+\sum_i\widetilde w_iA_c(X_i)
+-
+\sum_i|\widehat w_i-\widetilde w_i|A_c(X_i)
+},
+\]
+over candidates with positive denominator. This is a valid \(\rho_c\) only if the candidate envelope contains the oracle ratio with high probability; otherwise it is a transparent sensitivity analysis. If \(\widehat\rho_c^{\mathrm{sens}}\) is comparable to the observed gap, the audit should report insufficient evidence rather than a target-certified alarm.
+
+This also gives a useful scale calculation. Ignoring nuisance and population terms, to certify a gap \(g=|\widehat r_c|\) above tolerance \(\tau\), one needs roughly
+\[
+\widehat{\ess}_c
+\gtrsim
+\frac{\log(2M/\delta)}{2(g-\tau)^2}.
+\]
+For example, with \(M=150\), \(\delta=0.10\), and a margin \(g-\tau=0.20\), the required local ESS is about \(100\). A cell supported by ten effective labels cannot certify such a margin, no matter how large the global ESS is.
+
+\begin{corollary}[Certified alarm rule]\label{cor:certified-alarm}
+Let
+\[
+B_c
+=
+\sqrt{\frac{\log(2M/\delta_1)}{2\widehat{\ess}_c(\widehat w)}}
+\;+\;\rho_c+\gamma_c(\delta_2).
+\]
+If \(|r_c^Q|\le \tau\) for all \(c\in\cC\), then the rule
+\[
+\exists c\in\cC:
+|\widehat r_c(\widehat w)|-B_c>\tau
+\]
+has false-alarm probability at most \(\delta_1+\delta_2\), whenever the nuisance envelope is valid.
 \end{corollary}
 
-Even when there is no true subgroup failure, a worst-group audit can exceed a practical threshold simply because one audited cell has too little weighted information.
+This is the paper's practical certificate. A point estimate becomes an actionable alarm only after subtracting a simultaneous local uncertainty radius. If the point estimate exceeds \(\tau\) but the certified excess is zero, the audit has not shown that the subgroup is safe; it has shown that the current evidence is insufficient.
 
-\subsection{Why global ESS can be non-diagnostic}
+\subsection{Why Global ESS Cannot Replace Local ESS}
 
-The next result shows that local and global overlap can tell very different stories.
+The global ESS can be large while the selected cell is effectively supported by one weighted label.
 
-\begin{proposition}[Global ESS can remain large while one audited cell degenerates]\label{prop:global-misleading}
-Fix any target cell mass \(\pi\in(0,1)\) and any integer \(N\ge 2\). There exists a weighted sample \((A_i,\wt_i)_{i=1}^{N}\) such that
+\begin{proposition}[Large global ESS with degenerate local ESS]\label{prop:global-misleading}
+For any target cell mass \(\pi\in(0,1)\) and integer \(N\ge2\), there is a weighted sample such that the cell has weighted mass \(\pi\) and local ESS equal to \(1\), while the global ESS equals
 \[
-\frac{1}{N}\sum_{i=1}^{N}\wt_iA_i=\pi,
-\qquad
-{\ess}_{\mathrm{cell}}=1,
-\]
-but the global effective sample size satisfies
-\begin{equation}\label{eq:global-counterexample}
-\ess
-=
-\frac{1}{\pi^2 + (1-\pi)^2/(N-1)}.
-\end{equation}
-\end{proposition}
-
-\begin{proof}[Construction]
-Take exactly one active point, say \(A_1=1\), and let \(A_2=\cdots=A_N=0\). Assign weight \(\wt_1=N\pi\) to the active point and equal weights
-\[
-\wt_2=\cdots=\wt_N=\frac{N(1-\pi)}{N-1}
-\]
-to the remaining \(N-1\) points. Then the weighted cell mass is \(\pi\), the active cell contains only one weighted point, and therefore \({\ess}_{\mathrm{cell}}=1\). The global ESS is obtained by direct substitution into \cref{eq:global-ess-def}, which yields \cref{eq:global-counterexample}.
-\end{proof}
-
-For example, if \(\pi=0.05\), then the right-hand side of \cref{eq:global-counterexample} is close to \(400\) for large \(N\). So a reassuring global ESS number does not prevent one audited cell from being statistically degenerate.
-
-\subsection{Real hidden failures still matter}
-
-The local-ESS story does not replace the hidden-failure story. It complements it.
-
-\begin{proposition}[Aggregate calibration can hide genuine subgroup failure]\label{prop:hidden}
-There exist distributions \(P,Q\), a score function \(\score\), and a subgroup family \(\cG\) such that
-\[
-\Cal_{Q,\Bin}(\ind)=0
-\qquad\text{but}\qquad
-\WCE_{Q,\Bin}(\cG)>0.
+\frac{1}{\pi^2+(1-\pi)^2/(N-1)}.
 \]
 \end{proposition}
 
-\begin{proof}[Construction]
-Take two groups \(g_A\) and \(g_B\) with equal target mass. Let \(Y=0\) almost surely on group \(A\) and \(Y=1\) almost surely on group \(B\). Let the score be constant, \(\score(X)=1/2\), and use a single score bin. Then the aggregate residual is
-\[
-\EE_Q[Y-\score(X)]
-=
-\frac{1}{2}(0-1/2)+\frac{1}{2}(1-1/2)=0,
-\]
-so aggregate calibration is perfect. But inside each subgroup the absolute calibration gap is \(1/2\), so subgroup reliability is poor.
-\end{proof}
+For \(\pi=0.05\), this quantity approaches \(400\) as \(N\) grows. Thus a global ESS near \(400\) does not rule out a worst-cell alarm supported by a single effective label.
 
-\Cref{prop:hidden} explains why worst-group auditing is needed in the first place. \Cref{cor:false-alarm} explains why that audit must also be accompanied by local support diagnostics.
+\subsection{Search, Stronger Estimators, and the Same Bottleneck}
 
-\subsection{Estimated weights and selective deployment}
+\Cref{thm:main-certificate} remains valid after selecting the empirically worst cell from a pre-specified finite family \(\cC\), because the bound holds simultaneously over that family. If analysts search over a richer class after seeing labels, they must either certify over the full searched family or reserve fresh labels for the final selected cell. Sample splitting is simple: use one part of the source audit labels to discover a candidate cell, and an independent part to apply the one-cell version of the certificate.
 
-The local-ESS theorem isolates the sampling-noise part of the problem under oracle weights. With estimated weights \(\widehat w\), the total error decomposes as
-\[
-|\widehat r_{b,g}(\widehat w)-r_{b,g}^Q|
-\le
-|\widehat r_{b,g}(\widehat w)-\widehat r_{b,g}(w)|
-+
-|\widehat r_{b,g}(w)-r_{b,g}^Q|.
-\]
-The first term is weight-estimation error. The second is the local-overlap term analyzed above. The same logic also applies to selective deployment. If \(\cA_\tau=\{x:u(x)\ge\tau\}\) is the accepted set at threshold \(\tau\), then the accepted-set subgroup indicator is
-\[
-\widetilde A_{g,\tau}(x)=\ind\{x\in\cA_\tau\}g(x).
-\]
-Accepted-set risk, accepted-set calibration, and subgroup abstention gaps are therefore governed by the same local-overlap mechanism \citep{Geifman2017Selective, Jones2020SelectiveDisparities}.
+Doubly robust estimators can reduce nuisance bias when an outcome regression is accurate, but they do not remove the local-overlap frontier. Their influence functions still contain a cell-local weighted residual term. When a target subgroup-bin cell lacks source labels, no augmentation can identify its target conditional label law without additional assumptions.

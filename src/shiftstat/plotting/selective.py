@@ -6,7 +6,6 @@ from pathlib import Path
 from typing import Any
 
 import matplotlib.pyplot as plt
-import numpy as np
 import pandas as pd
 from matplotlib.axes import Axes
 
@@ -80,7 +79,9 @@ def plot_abstention_distribution(
     axis.set_xlabel("Selection score" if which == "score" else "Confidence")
     axis.set_ylabel("Share")
     axis.legend(loc="best")
-    title = "Abstention score distribution" if which == "score" else "Accepted vs rejected confidence"
+    title = (
+        "Abstention score distribution" if which == "score" else "Accepted vs rejected confidence"
+    )
     return finalize_figure(axis, title=title, save_path=save_path, show=show)
 
 

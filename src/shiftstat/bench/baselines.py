@@ -35,8 +35,7 @@ def default_baseline_registry() -> BaselineRegistry:
         "recalibration_only",
         _recalibration_only_baseline,
         description=(
-            "Reference-fit model followed by post-hoc calibration on held-out "
-            "reference data."
+            "Reference-fit model followed by post-hoc calibration on held-out reference data."
         ),
         category="reliability",
     )
@@ -50,8 +49,7 @@ def default_baseline_registry() -> BaselineRegistry:
         "subgroup_audit",
         _subgroup_audit_baseline,
         description=(
-            "Subgroup-aware audit highlighting worst-group degradation and "
-            "failure concentration."
+            "Subgroup-aware audit highlighting worst-group degradation and failure concentration."
         ),
         category="audit",
     )
@@ -233,9 +231,7 @@ def _reliability_baseline(
     if result.weighting_summary is not None:
         record["effective_sample_size"] = result.weighting_summary["effective_sample_size"]
     return {
-        str(key): _scalarize(value)
-        for key, value in record.items()
-        if str(key) != "estimator_name"
+        str(key): _scalarize(value) for key, value in record.items() if str(key) != "estimator_name"
     }
 
 
@@ -280,9 +276,7 @@ def _selective_baseline(
             abstention_gap = float(match.iloc[0])
     record["subgroup_abstention_gap"] = abstention_gap
     return {
-        str(key): _scalarize(value)
-        for key, value in record.items()
-        if str(key) != "estimator_name"
+        str(key): _scalarize(value) for key, value in record.items() if str(key) != "estimator_name"
     }
 
 

@@ -1,0 +1,2 @@
+dataset,n_train,n_source_audit,n_target,domain_auc,global_ess,n_cells,naive_alarm_count,certified_alarm_count,top_naive_group,top_naive_bin,top_naive_gap,top_naive_local_ess,top_naive_ci_half_width,top_naive_certified,top_naive_target_gap
+Adult Census income,16000,9000,12000,0.6791760115740741,5043.454471440596,145,19,0,workclass=Federal-gov,"[0.83, 1.00]",0.3456149974761566,10.648060763939448,0.6118515718738831,False,0.0004657902480425253

@@ -1,29 +1,38 @@
 from __future__ import annotations
 
+import pytest
 from examples.abstention_under_shift import run_example as run_abstention_example
-from examples.aggregate_vs_subgroup_calibration import run_example as run_aggregate_vs_subgroup_example
-from examples.benchmark_covariate_sweep import run_example as run_benchmark_covariate_sweep_example
-from examples.deployment_audit_case_study import run_example as run_deployment_audit_example
-from examples.discover_failure_slices import run_example as run_slice_discovery_example
-from examples.experiment_configuration_workflow import run_example as run_experiment_configuration_example
-from examples.generate_paper_ready_artifacts import run_example as run_paper_artifact_example
-from examples.selective_deployment_case_study import run_example as run_selective_case_study_example
-from examples.selective_prediction_benchmark import run_example as run_selective_benchmark_example
-from examples.reliability_benchmark_with_subgroup_failures import (
-    run_example as run_subgroup_benchmark_example,
+from examples.aggregate_vs_subgroup_calibration import (
+    run_example as run_aggregate_vs_subgroup_example,
 )
-from examples.subgroup_rejection_analysis import run_example as run_subgroup_rejection_example
-from examples.weighted_threshold_tuning_under_shift import run_example as run_weighted_threshold_example
+from examples.benchmark_covariate_sweep import run_example as run_benchmark_covariate_sweep_example
 from examples.calibration_degradation_under_shift import run_example as run_calibration_example
+from examples.deployment_audit_case_study import run_example as run_deployment_audit_example
 from examples.detect_feature_drift import run_example as run_detection_example
+from examples.discover_failure_slices import run_example as run_slice_discovery_example
+from examples.experiment_configuration_workflow import (
+    run_example as run_experiment_configuration_example,
+)
 from examples.full_workflow import run_example as run_workflow_example
+from examples.generate_paper_ready_artifacts import run_example as run_paper_artifact_example
 from examples.hidden_subgroup_failures_under_shift import run_example as run_hidden_failure_example
 from examples.importance_weighting_evaluation import run_example as run_weighting_example
 from examples.recalibration_under_shift import run_example as run_recalibration_example
+from examples.reliability_benchmark_with_subgroup_failures import (
+    run_example as run_subgroup_benchmark_example,
+)
 from examples.reliability_report_workflow import run_example as run_reliability_workflow_example
+from examples.selective_deployment_case_study import run_example as run_selective_case_study_example
+from examples.selective_prediction_benchmark import run_example as run_selective_benchmark_example
+from examples.subgroup_rejection_analysis import run_example as run_subgroup_rejection_example
 from examples.weighted_calibration_evaluation import run_example as run_weighted_calibration_example
+from examples.weighted_threshold_tuning_under_shift import (
+    run_example as run_weighted_threshold_example,
+)
 
 
+@pytest.mark.examples
+@pytest.mark.slow
 def test_examples_run() -> None:
     abstention_result = run_abstention_example()
     detection_result = run_detection_example()

@@ -12,7 +12,10 @@ from shiftstat.reliability.analyzer import ReliabilityAnalyzer
 from shiftstat.selective.policy import AbstentionPolicy
 from shiftstat.selective.results import RiskCoverageCurve, SelectiveProfile
 from shiftstat.subgroup import group_by_feature
-from shiftstat.utils.probabilities import confidence_from_probabilities, extract_positive_class_probabilities
+from shiftstat.utils.probabilities import (
+    confidence_from_probabilities,
+    extract_positive_class_probabilities,
+)
 from shiftstat.utils.schema import extract_feature_names
 
 
@@ -230,7 +233,9 @@ class SelectivePredictor:
 
         accepted_profile = None
         if np.any(accepted):
-            accepted_weights = None if sample_weight is None else np.asarray(sample_weight)[accepted]
+            accepted_weights = (
+                None if sample_weight is None else np.asarray(sample_weight)[accepted]
+            )
             accepted_profile = analyzer._build_profile(
                 np.asarray(y_true)[accepted],
                 probabilities[accepted],
@@ -238,11 +243,15 @@ class SelectivePredictor:
                 name=f"{name}_accepted",
             )
 
+        policy_threshold = (
+            self.policy.threshold_ if hasattr(self.policy, "threshold_") else self.policy.threshold
+        )
+
         return SelectiveProfile(
             name=name,
             policy_name=self.policy.name,
             score_method=self.policy.method,
-            threshold=float(self.policy.threshold_ if hasattr(self.policy, "threshold_") else self.policy.threshold),
+            threshold=float("nan") if policy_threshold is None else float(policy_threshold),
             weighted=sample_weight is not None,
             n_samples=int(len(probabilities)),
             accepted_samples=int(summary["accepted_samples"]),

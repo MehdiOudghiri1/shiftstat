@@ -286,7 +286,10 @@ def selective_summary(
         "full_brier_score": float(full_brier_score),
         "full_ece": float(full_calibration["ece"]),
         "full_mce": float(full_calibration["mce"]),
-        "risk_reduction": float((1.0 - full_accuracy) - selective_risk(y_true_arr, prob_arr, mask_arr, sample_weight=weights)),
+        "risk_reduction": float(
+            (1.0 - full_accuracy)
+            - selective_risk(y_true_arr, prob_arr, mask_arr, sample_weight=weights)
+        ),
         "log_loss_reduction": float(full_log_loss - selective_log),
         "ece_reduction": float(full_calibration["ece"] - calibration["ece"]),
         "mean_confidence_accepted": mean_confidence_accepted,
@@ -312,7 +315,10 @@ def candidate_thresholds(
         thresholds = np.unique(np.quantile(scores, quantiles))
     thresholds = thresholds.astype(float)
     full_coverage_threshold = float(np.min(scores) - 1e-12)
-    return np.unique(np.concatenate([[full_coverage_threshold], thresholds]))
+    return np.asarray(
+        np.unique(np.concatenate([[full_coverage_threshold], thresholds])),
+        dtype=float,
+    )
 
 
 def risk_coverage_table(
@@ -334,7 +340,11 @@ def risk_coverage_table(
     validate_same_length(y_true_arr, prob_arr, scores)
     weights = _normalize_weights(sample_weight, len(scores))
 
-    threshold_values = candidate_thresholds(scores, max_points=max_points) if thresholds is None else np.asarray(thresholds, dtype=float)
+    threshold_values = (
+        candidate_thresholds(scores, max_points=max_points)
+        if thresholds is None
+        else np.asarray(thresholds, dtype=float)
+    )
     records: list[dict[str, Any]] = []
     for threshold in np.sort(np.unique(threshold_values)):
         accepted = scores >= float(threshold)

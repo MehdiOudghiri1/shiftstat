@@ -323,8 +323,7 @@ def make_calibration_drift_scenario(
         name=name,
         family="calibration_drift",
         description=(
-            "Operational calibration drift scenarios with slice-concentrated "
-            "failure modes."
+            "Operational calibration drift scenarios with slice-concentrated failure modes."
         ),
         seeds=scenario_seeds,
         case_definitions=case_definitions,
@@ -486,9 +485,7 @@ def make_mixed_tabular_scenario(
             shift_pattern=str(case_definition["shift_pattern"]),
             random_state=seed,
         )
-        numeric_features = [
-            column for column in data.X_ref.columns if str(column).startswith("x")
-        ]
+        numeric_features = [column for column in data.X_ref.columns if str(column).startswith("x")]
         categorical_features = [
             column for column in data.X_ref.columns if str(column).startswith("cat_")
         ]
@@ -529,8 +526,7 @@ def make_mixed_tabular_scenario(
         name=name,
         family="mixed_tabular",
         description=(
-            "Configurable mixed-type synthetic benchmark family with interpretable "
-            "shift patterns."
+            "Configurable mixed-type synthetic benchmark family with interpretable shift patterns."
         ),
         seeds=scenario_seeds,
         case_definitions=case_definitions,
@@ -564,7 +560,7 @@ def scenario_from_config(config: Mapping[str, Any]) -> BenchmarkScenario:
     if "seeds" in config:
         parameters["seeds"] = [int(value) for value in config["seeds"]]
 
-    builders = {
+    builders: dict[str, Callable[..., BenchmarkScenario]] = {
         "covariate_shift_sweep": make_covariate_shift_sweep_scenario,
         "subgroup_degradation": make_subgroup_degradation_scenario,
         "calibration_drift": make_calibration_drift_scenario,

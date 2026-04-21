@@ -1,7 +1,10 @@
 from __future__ import annotations
 
+import json
 import math
 from pathlib import Path
+
+import pytest
 
 from shiftstat.bench import (
     BenchmarkRunner,
@@ -10,6 +13,7 @@ from shiftstat.bench import (
 )
 
 
+@pytest.mark.benchmark
 def test_benchmark_runner_aggregation_matches_seed_average() -> None:
     scenario = make_covariate_shift_sweep_scenario(
         name="aggregation_test",
@@ -32,6 +36,8 @@ def test_benchmark_runner_aggregation_matches_seed_average() -> None:
     assert aggregate_frame["n_runs"].iloc[0] == 2
 
 
+@pytest.mark.benchmark
+@pytest.mark.integration
 def test_benchmark_result_exports_publication_artifacts(tmp_path: Path) -> None:
     scenario = make_selective_shift_scenario(
         name="artifact_test",
@@ -53,7 +59,13 @@ def test_benchmark_result_exports_publication_artifacts(tmp_path: Path) -> None:
     assert paths["figures"]["target_risk_reduction"].exists()
     assert paths["latex_tables"]["target_risk_reduction"].exists()
 
+    manifest = json.loads(paths["manifest"].read_text(encoding="utf-8"))
+    assert manifest["files"]["json"] == "artifact_test_benchmark.json"
+    assert manifest["checksums"]["json"]["sha256"]
+    assert manifest["figures"]["target_risk_reduction"].startswith("figures/")
 
+
+@pytest.mark.benchmark
 def test_benchmark_schema_stability() -> None:
     scenario = make_covariate_shift_sweep_scenario(
         name="schema_test",

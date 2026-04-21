@@ -322,9 +322,9 @@ def _configurable_base_logit(
     categorical_names: list[str],
     intercept: float,
 ) -> np.ndarray:
-    numeric_matrix = frame[
-        [f"x{i}" for i in range(len(numeric_coefficients))]
-    ].to_numpy(dtype=float)
+    numeric_matrix = frame[[f"x{i}" for i in range(len(numeric_coefficients))]].to_numpy(
+        dtype=float
+    )
     logit = numeric_matrix @ numeric_coefficients + intercept
     for name in categorical_names:
         logit += frame[name].map(category_bonus).to_numpy(dtype=float)

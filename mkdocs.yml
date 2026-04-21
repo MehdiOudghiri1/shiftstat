@@ -15,6 +15,7 @@ nav:
   - Reweighting: reweighting.md
   - Calibration Under Shift: calibration.md
   - Reliability Diagnostics: reliability.md
+  - Certified Worst-Group Audits: certified_worst_group_audits.md
   - Why Aggregate Metrics Can Hide Failures: aggregate_failures.md
   - Subgroup Reliability Analysis: subgroup.md
   - Conditional Auditing Under Shift: audit.md
@@ -23,9 +24,13 @@ nav:
   - Risk-Coverage Analysis: risk_coverage.md
   - When Abstention Helps And Misleads: abstention_limits.md
   - Practical Deployment Guidance: deployment_guidance.md
+  - Known Limitations: known_limitations.md
   - Benchmarking Guide: benchmarking.md
   - Experiment Configuration Guide: experiment_configuration.md
   - Reproducibility Guide: reproducibility.md
+  - Testing And CI: testing_and_ci.md
+  - API Stability: api_stability.md
+  - Release Process: release_process.md
   - Publication Workflow Guide: publication_workflow.md
   - Generating Tables And Figures: paper_artifacts.md
   - Scientific Case Studies: scientific_case_studies.md
@@ -40,6 +45,7 @@ nav:
       - Audit: api/audit.md
       - Bench: api/bench.md
       - Calibration: api/calibration.md
+      - Certification: api/certification.md
       - Detection: api/detect.md
       - Experiments: api/experiments.md
       - Metrics: api/metrics.md

@@ -12,9 +12,9 @@ from sklearn.preprocessing import OneHotEncoder
 from sklearn.tree import DecisionTreeClassifier
 
 from ..exceptions import SmallSampleWarning
+from ..subgroup.analyzer import group_metrics
 from ..utils.probabilities import confidence_from_probabilities, labels_from_probabilities
 from ..utils.schema import align_tabular_inputs, extract_feature_names, infer_feature_types
-from ..subgroup.analyzer import group_metrics
 
 
 def _as_frame(X: Any) -> pd.DataFrame:
@@ -213,7 +213,9 @@ class SliceDiscoverer:
 
         target_failure_total = int(np.sum(target_failures))
         target_confidence = confidence_from_probabilities(p_target)
-        target_error = (labels_from_probabilities(p_target) != np.asarray(y_target, dtype=int)).astype(int)
+        target_error = (
+            labels_from_probabilities(p_target) != np.asarray(y_target, dtype=int)
+        ).astype(int)
         rows: list[dict[str, Any]] = []
         for leaf_id, slice_label in leaf_to_label.items():
             rule = leaf_rules.get(leaf_id, "all samples")
@@ -247,9 +249,7 @@ class SliceDiscoverer:
                     "delta_ece": float(target_record["ece"] - reference_record["ece"]),
                     "target_sample_share": float(target_record["sample_share"]),
                     "target_failure_count": failure_count,
-                    "target_failure_share": float(
-                        failure_count / max(target_failure_total, 1)
-                    ),
+                    "target_failure_share": float(failure_count / max(target_failure_total, 1)),
                     "failure_concentration": float(
                         _safe_ratio(
                             failure_count / max(target_failure_total, 1),
@@ -276,8 +276,14 @@ class SliceDiscoverer:
         if not self.summary_.empty:
             self.summary_ = self.summary_.head(self.max_slices).reset_index(drop=True)
         self.caveats_ = [
-            "Failure slices are descriptive partitions from a shallow decision tree; they are not causal explanations.",
-            "Discovery is performed on the target sample and can be optimistic without external validation.",
+            (
+                "Failure slices are descriptive partitions from a shallow decision tree; "
+                "they are not causal explanations."
+            ),
+            (
+                "Discovery is performed on the target sample and can be optimistic "
+                "without external validation."
+            ),
         ]
         return self
 
@@ -308,7 +314,7 @@ class SliceDiscoverer:
         probabilities = np.asarray(y_prob, dtype=float)
         errors = (labels_from_probabilities(probabilities) != y_arr).astype(int)
         if objective == "error":
-            return errors
+            return np.asarray(errors, dtype=int)
         if objective == "high_confidence_error":
             confidence = confidence_from_probabilities(probabilities)
             return np.asarray((errors == 1) & (confidence >= 0.8), dtype=int)
@@ -330,11 +336,15 @@ def discover_failure_slices(
 ) -> pd.DataFrame:
     """Convenience wrapper returning discovered failure slices as a DataFrame."""
 
-    return SliceDiscoverer(**kwargs).fit(
-        X_ref,
-        y_ref,
-        p_ref,
-        X_target,
-        y_target,
-        p_target,
-    ).summary()
+    return (
+        SliceDiscoverer(**kwargs)
+        .fit(
+            X_ref,
+            y_ref,
+            p_ref,
+            X_target,
+            y_target,
+            p_target,
+        )
+        .summary()
+    )

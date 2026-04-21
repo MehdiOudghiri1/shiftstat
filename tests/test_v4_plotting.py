@@ -36,8 +36,6 @@ def test_v4_selective_plotting_smoke() -> None:
     assert plot_risk_coverage_curve(report) is not None
     assert plot_coverage_vs_threshold(report) is not None
     assert plot_abstention_distribution(result.target_selective_profile) is not None
-    assert (
-        plot_confidence_accept_reject_distribution(result.target_selective_profile) is not None
-    )
+    assert plot_confidence_accept_reject_distribution(result.target_selective_profile) is not None
     assert plot_subgroup_abstention_comparison(report) is not None
     assert plot_selective_reliability_diagram(result.target_selective_profile) is not None

@@ -12,7 +12,7 @@ from sklearn.compose import ColumnTransformer
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import roc_auc_score
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import KFold, train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder
 
@@ -264,3 +264,170 @@ class ImportanceWeighter:
             f"method={self.method!r}, clip_min={self.clip_min}, clip_max={self.clip_max}, "
             f"normalize={self.normalize}, fitted={fitted})"
         )
+
+
+class CrossFittedImportanceWeighter:
+    """Cross-fitted covariate-shift density-ratio estimator.
+
+    The estimator trains domain classifiers on all target covariates and
+    out-of-fold source covariates, then predicts target-over-source weights for
+    held-out source points. This is the weighting protocol used by certified
+    audits when source labels will later be used for inference.
+    """
+
+    def __init__(
+        self,
+        *,
+        method: str = "logistic",
+        n_folds: int = 5,
+        categorical_features: list[str] | list[int] | None = None,
+        clip_min: float = 1e-3,
+        clip_max: float = 20.0,
+        normalize: bool = True,
+        random_state: int | np.random.RandomState | None = None,
+    ) -> None:
+        self.method = method
+        self.n_folds = n_folds
+        self.categorical_features = categorical_features
+        self.clip_min = clip_min
+        self.clip_max = clip_max
+        self.normalize = normalize
+        self.random_state = random_state
+
+    def fit(self, X_ref: TabularLike, X_target: TabularLike) -> CrossFittedImportanceWeighter:
+        """Fit cross-fitted domain-ratio models and source weights."""
+
+        if self.n_folds < 2:
+            raise ValueError("n_folds must be at least two.")
+        X_ref_aligned, X_target_aligned = align_tabular_inputs(X_ref, X_target)
+        validate_tabular_pair_schema(X_ref_aligned, X_target_aligned)
+        self.X_ref_ = X_ref_aligned
+        self.X_target_ = X_target_aligned
+        self.feature_names_in_ = extract_feature_names(X_ref_aligned)
+        self.feature_types_ = infer_feature_types(
+            X_ref_aligned,
+            categorical_features=self.categorical_features,
+        )
+
+        ref_df = _to_dataframe(X_ref_aligned).reset_index(drop=True)
+        target_df = _to_dataframe(X_target_aligned).reset_index(drop=True)
+        weights = np.empty(len(ref_df), dtype=float)
+        fold_aucs: list[float] = []
+        fold_models: list[Pipeline] = []
+        prior_ratios: list[float] = []
+        splitter = KFold(
+            n_splits=min(self.n_folds, len(ref_df)),
+            shuffle=True,
+            random_state=random_state_to_int(self.random_state),
+        )
+
+        for fold_index, (train_index, test_index) in enumerate(splitter.split(ref_df)):
+            train_source = ref_df.iloc[train_index]
+            combined = pd.concat([train_source, target_df], axis=0, ignore_index=True)
+            y_domain = np.concatenate(
+                [np.zeros(len(train_source), dtype=int), np.ones(len(target_df), dtype=int)]
+            )
+            prior_ref = len(train_source) / len(combined)
+            prior_target = len(target_df) / len(combined)
+            estimator = self._make_estimator(fold_index)
+            preprocessor = _build_preprocessor(self.feature_types_)
+            model = Pipeline([("preprocessor", preprocessor), ("classifier", estimator)])
+            model.fit(combined, y_domain)
+            train_scores = model.predict_proba(combined)[:, 1]
+            fold_aucs.append(float(roc_auc_score(y_domain, train_scores)))
+            heldout_scores = model.predict_proba(ref_df.iloc[test_index])[:, 1]
+            weights[test_index] = self._scores_to_weights(
+                heldout_scores,
+                prior_ref=prior_ref,
+                prior_target=prior_target,
+            )
+            fold_models.append(model)
+            prior_ratios.append(prior_ref / prior_target)
+
+        if self.normalize:
+            weights = weights / np.mean(weights)
+        self.fold_models_ = fold_models
+        self.prior_ratios_ = prior_ratios
+        self.fold_aucs_ = fold_aucs
+        self.reference_weights_ = weights
+        self.effective_sample_size_ = compute_effective_sample_size(weights)
+        self.source_auc_ = float(np.mean(fold_aucs))
+        self.clipping_rate_ = float(
+            np.mean((weights <= self.clip_min) | (weights >= self.clip_max))
+        )
+        return self
+
+    def fit_predict(self, X_ref: TabularLike, X_target: TabularLike) -> np.ndarray:
+        """Fit the estimator and return cross-fitted source weights."""
+
+        return self.fit(X_ref, X_target).reference_weights_.copy()
+
+    def predict_weights(self, X: TabularLike | None = None) -> np.ndarray:
+        """Predict weights for new source-like covariates by averaging fold models."""
+
+        self._check_is_fitted()
+        X_input = self.X_ref_ if X is None else X
+        X_df = _to_dataframe(X_input)
+        fold_weights = []
+        for model, prior_ratio in zip(self.fold_models_, self.prior_ratios_, strict=True):
+            scores = model.predict_proba(X_df)[:, 1]
+            fold_weights.append(self._scores_to_weights_from_ratio(scores, prior_ratio=prior_ratio))
+        weights = np.mean(np.vstack(fold_weights), axis=0)
+        if self.normalize:
+            weights = weights / np.mean(weights)
+        return np.asarray(weights, dtype=float)
+
+    def diagnostics(self) -> dict[str, float | list[float] | str]:
+        """Return diagnostics for the learned ratio model."""
+
+        self._check_is_fitted()
+        weights = self.reference_weights_
+        return {
+            "method": self.method,
+            "n_folds": float(self.n_folds),
+            "mean_weight": float(np.mean(weights)),
+            "std_weight": float(np.std(weights)),
+            "min_weight": float(np.min(weights)),
+            "max_weight": float(np.max(weights)),
+            "effective_sample_size": float(self.effective_sample_size_),
+            "domain_auc": float(self.source_auc_),
+            "fold_aucs": [float(value) for value in self.fold_aucs_],
+            "clipping_rate": float(self.clipping_rate_),
+        }
+
+    def _scores_to_weights(
+        self,
+        scores: np.ndarray,
+        *,
+        prior_ref: float,
+        prior_target: float,
+    ) -> np.ndarray:
+        return self._scores_to_weights_from_ratio(scores, prior_ratio=prior_ref / prior_target)
+
+    def _scores_to_weights_from_ratio(
+        self,
+        scores: np.ndarray,
+        *,
+        prior_ratio: float,
+    ) -> np.ndarray:
+        target_probability = np.clip(scores, 1e-6, 1 - 1e-6)
+        odds = target_probability / (1.0 - target_probability)
+        weights = odds * prior_ratio
+        return np.asarray(np.clip(weights, self.clip_min, self.clip_max), dtype=float)
+
+    def _make_estimator(self, fold_index: int) -> Any:
+        seed = random_state_to_int(self.random_state)
+        fold_seed = None if seed is None else seed + fold_index
+        if self.method == "domain_classifier":
+            return RandomForestClassifier(
+                n_estimators=200,
+                min_samples_leaf=5,
+                random_state=fold_seed,
+            )
+        if self.method == "logistic":
+            return LogisticRegression(max_iter=3000, random_state=fold_seed)
+        raise ValueError(f"Unsupported weighting method: {self.method}.")
+
+    def _check_is_fitted(self) -> None:
+        if not hasattr(self, "reference_weights_"):
+            raise NotFittedError("CrossFittedImportanceWeighter must be fitted before use.")

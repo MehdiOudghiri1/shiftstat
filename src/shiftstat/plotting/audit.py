@@ -149,10 +149,14 @@ def plot_failure_concentration(
 ) -> Axes:
     """Plot cumulative failure share against cumulative sample share."""
 
-    frame = _as_frame(data, "discovered_slice_frame").sort_values(
-        "target_failure_share",
-        ascending=False,
-    ).head(top_k)
+    frame = (
+        _as_frame(data, "discovered_slice_frame")
+        .sort_values(
+            "target_failure_share",
+            ascending=False,
+        )
+        .head(top_k)
+    )
     cumulative_failure = frame["target_failure_share"].cumsum()
     cumulative_sample = frame["target_sample_share"].cumsum()
     axis = ax or plt.subplots(figsize=(6, 4))[1]

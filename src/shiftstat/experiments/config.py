@@ -28,9 +28,7 @@ class ScenarioConfig:
             preset=str(payload["preset"]),
             name=None if payload.get("name") is None else str(payload["name"]),
             seeds=(
-                None
-                if payload.get("seeds") is None
-                else [int(seed) for seed in payload["seeds"]]
+                None if payload.get("seeds") is None else [int(seed) for seed in payload["seeds"]]
             ),
             baseline_names=(
                 None

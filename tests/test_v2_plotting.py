@@ -37,8 +37,10 @@ def test_v2_plotting_smoke() -> None:
     assert plot_calibration_comparison(reference, target) is not None
     assert plot_confidence_histogram(data.target_predictions) is not None
     assert plot_confidence_error_curve(result.target_profile) is not None
-    assert plot_recalibration_comparison(
-        result.target_profile,
-        result.recalibrated_target_profile,
-    ) is not None
-
+    assert (
+        plot_recalibration_comparison(
+            result.target_profile,
+            result.recalibrated_target_profile,
+        )
+        is not None
+    )

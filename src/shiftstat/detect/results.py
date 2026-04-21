@@ -62,4 +62,3 @@ class DatasetShiftSummary:
         """Return a JSON-serializable dictionary representation."""
 
         return asdict(self)
-

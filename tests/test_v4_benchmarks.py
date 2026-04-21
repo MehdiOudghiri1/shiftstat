@@ -3,12 +3,15 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import pytest
 from benchmarks.run_selective_benchmark import (
     run_selective_benchmark,
     save_selective_benchmark,
 )
 
 
+@pytest.mark.benchmark
+@pytest.mark.slow
 def test_selective_benchmark_runner(tmp_path: Path) -> None:
     config = {
         "name": "test_selective_benchmark",

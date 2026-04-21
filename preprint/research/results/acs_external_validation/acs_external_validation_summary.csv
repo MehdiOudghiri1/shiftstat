@@ -1,0 +1,2 @@
+dataset,source_state,target_state,year,n_train,n_source_audit,n_target,domain_auc,global_ess,n_cells,naive_alarm_count,label_certified_alarm_count,sensitivity_certified_alarm_count,top_group,top_bin,top_gap,top_local_ess,top_label_half_width,top_rho_sensitivity,top_label_certified,top_sensitivity_certified,top_target_gap
+ACSIncome CA->NY,CA,NY,2018,30000,18000,18000,0.9523393580246913,1055.2055866136066,91,30,0,0,Age>45 & Bachelor+,"[0.00, 0.17]",0.27194069164131573,13.489724896513248,0.5274786125177574,1.1429523422490906,False,False,0.017862960484210363

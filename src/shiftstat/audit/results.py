@@ -68,12 +68,10 @@ class AuditReport:
         else:
             for _, row in degradation.iterrows():
                 lines.append(
-                    (
-                        f"- {row['slice_name']} -> {row['group']}: "
-                        f"delta error {row['delta_error_rate']:.3f}, "
-                        f"delta ECE {row['delta_ece']:.3f}, "
-                        f"severity {row['severity_score']:.3f}"
-                    )
+                    f"- {row['slice_name']} -> {row['group']}: "
+                    f"delta error {row['delta_error_rate']:.3f}, "
+                    f"delta ECE {row['delta_ece']:.3f}, "
+                    f"severity {row['severity_score']:.3f}"
                 )
 
         lines.extend(["", "### Discovered failure slices", ""])
@@ -83,11 +81,9 @@ class AuditReport:
         else:
             for _, row in slices.iterrows():
                 lines.append(
-                    (
-                        f"- {row['slice_label']}: error gap {row['delta_error_rate']:.3f}, "
-                        f"failure share {row['target_failure_share']:.3f}, "
-                        f"rule `{row['rule']}`"
-                    )
+                    f"- {row['slice_label']}: error gap {row['delta_error_rate']:.3f}, "
+                    f"failure share {row['target_failure_share']:.3f}, "
+                    f"rule `{row['rule']}`"
                 )
 
         lines.extend(["", "### Statistical caveats", ""])

@@ -1,22 +1,31 @@
 [build-system]
-requires = ["setuptools>=69", "wheel"]
+requires = ["setuptools>=77", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "shiftstat"
-version = "0.5.0"
+dynamic = ["version"]
 description = "Scientific tooling and benchmark workflows for reliability under tabular distribution shift."
 readme = "README.md"
-license = { file = "LICENSE" }
+license = "BSD-3-Clause"
+license-files = ["LICENSE"]
 requires-python = ">=3.10"
 authors = [
-  { name = "ShiftStat contributors" },
+  { name = "Mehdi Oudghiri", email = "mehdioudghiri@outlook.com" },
+]
+maintainers = [
+  { name = "Mehdi Oudghiri", email = "mehdioudghiri@outlook.com" },
 ]
 keywords = [
   "distribution shift",
   "covariate shift",
   "drift detection",
   "importance weighting",
+  "worst-group reliability",
+  "local effective sample size",
+  "subgroup auditing",
+  "covariate shift certification",
+  "model monitoring",
   "statistical learning",
   "machine learning",
 ]
@@ -24,7 +33,6 @@ classifiers = [
   "Development Status :: 3 - Alpha",
   "Intended Audience :: Science/Research",
   "Intended Audience :: Developers",
-  "License :: OSI Approved :: BSD License",
   "Operating System :: OS Independent",
   "Programming Language :: Python",
   "Programming Language :: Python :: 3",
@@ -55,6 +63,7 @@ dev = [
   "ruff>=0.4",
   "mypy>=1.8",
   "pandas-stubs>=2.0",
+  "types-PyYAML>=6.0",
 ]
 docs = [
   "mkdocs-material>=9.5",
@@ -62,6 +71,14 @@ docs = [
 ]
 examples = [
   "jupyter>=1.0",
+  "folktables>=0.0.12",
+]
+release = [
+  "build>=1.2",
+  "twine>=5.0",
+]
+security = [
+  "pip-audit>=2.7",
 ]
 
 [project.urls]
@@ -76,10 +93,22 @@ package-dir = { "" = "src" }
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[tool.setuptools.dynamic]
+version = { attr = "shiftstat._version.__version__" }
+
+[tool.setuptools.package-data]
+shiftstat = ["py.typed"]
+
 [tool.pytest.ini_options]
 minversion = "8.0"
 addopts = "--strict-markers --strict-config"
 testpaths = ["tests"]
+markers = [
+  "benchmark: benchmark and publication-artifact regression tests",
+  "examples: runnable example-script tests",
+  "integration: tests that exercise subprocesses, file-system artifacts, or multi-module workflows",
+  "slow: tests expected to take materially longer than unit tests",
+]
 
 [tool.coverage.run]
 branch = true

@@ -9,6 +9,8 @@ __pycache__/
 htmlcov/
 build/
 dist/
+site/
+.wheel-smoke/
 
 # Virtual environments
 .venv/
@@ -21,7 +23,16 @@ env/
 # Benchmark outputs
 benchmarks/results/*.json
 
+# Data caches and paper build artifacts
+data/
+preprint/*.aux
+preprint/*.bbl
+preprint/*.blg
+preprint/*.log
+preprint/*.out
+preprint/*.synctex.gz
+preprint/research/cache/
+
 # IDEs
 .idea/
 .vscode/
-

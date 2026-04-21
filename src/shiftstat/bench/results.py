@@ -12,6 +12,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 from shiftstat.plotting.benchmark import plot_benchmark_metric_sweep
+from shiftstat.utils.artifacts import artifact_record, portable_path
 
 
 @dataclass(frozen=True)
@@ -157,8 +158,8 @@ class BenchmarkResult:
         run_frame.to_csv(runs_csv_path, index=False)
         aggregate_frame.to_csv(summary_csv_path, index=False)
 
-        latex_tables: dict[str, str] = {}
-        figure_paths: dict[str, str] = {}
+        latex_tables: dict[str, Path] = {}
+        figure_paths: dict[str, Path] = {}
         for metric in self.publication_metrics:
             if metric not in aggregate_frame.columns or aggregate_frame[metric].isna().all():
                 continue
@@ -166,7 +167,7 @@ class BenchmarkResult:
             if latex:
                 latex_path = tables_dir / f"{self.scenario_name}_{metric}.tex"
                 latex_path.write_text(latex, encoding="utf-8")
-                latex_tables[metric] = str(latex_path)
+                latex_tables[metric] = latex_path
 
             figure, _ = plot_benchmark_metric_sweep(
                 aggregate_frame,
@@ -177,18 +178,44 @@ class BenchmarkResult:
             figure_path = figures_dir / f"{self.scenario_name}_{metric}.{figure_format}"
             figure.savefig(figure_path, dpi=220, bbox_inches="tight")
             plt.close(figure)
-            figure_paths[metric] = str(figure_path)
+            figure_paths[metric] = figure_path
+
+        primary_files = {
+            "json": json_path,
+            "markdown": markdown_path,
+            "runs_csv": runs_csv_path,
+            "summary_csv": summary_csv_path,
+        }
 
         artifact_manifest = {
             "scenario_name": self.scenario_name,
             "generated_at_utc": datetime.now(timezone.utc).isoformat(),
+            "artifact_root": portable_path(directory, relative_to=directory),
             "files": {
-                "json": str(json_path),
-                "markdown": str(markdown_path),
-                "runs_csv": str(runs_csv_path),
-                "summary_csv": str(summary_csv_path),
-                "latex_tables": latex_tables,
-                "figures": figure_paths,
+                key: portable_path(path, relative_to=directory)
+                for key, path in primary_files.items()
+            },
+            "latex_tables": {
+                key: portable_path(path, relative_to=directory)
+                for key, path in latex_tables.items()
+            },
+            "figures": {
+                key: portable_path(path, relative_to=directory)
+                for key, path in figure_paths.items()
+            },
+            "checksums": {
+                **{
+                    key: artifact_record(path, relative_to=directory)
+                    for key, path in primary_files.items()
+                },
+                **{
+                    f"latex_tables.{key}": artifact_record(path, relative_to=directory)
+                    for key, path in latex_tables.items()
+                },
+                **{
+                    f"figures.{key}": artifact_record(path, relative_to=directory)
+                    for key, path in figure_paths.items()
+                },
             },
         }
         manifest_path.write_text(json.dumps(artifact_manifest, indent=2), encoding="utf-8")
@@ -198,8 +225,8 @@ class BenchmarkResult:
             "runs_csv": runs_csv_path,
             "summary_csv": summary_csv_path,
             "manifest": manifest_path,
-            "latex_tables": {key: Path(value) for key, value in latex_tables.items()},
-            "figures": {key: Path(value) for key, value in figure_paths.items()},
+            "latex_tables": latex_tables,
+            "figures": figure_paths,
         }
 
 

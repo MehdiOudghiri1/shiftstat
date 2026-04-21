@@ -3,12 +3,15 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import pytest
 from benchmarks.run_reliability_benchmark import (
     run_reliability_benchmark,
     save_reliability_benchmark,
 )
 
 
+@pytest.mark.benchmark
+@pytest.mark.slow
 def test_reliability_benchmark_runner(tmp_path: Path) -> None:
     config = {
         "name": "test_benchmark",

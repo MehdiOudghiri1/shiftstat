@@ -6,9 +6,12 @@ import subprocess
 import sys
 from pathlib import Path
 
+import pytest
+
 from shiftstat.experiments import load_experiment_config, run_experiment
 
 
+@pytest.mark.integration
 def test_experiment_config_parses_yaml(tmp_path: Path) -> None:
     config_path = tmp_path / "experiment.yaml"
     config_path.write_text(
@@ -37,6 +40,8 @@ def test_experiment_config_parses_yaml(tmp_path: Path) -> None:
     assert config.scenarios[0].baseline_names == ["raw_model"]
 
 
+@pytest.mark.benchmark
+@pytest.mark.integration
 def test_run_experiment_is_deterministic(tmp_path: Path) -> None:
     config = {
         "name": "deterministic_experiment",
@@ -63,6 +68,7 @@ def test_run_experiment_is_deterministic(tmp_path: Path) -> None:
     assert Path(second.markdown_path or "").exists()
 
 
+@pytest.mark.integration
 def test_experiment_cli_smoke(tmp_path: Path) -> None:
     config = {
         "name": "cli_experiment",
@@ -85,9 +91,7 @@ def test_experiment_cli_smoke(tmp_path: Path) -> None:
     env = os.environ.copy()
     source_dir = str(Path(__file__).resolve().parents[1] / "src")
     env["PYTHONPATH"] = (
-        source_dir
-        if not env.get("PYTHONPATH")
-        else f"{source_dir}{os.pathsep}{env['PYTHONPATH']}"
+        source_dir if not env.get("PYTHONPATH") else f"{source_dir}{os.pathsep}{env['PYTHONPATH']}"
     )
     completed = subprocess.run(  # noqa: S603
         [
@@ -109,6 +113,7 @@ def test_experiment_cli_smoke(tmp_path: Path) -> None:
     assert (output_dir / "cli_experiment_summary.md").exists()
 
 
+@pytest.mark.integration
 def test_experiment_result_schema_stability(tmp_path: Path) -> None:
     config = {
         "name": "schema_experiment",
@@ -133,6 +138,8 @@ def test_experiment_result_schema_stability(tmp_path: Path) -> None:
         "benchmarks",
         "completed_at_utc",
         "config_path",
+        "config_sha256",
+        "environment",
         "experiment_name",
         "figure_format",
         "log_path",
@@ -144,3 +151,9 @@ def test_experiment_result_schema_stability(tmp_path: Path) -> None:
         "started_at_utc",
         "summary_csv_path",
     }
+    assert payload["config_sha256"]
+    assert "python" in payload["environment"]
+
+    manifest = json.loads(Path(result.manifest_path or "").read_text(encoding="utf-8"))
+    assert manifest["manifest_path"] == "schema_experiment_manifest.json"
+    assert manifest["scenario_artifacts"][0]["scenario_dir"] == "covariate_shift_sweep"

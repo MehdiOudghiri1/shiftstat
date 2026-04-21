@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import json
+import platform
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -11,6 +13,7 @@ from shiftstat._version import __version__
 from shiftstat.bench import BenchmarkRunner, scenario_from_config
 from shiftstat.experiments.config import load_experiment_config
 from shiftstat.experiments.results import ExperimentResult
+from shiftstat.utils.artifacts import file_digest, portable_path
 
 
 def run_experiment(
@@ -48,8 +51,11 @@ def run_experiment(
         scenario_artifacts.append(
             {
                 "scenario_name": scenario.name,
-                "scenario_dir": str(scenario_dir),
-                "artifact_files": {key: _jsonable(value) for key, value in artifacts.items()},
+                "scenario_dir": portable_path(scenario_dir, relative_to=resolved_output_dir),
+                "artifact_files": {
+                    key: _jsonable(value, relative_to=resolved_output_dir)
+                    for key, value in artifacts.items()
+                },
             }
         )
         log_lines.append(
@@ -66,6 +72,8 @@ def run_experiment(
         started_at_utc=started_at,
         completed_at_utc=datetime.now(timezone.utc).isoformat(),
         shiftstat_version=__version__,
+        config_sha256=file_digest(config_file),
+        environment=_environment_snapshot(),
     )
     summary_frame = result.summary_frame()
     summary_csv_path = resolved_output_dir / f"{config.name}_summary.csv"
@@ -91,20 +99,35 @@ def run_experiment(
         started_at_utc=result.started_at_utc,
         completed_at_utc=result.completed_at_utc,
         shiftstat_version=result.shiftstat_version,
+        config_sha256=result.config_sha256,
+        environment=result.environment,
         manifest_path=str(manifest_path),
         summary_csv_path=str(summary_csv_path),
         markdown_path=str(markdown_path),
         log_path=str(log_path),
     )
-    manifest_path.write_text(json.dumps(hydrated.to_dict(), indent=2), encoding="utf-8")
+    manifest_path.write_text(
+        json.dumps(hydrated.to_dict(relative_to=resolved_output_dir), indent=2),
+        encoding="utf-8",
+    )
     return hydrated
 
 
-def _jsonable(value: Any) -> Any:
+def _environment_snapshot() -> dict[str, str]:
+    return {
+        "python": sys.version.split()[0],
+        "platform": platform.platform(),
+        "implementation": platform.python_implementation(),
+    }
+
+
+def _jsonable(value: Any, *, relative_to: Path | None = None) -> Any:
     if isinstance(value, dict):
-        return {str(key): _jsonable(item) for key, item in value.items()}
+        return {
+            str(key): _jsonable(item, relative_to=relative_to) for key, item in value.items()
+        }
     if isinstance(value, list):
-        return [_jsonable(item) for item in value]
+        return [_jsonable(item, relative_to=relative_to) for item in value]
     if isinstance(value, Path):
-        return str(value)
+        return portable_path(value, relative_to=relative_to)
     return value

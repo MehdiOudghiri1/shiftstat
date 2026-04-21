@@ -196,7 +196,10 @@ class SelectiveDeploymentReport:
                 [
                     "### Shift overview",
                     "",
-                    f"- Classifier two-sample AUC: {self.dataset_shift_overview['classifier_auc']:.3f}",
+                    (
+                        "- Classifier two-sample AUC: "
+                        f"{self.dataset_shift_overview['classifier_auc']:.3f}"
+                    ),
                     f"- Shifted features: {self.dataset_shift_overview['n_shifted_features']}",
                     "",
                 ]
@@ -230,12 +233,10 @@ class SelectiveDeploymentReport:
         else:
             for _, row in subgroup_frame.iterrows():
                 lines.append(
-                    (
-                        f"- {row['slice_name']} -> {row['group']}: "
-                        f"coverage {row['target_coverage']:.3f}, "
-                        f"abstention {row['target_abstention_rate']:.3f}, "
-                        f"accepted accuracy {row['target_selective_accuracy']:.3f}"
-                    )
+                    f"- {row['slice_name']} -> {row['group']}: "
+                    f"coverage {row['target_coverage']:.3f}, "
+                    f"abstention {row['target_abstention_rate']:.3f}, "
+                    f"accepted accuracy {row['target_selective_accuracy']:.3f}"
                 )
 
         if self.recalibrated_target_profile is not None:
@@ -261,11 +262,9 @@ class SelectiveDeploymentReport:
                 lines.extend(["", "### Threshold tuning comparison", ""])
                 for _, row in comparison.iterrows():
                     lines.append(
-                        (
-                            f"- weighted={row['weighted']}: threshold {row['threshold']:.3f}, "
-                            f"coverage {row['achieved_coverage']:.3f}, "
-                            f"selective risk {row['achieved_selective_risk']:.3f}"
-                        )
+                        f"- weighted={row['weighted']}: threshold {row['threshold']:.3f}, "
+                        f"coverage {row['achieved_coverage']:.3f}, "
+                        f"selective risk {row['achieved_selective_risk']:.3f}"
                     )
 
         disparity = self.subgroup_disparity_frame().head(1)
@@ -404,8 +403,14 @@ class SelectiveShiftEvaluationResult:
         """Convert the workflow result to a deployment report."""
 
         caveats = [
-            "Abstention can reduce observed accepted-set risk while leaving rejected-set failures operationally important.",
-            "Coverage-risk tradeoffs depend on the validation distribution used for threshold tuning.",
+            (
+                "Abstention can reduce observed accepted-set risk while leaving "
+                "rejected-set failures operationally important."
+            ),
+            (
+                "Coverage-risk tradeoffs depend on the validation distribution used "
+                "for threshold tuning."
+            ),
         ]
         operational_implications = [
             (
@@ -416,21 +421,25 @@ class SelectiveShiftEvaluationResult:
         ]
         if self.target_selective_profile.risk_reduction <= 0.0:
             caveats.append(
-                "Accepted-set risk did not improve on the target sample, so abstention may be hiding failures rather than helping."
+                "Accepted-set risk did not improve on the target sample, so abstention "
+                "may be hiding failures rather than helping."
             )
         else:
             operational_implications.append(
-                f"Accepted-set risk fell by {self.target_selective_profile.risk_reduction:.3f} after abstention."
+                "Accepted-set risk fell by "
+                f"{self.target_selective_profile.risk_reduction:.3f} after abstention."
             )
         if self.target_selective_profile.ece_reduction < 0.0:
             caveats.append(
-                "Accepted-set calibration worsened even though the policy abstained on part of the target distribution."
+                "Accepted-set calibration worsened even though the policy abstained on "
+                "part of the target distribution."
             )
         disparity_frame = pd.DataFrame.from_records(self.subgroup_abstention_disparities)
         if not disparity_frame.empty:
             top = disparity_frame.sort_values("absolute_gap", ascending=False).iloc[0]
             operational_implications.append(
-                f"Largest subgroup rejection disparity appears on {top['metric']} with gap {top['absolute_gap']:.3f}."
+                "Largest subgroup rejection disparity appears on "
+                f"{top['metric']} with gap {top['absolute_gap']:.3f}."
             )
         return SelectiveDeploymentReport(
             dataset_shift_overview=self.dataset_shift_overview,

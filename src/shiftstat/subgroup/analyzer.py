@@ -46,8 +46,7 @@ def _format_interval(feature_name: str, interval: pd.Interval) -> str:
     left_bracket = "[" if interval.closed_left else "("
     right_bracket = "]" if interval.closed_right else ")"
     return (
-        f"{feature_name} in {left_bracket}"
-        f"{interval.left:.3f}, {interval.right:.3f}{right_bracket}"
+        f"{feature_name} in {left_bracket}{interval.left:.3f}, {interval.right:.3f}{right_bracket}"
     )
 
 
@@ -601,10 +600,15 @@ class SubgroupAnalyzer:
         degradation_frame["delta_brier_score"] = (
             degradation_frame["brier_score_target"] - degradation_frame["brier_score_reference"]
         )
-        degradation_frame["delta_ece"] = degradation_frame["ece_target"] - degradation_frame["ece_reference"]
-        degradation_frame["delta_mce"] = degradation_frame["mce_target"] - degradation_frame["mce_reference"]
+        degradation_frame["delta_ece"] = (
+            degradation_frame["ece_target"] - degradation_frame["ece_reference"]
+        )
+        degradation_frame["delta_mce"] = (
+            degradation_frame["mce_target"] - degradation_frame["mce_reference"]
+        )
         degradation_frame["delta_confidence_gap"] = (
-            degradation_frame["confidence_gap_target"] - degradation_frame["confidence_gap_reference"]
+            degradation_frame["confidence_gap_target"]
+            - degradation_frame["confidence_gap_reference"]
         )
         degradation_frame["error_risk_ratio"] = degradation_frame.apply(
             lambda row: _safe_ratio(row["error_rate_target"], row["error_rate_reference"]),
@@ -625,7 +629,9 @@ class SubgroupAnalyzer:
             "n_groups": int(len(degradation_frame)),
             "supported_groups": int(degradation_frame["supported_both"].sum()),
             "target_supported_coverage": float(
-                degradation_frame.loc[degradation_frame["supported_both"], "target_sample_share"].sum()
+                degradation_frame.loc[
+                    degradation_frame["supported_both"], "target_sample_share"
+                ].sum()
             ),
             "reference_supported_coverage": float(
                 degradation_frame.loc[

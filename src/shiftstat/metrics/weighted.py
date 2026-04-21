@@ -30,9 +30,7 @@ def weighted_accuracy(
     validate_same_length(y_true_arr, y_pred_arr)
     weights = _normalize_weights(sample_weight, len(y_true_arr))
     predicted_labels = (
-        (y_pred_arr >= 0.5).astype(int)
-        if y_pred_arr.dtype.kind in {"f", "c"}
-        else y_pred_arr
+        (y_pred_arr >= 0.5).astype(int) if y_pred_arr.dtype.kind in {"f", "c"} else y_pred_arr
     )
     return float(np.average((predicted_labels == y_true_arr).astype(float), weights=weights))
 

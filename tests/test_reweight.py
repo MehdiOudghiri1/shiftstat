@@ -4,7 +4,12 @@ import numpy as np
 import pandas as pd
 
 from shiftstat.datasets import make_covariate_shift_classification
-from shiftstat.reweight import ImportanceWeighter, weighted_mean, weighted_risk
+from shiftstat.reweight import (
+    CrossFittedImportanceWeighter,
+    ImportanceWeighter,
+    weighted_mean,
+    weighted_risk,
+)
 
 
 def test_importance_weighter_produces_positive_normalized_weights() -> None:
@@ -37,3 +42,24 @@ def test_weighted_mean_and_risk() -> None:
     y_pred = np.array([0.0, 0.0, 2.0])
     risk = weighted_risk(y_true, y_pred, sample_weight=weights, loss="mae")
     assert np.isclose(risk, 0.25)
+
+
+def test_cross_fitted_importance_weighter_produces_diagnostics() -> None:
+    bundle = make_covariate_shift_classification(
+        n_samples_ref=180,
+        n_samples_target=180,
+        random_state=16,
+    )
+    weighter = CrossFittedImportanceWeighter(
+        method="logistic",
+        n_folds=3,
+        random_state=16,
+    )
+    weights = weighter.fit_predict(bundle.X_ref, bundle.X_target)
+    diagnostics = weighter.diagnostics()
+
+    assert weights.shape == (len(bundle.X_ref),)
+    assert np.all(weights > 0)
+    assert np.isclose(weights.mean(), 1.0, atol=1e-6)
+    assert diagnostics["effective_sample_size"] <= len(weights)
+    assert len(diagnostics["fold_aucs"]) == 3

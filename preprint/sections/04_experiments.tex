@@ -1,81 +1,127 @@
 \section{Experiments}\label{sec:experiments}
 
-The experiments follow the paper's two-sided claim.
-\begin{itemize}
-  \item First, even under pure covariate shift, worst-group audits can create false subgroup alarms when local weighted support collapses.
-  \item Second, real hidden subgroup failures still exist, so the right response is not to stop auditing subgroups but to audit them with local overlap diagnostics.
-\end{itemize}
+The experiments are deliberately selective. Each one tests a different part of the paper's claim: local overlap can create false worst-group alarms, learned weights and adaptive search add uncertainty, and certification changes a realistic deployment decision.
 
-\subsection{Experiment 1: false alarms under pure covariate shift}
+All scripts and generated artifacts are in \path{preprint/research/}. The main studies are produced by \path{certified_audit_study.py}, \path{estimated_weight_study.py}, \path{adaptive_search_study.py}, \path{real_data_case_study.py}, and \path{acs_external_validation_study.py}.
 
-The main experimental study is new and is saved in \path{preprint/research/local_ess_study.py}.
-It uses \path{src/shiftstat/datasets/synthetic.py} and intentionally chooses the cleanest possible setting: the data are generated under pure covariate shift, and the prediction score is the true conditional probability. In other words,
+\subsection{Synthetic Audit: False Alarms versus Certified Failures}
+
+The first experiment uses a calibrated-by-construction covariate-shift benchmark. Source and target covariates are Gaussian with shifted means. Labels follow
 \[
-Y\given X \sim \mathrm{Bernoulli}(\score(X))
+Y\given X\sim\mathrm{Bernoulli}(s(X))
 \]
-under both source and target. The model is therefore calibrated by construction.
+under both source and target, so every true subgroup-bin residual is zero in the null setting. Any reported worst-group failure is therefore a false alarm. In the planted-failure setting, we add a residual of size \(0.60\) on the interpretable subgroup \(x_0>0.5\), which lets us measure power against a known target failure.
 
-This design removes the usual ambiguity. If a worst-group audit reports a large subgroup-bin calibration gap in this experiment, that is a false alarm caused by weighted finite-sample noise.
-
-The audit family is intentionally richer than a single pre-specified slice. We use:
-\begin{itemize}
-  \item threshold groups based on \(x_0,x_1,x_2\);
-  \item negative-tail and positive-tail slices;
-  \item pairwise positive-tail intersections;
-  \item seven score bins.
-\end{itemize}
-
-We run the study in two modes:
-\begin{itemize}
-  \item \textbf{Oracle weights:} exact density-ratio weights from the Gaussian covariate-shift generator, over \(200\) random seeds.
-  \item \textbf{Learned weights:} logistic density-ratio estimation through the library's \texttt{ImportanceWeighter}, over \(50\) random seeds at the middle shift severities.
-\end{itemize}
-
-The main empirical result is simple: as shift grows, lower-tail local ESS collapses much faster than global ESS, and false worst-group alarms become common even though the true worst-group error is zero.
-
-\begin{table}[t]
-\centering
-\caption{Main local-ESS experiment. The model is calibrated by construction, so the true worst-group error is zero. Reported worst-group values are therefore false alarms created by weighted noise.}
-\label{tab:local-ess-main}
-\begin{tabular}{p{0.12\linewidth}p{0.11\linewidth}p{0.14\linewidth}p{0.14\linewidth}p{0.15\linewidth}p{0.14\linewidth}p{0.14\linewidth}}
-\toprule
-Weights & Shift & Median global ESS & Median lower-tail local ESS & Median false worst-group error & False-alarm rate $>0.05$ & False-alarm rate $>0.10$ \\
-\midrule
-Oracle & $0.4$ & $312.0$ & $2.76$ & $0.040$ & $0.19$ & $0.00$ \\
-Oracle & $0.8$ & $94.7$ & $1.44$ & $0.070$ & $0.80$ & $0.14$ \\
-Oracle & $1.2$ & $27.2$ & $1.05$ & $0.110$ & $0.89$ & $0.55$ \\
-Oracle & $1.6$ & $10.9$ & $1.00$ & $0.138$ & $0.89$ & $0.69$ \\
-Logistic & $0.8$ & $103.0$ & $1.38$ & $0.071$ & $0.82$ & $0.06$ \\
-Logistic & $1.2$ & $50.2$ & $1.00$ & $0.099$ & $0.92$ & $0.48$ \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-The saved study also reports correlation diagnostics. Under oracle weights, the pooled correlation between \(\log(1+{\ess}_{b,g})\) and the absolute subgroup-bin normalized gap is about \(-0.49\), whereas the corresponding pooled correlation for global ESS is only about \(-0.30\). Within each fixed shift level, lower-tail local ESS also predicts worst-group noise more strongly than global ESS. This is the empirical analogue of \cref{cor:false-alarm}.
+We compare four audit rules on the same finite subgroup-bin family: a naive worst-cell threshold, a global-ESS gate, a local-ESS gate, and the simultaneous certificate from \cref{cor:certified-alarm}. The tolerance is \(\tau=0.20\), the source audit size is \(n=1000\), and the reported study uses \(200\) Monte Carlo seeds with oracle Gaussian density ratios.
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=0.9\linewidth]{figures/local_ess_main.png}
-\caption{Left: global ESS declines with shift severity, but the lower tail of local ESS collapses much faster. Right: false worst-group alarms become common as shift grows, even though the model is calibrated by construction. Logistic density-ratio weights show the same qualitative pattern.}
-\label{fig:local-ess-main}
+\includegraphics[width=0.98\linewidth]{figures/certified_audit_main.png}
+\caption{Synthetic covariate-shift audit. Under the calibrated null, naive and global-ESS-gated audits produce frequent false alarms, while simultaneous local certificates produce none in this run. Under a planted subgroup failure, certificates retain power when local overlap is adequate and lose power when overlap collapses. The loss of power is a feature: unsupported alarms are not certified.}
+\label{fig:certified-audit-main}
 \end{figure}
 
-Since there is no true subgroup miscalibration in the data-generating process, the only reason for a large worst-group estimate is statistical instability. The experiment therefore makes the false-alarm mechanism directly visible.
+\begin{table}[t]
+\centering
+\caption{Synthetic audit decisions. Entries are alarm rates over \(200\) seeds. Under the null, every alarm is false. In the planted setting, the certified-alarm column is power.}
+\label{tab:synthetic-decisions}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{@{}cccccc@{}}
+\toprule
+Shift & Median global ESS & Null naive & Null global gate & Null local gate & Null certified / planted certified \\
+\midrule
+\(0.4\) & \(625\) & \(0.99\) & \(0.99\) & \(0.38\) & \(0.00 / 0.98\) \\
+\(0.8\) & \(185\) & \(1.00\) & \(0.99\) & \(0.34\) & \(0.00 / 0.79\) \\
+\(1.2\) & \(47\) & \(0.99\) & \(0.46\) & \(0.08\) & \(0.00 / 0.45\) \\
+\(1.6\) & \(17\) & \(0.98\) & \(0.01\) & \(0.00\) & \(0.00 / 0.19\) \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
 
-\subsection{Experiment 2: real hidden failures still occur}
+\Cref{fig:certified-audit-main,tab:synthetic-decisions} show the core phenomenon. Under the null, the naive worst-cell rule false-alarms in \(99\%\), \(100\%\), \(99\%\), and \(98\%\) of runs as shift increases from \(0.4\) to \(1.6\). A global ESS gate remains misleading at mild and moderate shifts, false-alarming in \(99\%\) of runs at shifts \(0.4\) and \(0.8\). A local ESS gate reduces but does not solve the problem. The simultaneous local certificate produces zero false alarms in this null experiment.
 
-The local-ESS study explains false alarms. It does not remove the need for subgroup auditing. To show that, we keep the repository's subgroup-degradation benchmarks as a second experiment.
+The planted-failure setting shows the other side of the tradeoff. The certified rule detects \(97.5\%\) of planted failures at shift \(0.4\), \(79.0\%\) at shift \(0.8\), \(45.0\%\) at shift \(1.2\), and \(19.0\%\) at shift \(1.6\). Certification is not a conservative decoration on the same point estimate; it changes the decision exactly when local support becomes too weak.
 
-These scenarios come from \path{src/shiftstat/datasets/audit_synthetic.py}. Here the target process is changed in a subgroup-specific way, so the subgroup failures are real rather than noise-driven. Two representative cases are:
-\begin{itemize}
-  \item \textbf{Masked subgroup shift:} worst-group ECE gap \(\approx 0.182\).
-  \item \textbf{Minority subgroup degradation:} worst-group ECE gap \(\approx 0.217\).
-\end{itemize}
+\subsection{Learned Weights and Adaptive Search}
 
-Taken together, the two experiments say exactly what the theory says.
-\begin{itemize}
-  \item Worst-group auditing is necessary because aggregate metrics can hide real subgroup failures.
-  \item Worst-group auditing is not self-authenticating because local overlap collapse can also create false subgroup alarms.
-\end{itemize}
+The theorem separates two complications that are unavoidable in deployment: density ratios are estimated, and subgroups are often searched rather than fixed. We stress-test both in one experiment.
 
-The practical implication is therefore simple: whenever a worst-group audit is reported under covariate shift, the report should also include local support diagnostics such as subgroup-bin effective sample sizes or lower-tail summaries of those quantities.
+For learned weights, we compare plugin logistic density-ratio estimates with source-side cross-fitted logistic estimates. Since the synthetic density ratio is known, we can also compute the oracle cellwise nuisance term \(\rho_c\). This is not meant to be a deployable correction. It is a diagnostic stress test of how large the missing learned-weight term can be.
+
+For adaptive search, we expand the subgroup class to roughly \(500\)--\(600\) threshold and intersection cells. We compare same-data search, full-family simultaneous inference, naive sample-split testing, and sample-split certification.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.98\linewidth]{figures/estimated_weight_and_search.png}
+\caption{Estimated weights and adaptive search. Learned density-ratio weights can have reasonable global behavior while still producing large local nuisance error. Same-data adaptive search is invalid under the null; simultaneous inference or held-out certification controls false alarms but pays a power cost.}
+\label{fig:estimated-search-main}
+\end{figure}
+
+The learned-weight results match the theorem's decomposition. At shift \(0.8\), the median weight RMSE is \(0.49\) for plugin weights and \(0.64\) for cross-fitted weights; at shift \(1.2\), it rises to \(2.85\) and \(3.06\). The label-noise band with cross-fitted weights has zero null false alarms in these runs, but without a credible \(\rho_c\) envelope it certifies only the learned weighted estimand. Adding the oracle \(\rho_c\) term makes the planted-failure certificate much more conservative, detecting \(1\%\) and \(0\%\) at shifts \(0.8\) and \(1.2\). In a real audit, the oracle term would be replaced by a sensitivity envelope over plausible cross-fitted ratio models, as described in \cref{sec:recipe}. The lesson is not that learned weights are useless. It is that local learned-weight uncertainty can dominate the alarm, and a target-certified report must show that it does not.
+
+The adaptive-search results are equally direct. Under the calibrated null, same-data search false-alarms in \(100\%\) of runs at both tested shifts. A naive held-out threshold still false-alarms in about \(39\%\) and \(38\%\). Full-family simultaneous inference and sample-split certification produce zero false alarms in these runs. Search is allowed, but the final alarm must pay for it.
+
+\subsection{Adult Census Deployment-Style Audit}
+
+The real-data case study asks whether the distinction matters in a plausible audit. We use the Adult Census income dataset \citep{Kohavi1996Adult}. A source-trained logistic income model is audited on a target population enriched for older, higher-hours, higher-education individuals, with a mild negative tilt for the female subgroup. Because the target split depends only on covariates, it is a covariate-shift design. At audit time, the procedure uses labeled source-audit data and target covariates; target labels are held out for retrospective validation.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.98\linewidth]{figures/adult_case_study.png}
+\caption{Adult Census deployment-style audit. The naive audit reports multiple large subgroup-bin gaps. The top alarm, \(\texttt{workclass=Federal-gov}\) in the highest score bin, has estimated gap \(0.346\). Its local ESS is only \(10.65\), its simultaneous half-width is \(0.612\), and the held-out target gap is \(0.0005\). The certified decision is insufficient evidence, not escalation.}
+\label{fig:adult-case-study}
+\end{figure}
+
+\begin{table}[t]
+\centering
+\caption{Operational interpretation of the Adult Census audit.}
+\label{tab:adult-operational}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{@{}p{0.18\linewidth}p{0.32\linewidth}p{0.36\linewidth}@{}}
+\toprule
+Audit stage & Quantity & Decision-relevant conclusion \\
+\midrule
+Global readiness & global ESS \(=5043\), domain AUC \(=0.679\), \(145\) cells & Global diagnostics would not reject the audit. \\
+Naive alarm & \(19\) cells exceed \(\tau=0.12\) & A point-estimate report would flag several subgroup-bin failures. \\
+Top candidate & \(\texttt{workclass=Federal-gov}\), score bin \([0.83,1.00]\), \(|\widehat r_c|=0.346\) & The alarm looks operationally serious. \\
+Local certificate & local ESS \(=10.65\), half-width \(=0.612\), certified excess \(=0\) & The correct audit decision is insufficient evidence. \\
+Retrospective validation & held-out target gap \(=0.0005\) for the top candidate & The later labels support the certificate's caution. \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+\Cref{fig:adult-case-study,tab:adult-operational} show the operational consequence. A naive audit would escalate the \(\texttt{Federal-gov}\) high-score subgroup. The certified audit does not claim the model is safe; it says the evidence for this alarm is too weak. Retrospective target labels support that caution for the top candidate. This is the desired behavior in deployment: avoid acting on unsupported subgroup alarms while preserving the need for more labels or coarser analysis when evidence is insufficient.
+
+\subsection{ACS Public-Service External Validation}
+
+To connect the method to a broader and more current deployment setting, we add an ACSIncome audit using Folktables \citep{Ding2021RetiringAdult}. This is a public-service analogue of local validation: a model trained in one population is audited before use in another. We train and source-audit on California ACS records and audit a New York target population using target covariates at decision time. Target labels are used only retrospectively to interpret the audit. Cross-state external validation is not asserted to be pure covariate shift; it is a realistic stress test of how a covariate-shift audit behaves when the target subgroup dashboard looks alarming.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.98\linewidth]{figures/acs_external_validation.png}
+\caption{ACSIncome public-service external-validation audit. A California-trained income model audited for a New York target population produces many naive subgroup-bin alarms. The top alarm has estimated gap \(0.272\), but local ESS is \(13.49\), the label half-width is \(0.527\), and the sensitivity envelope for learned weights is \(\widehat\rho_c=1.143\). The retrospective target gap is only \(0.018\).}
+\label{fig:acs-external-validation}
+\end{figure}
+
+\begin{table}[t]
+\centering
+\caption{ACSIncome audit summary. The target labels are held out from the audit and used only to interpret the selected alarm.}
+\label{tab:acs-operational}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{@{}p{0.18\linewidth}p{0.32\linewidth}p{0.36\linewidth}@{}}
+\toprule
+Audit stage & Quantity & Decision-relevant conclusion \\
+\midrule
+Global readiness & global ESS \(=1055\), domain AUC \(=0.952\), \(91\) cells & The target population is clearly shifted, but the weighted audit has substantial global support. \\
+Naive alarm & \(30\) cells exceed \(\tau=0.08\) & A point-estimate report would flag many subgroup-bin failures. \\
+Top candidate & \(\texttt{Age>45 \& Bachelor+}\), score bin \([0.00,0.17]\), \(|\widehat r_c|=0.272\) & The alarm looks operationally meaningful in a public-service audit. \\
+Local certificate & local ESS \(=13.49\), label half-width \(=0.527\), \(\widehat\rho_c=1.143\) & Neither the label-only nor sensitivity-adjusted certificate supports escalation. \\
+Retrospective validation & held-out target gap \(=0.018\) for the top candidate & Later target labels support the insufficient-evidence decision for the top alarm. \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+\Cref{fig:acs-external-validation,tab:acs-operational} strengthen the empirical story in two ways. First, the pattern from Adult Census is not a one-dataset artifact: global support and large naive subgroup gaps can coexist with very weak alarm-driving local support. Second, the learned-weight nuisance term matters in exactly the way the theory predicts. The top ACS alarm is already uncertified by label noise, and the sensitivity envelope makes the target-certified conclusion even less defensible. The appropriate deployment decision is again insufficient evidence, followed by more target labels or a coarser subgroup-bin analysis.

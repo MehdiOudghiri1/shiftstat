@@ -1,5 +1,6 @@
 """Synthetic datasets for examples, tests, and benchmarks."""
 
+from shiftstat.datasets.audit_synthetic import make_hidden_subgroup_shift_classification
 from shiftstat.datasets.synthetic import (
     SyntheticShiftDataset,
     make_configurable_shift_classification,
@@ -8,7 +9,6 @@ from shiftstat.datasets.synthetic import (
     make_mixed_type_shift,
     make_severity_controlled_shift,
 )
-from shiftstat.datasets.audit_synthetic import make_hidden_subgroup_shift_classification
 
 __all__ = [
     "SyntheticShiftDataset",

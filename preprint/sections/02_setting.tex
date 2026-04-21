@@ -1,184 +1,70 @@
-\section{Problem Setting}
+\section{Setting and Estimands}\label{sec:setting}
 
-\subsection{Source data, target data, and covariate shift}
+The model score \(s:\cX\to[0,1]\) is fixed before the audit. We observe labeled source data \((X_i,Y_i)_{i=1}^n\sim P\) and target covariates \((X'_j)_{j=1}^m\sim Q_X\). Labels are binary, \(Y\in\{0,1\}\). The target labels may be unavailable at audit time.
 
-Let \(P\) be the source distribution and \(Q\) the target distribution. The feature vector is \(X\in\cX\), the label is \(Y\in\{0,1\}\), and the model outputs a fixed score function
+\begin{assumption}[Covariate shift and overlap]\label{ass:shift-overlap}
+The conditional label law is stable, \(P(Y\given X)=Q(Y\given X)\), and \(Q_X\ll P_X\). The density ratio
 \[
-\score:\cX\to[0,1].
+w(x)=\frac{dQ_X}{dP_X}(x)
 \]
-We observe labeled source data
-\[
-(X_1,Y_1),\dots,(X_n,Y_n)\sim P
-\]
-and unlabeled or lightly labeled target covariates
-\[
-X'_1,\dots,X'_m\sim Q_X.
-\]
-
-\begin{assumption}[Covariate shift]\label{ass:covshift}
-The conditional label law is unchanged:
-\[
-P(Y\given X)=Q(Y\given X),
-\]
-while the marginal feature law may change:
-\[
-P_X\neq Q_X.
-\]
+is finite \(P_X\)-almost surely.
 \end{assumption}
 
-\begin{assumption}[Overlap]\label{ass:overlap}
-The target covariate distribution is absolutely continuous with respect to the source covariate distribution, so the density ratio
+Let \(\cG\) be a finite family of subgroup indicators and let \(\Bin=\{I_1,\ldots,I_B\}\) be a partition of the score range. A cell \(c=(b,g)\) is active when
 \[
-\wt(x)=\frac{dQ_X}{dP_X}(x)
+A_c(x)=\ind\{s(x)\in I_b\}g(x)=1.
 \]
-exists and is finite almost surely under \(P\).
-\end{assumption}
+The finite audited family is \(\cC\), with \(M=|\cC|\).
 
-These assumptions are standard in covariate-shift adaptation \citep{Sugiyama2007IWCV, Polo2022ESS}. They matter here because they make target reliability quantities transportable through weighted source expectations.
-
-\subsection{Groups, bins, and cell-level reliability}
-
-Let \(\cG\) be a finite family of subgroup indicators \(g:\cX\to\{0,1\}\). Let
+For cell \(c\), the target mass and target residual mass are
 \[
-\Bin=\{I_1,\dots,I_B\}
+\mu_c^Q=\EE_Q[A_c(X)],
+\qquad
+\theta_c^Q=\EE_Q[(Y-s(X))A_c(X)].
 \]
-be a fixed partition of the score range \([0,1]\).
-
-For a score bin \(I_b\) and subgroup \(g\in\cG\), define the active cell indicator
+When \(\mu_c^Q>0\), the target cellwise residual is
 \[
-A_{b,g}(x)=\ind\{\score(x)\in I_b\}g(x).
+r_c^Q
+=
+\EE_Q[Y-s(X)\given A_c(X)=1]
+=
+\frac{\theta_c^Q}{\mu_c^Q}.
 \]
-This is the basic object in the paper: it picks out one score bin and one subgroup at the same time.
+This is the quantity behind a subgroup-bin reliability alarm. If \(r_c^Q>0\), outcomes are larger than the score in that cell; if \(r_c^Q<0\), outcomes are smaller.
 
-\begin{example}[Operational subgroups]
-In a hospital setting, \(g\) may represent
+Under \cref{ass:shift-overlap}, target moments are transported by importance weighting:
 \[
-g_{\mathrm{cardiology}}(x)=\ind\{\text{department}=\text{cardiology}\}
+\mu_c^Q=\EE_P[w(X)A_c(X)],
+\qquad
+\theta_c^Q=\EE_P[w(X)(Y-s(X))A_c(X)].
 \]
-or an interaction such as
+The self-normalized estimator of \(r_c^Q\) is
+\begin{equation}\label{eq:rhat-main}
+\widehat r_c(w)
+=
+\frac{\sum_i w(X_i)A_c(X_i)(Y_i-s(X_i))}
+{\sum_i w(X_i)A_c(X_i)} ,
+\end{equation}
+whenever the denominator is positive. Its local effective sample size is
+\begin{equation}\label{eq:local-ess-main}
+{\ess}_c(w)
+=
+\frac{\bigl(\sum_i w(X_i)A_c(X_i)\bigr)^2}
+{\sum_i w(X_i)^2A_c(X_i)}.
+\end{equation}
+
+The global effective sample size,
 \[
-g_{\mathrm{urgent,high\text{-}load}}(x)
+{\ess}_{\mathrm{global}}(w)
 =
-\ind\{\text{channel}=\text{urgent}\}\ind\{\text{load}\ge c\}.
+\frac{(\sum_i w(X_i))^2}{\sum_i w(X_i)^2},
 \]
-If \(I_b=[0.8,1]\), then \(A_{b,g}(x)=1\) means: this patient is in subgroup \(g\) and the model predicted a high score.
-\end{example}
+answers a different question: how much information remains in the full weighted sample. Worst-group auditing asks whether the selected local cell is supported.
 
-We use three related target quantities.
-
-First, the target cell mass is
-\begin{equation}\label{eq:mu-def}
-\mu_{b,g}^Q
-=
-\EE_Q[A_{b,g}(X)].
-\end{equation}
-This is simply the target probability of landing in cell \((b,g)\).
-
-Second, the target residual mass is
-\begin{equation}\label{eq:theta-def}
-\theta_{b,g}^Q
-=
-\EE_Q[(Y-\score(X))A_{b,g}(X)].
-\end{equation}
-This is the signed calibration error contributed by that cell to the full target population.
-
-Third, when \(\mu_{b,g}^Q>0\), the target cellwise conditional gap is
-\begin{equation}\label{eq:r-def}
-r_{b,g}^Q
-=
-\frac{\theta_{b,g}^Q}{\mu_{b,g}^Q}
-=
-\EE_Q[Y-\score(X)\given A_{b,g}(X)=1].
-\end{equation}
-
-These three formulas play different roles.
-\begin{itemize}
-  \item \(\mu_{b,g}^Q\) says how much target mass the cell carries.
-  \item \(\theta_{b,g}^Q\) is the cell's contribution to the population-level calibration discrepancy.
-  \item \(r_{b,g}^Q\) is the within-cell gap that practitioners would naturally read as a subgroup-bin calibration error.
-\end{itemize}
-
-\subsection{Worst-group reliability and hidden failures}
-
-We define groupwise target reliability by summing the absolute residual mass across bins:
-\begin{equation}\label{eq:cal-def}
-\Cal_{Q,\Bin}(g)
-=
-\sum_{b=1}^{B}|\theta_{b,g}^Q|.
-\end{equation}
-
-The aggregate population corresponds to the constant subgroup \(\ind(x)=1\). Hence
+Given a tolerance \(\tau>0\), a certified audit should not report only the largest point estimate. It should report a lower confidence bound on the excess gap:
 \[
-\Cal_{Q,\Bin}(\ind)
+\operatorname{excess}_c
+=
+\left[|\widehat r_c|-B_c-\tau\right]_+,
 \]
-is the aggregate binned reliability discrepancy.
-
-The worst-group version is
-\begin{equation}\label{eq:wce-def}
-\WCE_{Q,\Bin}(\cG)
-=
-\max_{g\in\cG}\Cal_{Q,\Bin}(g).
-\end{equation}
-
-The hidden-failure gap is
-\begin{equation}\label{eq:hfg-def}
-\HFG_{Q,\Bin}(\cG)
-=
-\WCE_{Q,\Bin}(\cG)-\Cal_{Q,\Bin}(\ind).
-\end{equation}
-
-These quantities capture the familiar concern that average reliability can hide subgroup failures. The new part of the paper is that the statistical stability of these quantities depends on the local cells \((b,g)\), not just on the weighted sample globally.
-
-\subsection{Weighted estimators and local effective sample size}
-
-If oracle weights are available, the natural weighted estimators of \cref{eq:mu-def,eq:theta-def} are
-\begin{equation}\label{eq:muhat-def}
-\widehat{\mu}_{b,g}
-=
-\frac{1}{n}\sum_{i=1}^{n}\wt(X_i)A_{b,g}(X_i),
-\end{equation}
-and
-\begin{equation}\label{eq:thetahat-def}
-\widehat{\theta}_{b,g}
-=
-\frac{1}{n}\sum_{i=1}^{n}\wt(X_i)(Y_i-\score(X_i))A_{b,g}(X_i).
-\end{equation}
-
-Whenever \(\widehat{\mu}_{b,g}>0\), the self-normalized cellwise residual estimator is
-\begin{equation}\label{eq:rhat-def}
-\widehat{r}_{b,g}
-=
-\frac{\widehat{\theta}_{b,g}}{\widehat{\mu}_{b,g}}
-=
-\frac{\sum_{i=1}^{n}\wt(X_i)(Y_i-\score(X_i))A_{b,g}(X_i)}{\sum_{i=1}^{n}\wt(X_i)A_{b,g}(X_i)}.
-\end{equation}
-
-This is the estimator whose variance is governed by local overlap. It is just a weighted average of residuals inside one subgroup-bin cell.
-
-The corresponding subgroup-bin local effective sample size is
-\begin{equation}\label{eq:local-ess-def}
-{\ess}_{b,g}
-=
-\frac{\bigl(\sum_{i=1}^{n}\wt(X_i)A_{b,g}(X_i)\bigr)^2}{\sum_{i=1}^{n}\wt(X_i)^2A_{b,g}(X_i)}.
-\end{equation}
-
-This formula is the usual Kish effective sample size, but applied only to one active cell. It can be read very literally:
-\begin{itemize}
-  \item if many weighted points contribute evenly to cell \((b,g)\), then \({\ess}_{b,g}\) is reasonably large;
-  \item if the cell is effectively supported by one or two large weights, then \({\ess}_{b,g}\) is close to one.
-\end{itemize}
-
-For comparison, the global weighted effective sample size is
-\begin{equation}\label{eq:global-ess-def}
-\ess
-=
-\frac{(\sum_{i=1}^{n}\wt(X_i))^2}{\sum_{i=1}^{n}\wt(X_i)^2}.
-\end{equation}
-
-The paper's main question can now be stated precisely:
-
-\begin{quote}
-which quantity governs the stability of worst-group reliability audits under covariate shift: the global effective sample size \(\ess\), or the local effective sample sizes \({\ess}_{b,g}\)?
-\end{quote}
-
-The next section shows that for subgroup-bin reliability, the relevant variance scale is local.
+where \(B_c\) is a simultaneous uncertainty radius. A certified failure requires positive excess. A large \(|\widehat r_c|\) with zero certified excess is not a negative result; it is insufficient evidence.

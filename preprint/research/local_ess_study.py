@@ -17,9 +17,9 @@ from __future__ import annotations
 
 import argparse
 import json
+from collections.abc import Iterable
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Iterable
 
 import numpy as np
 import pandas as pd
@@ -184,7 +184,10 @@ def _summarize_replicates(
             median_q10_local_ess=("q10_local_ess", "median"),
             median_local_ess=("median_local_ess", "median"),
             median_worst_group_noise=("worst_group_noise", "median"),
-            p90_worst_group_noise=("worst_group_noise", lambda values: float(np.quantile(values, 0.9))),
+            p90_worst_group_noise=(
+                "worst_group_noise",
+                lambda values: float(np.quantile(values, 0.9)),
+            ),
             false_alarm_rate_005=("false_alarm_005", "mean"),
             false_alarm_rate_010=("false_alarm_010", "mean"),
         )
@@ -200,10 +203,14 @@ def _summarize_replicates(
         np.corrcoef(np.log1p(supported["global_ess"]), supported["abs_normalized_gap"])[0, 1]
     )
     worst_local_corr = float(
-        np.corrcoef(np.log1p(replicate_frame["q10_local_ess"]), replicate_frame["worst_group_noise"])[0, 1]
+        np.corrcoef(
+            np.log1p(replicate_frame["q10_local_ess"]), replicate_frame["worst_group_noise"]
+        )[0, 1]
     )
     worst_global_corr = float(
-        np.corrcoef(np.log1p(replicate_frame["global_ess"]), replicate_frame["worst_group_noise"])[0, 1]
+        np.corrcoef(np.log1p(replicate_frame["global_ess"]), replicate_frame["worst_group_noise"])[
+            0, 1
+        ]
     )
 
     diagnostics = {
@@ -244,7 +251,9 @@ def run_study(
     n_bins: int,
     min_target_mass: float,
     weight_mode: str,
-) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, dict[str, float | dict[str, dict[str, float]]]]:
+) -> tuple[
+    pd.DataFrame, pd.DataFrame, pd.DataFrame, dict[str, float | dict[str, dict[str, float]]]
+]:
     bins = np.linspace(0.0, 1.0, n_bins + 1)
     bin_group_frames: list[pd.DataFrame] = []
     summaries: list[ReplicateSummary] = []

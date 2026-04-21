@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.6.0
+
+- Added `shiftstat.certification` for certified worst-group reliability audits under covariate shift.
+- Added `CertifiedWorstGroupAuditor`, `CertifiedAuditReport`, `CertifiedCellResult`, and `AuditDecision`.
+- Added local effective sample size, simultaneous radii, certified excess, and learned-weight sensitivity utilities.
+- Added `CrossFittedImportanceWeighter` for label-independent source-side density-ratio estimation.
+- Added documentation for certified worst-group audits and exposed the certification API in the public package.
+- Added tests covering local ESS, certification decisions, nuisance radii, and cross-fitted weighting.
+
 ## 0.5.0
 
 - Added the new `shiftstat.bench` benchmark framework with scenario presets, baseline and metric registries, repeated-seed aggregation, publication-friendly tables, and figure exports.

@@ -1,30 +1,39 @@
-\section{Discussion}
+\section{A Practical Audit Protocol}\label{sec:recipe}
 
-The paper's story is now sharper than the original draft. Under deployment shift, worst-group auditing is necessary because aggregate calibration can hide real subgroup failures. But under covariate shift, worst-group auditing is also statistically fragile because the relevant information is local. A subgroup-bin cell can become effectively unsupported long before the weighted sample looks globally unusable.
+The methodological recommendation is compact enough to state as a protocol. A covariate-shift worst-group audit should report certified excess, not only ranked subgroup gaps.
 
-This perspective clarifies three points that are often conflated.
-
-\begin{itemize}
-  \item \textbf{Transport is not the same as stability.} Covariate shift tells us how to rewrite target quantities as weighted source quantities. It does not tell us whether those quantities can be estimated reliably in every audited cell.
-  \item \textbf{Global ESS is not a worst-group diagnostic.} It summarizes the full weighted sample. Worst-group auditing depends on the weakest audited cell, so the relevant object is the lower tail of local ESS.
-  \item \textbf{A subgroup alarm is not automatically evidence of a real deployment failure.} It may reflect true subgroup harm, or it may reflect local overlap collapse. The audit result is only interpretable once both possibilities are on the table.
-\end{itemize}
-
-This leads to a practical recommendation that is easy to state:
-
-\begin{quote}
-report worst-group reliability together with local overlap diagnostics.
-\end{quote}
-
-In concrete terms, a subgroup audit under covariate shift should not stop at one global ESS value. It should also report cell-level or lower-tail local ESS summaries, ideally for the exact subgroup-bin family used by the audit. Otherwise a reviewer or practitioner cannot tell whether a large worst-group estimate reflects deployment harm or statistical degeneracy.
-
-There are several directions that could make the paper even stronger.
-
+\begin{center}
+\fbox{%
+\begin{minipage}{0.92\linewidth}
+\textbf{Certified worst-group audit under covariate shift.}
 \begin{enumerate}
-  \item Replace the finite subgroup family by a richer class and derive complexity-sensitive local-overlap bounds.
-  \item Move from point estimates to interval estimates, for example confidence intervals for subgroup-bin gaps or worst-group error conditioned on local ESS.
-  \item Study adaptive auditing, where the subgroup family itself is chosen after looking at the data, which should make false-alarm control even harder.
-  \item Extend the local-overlap analysis beyond pure covariate shift to mixed shift, concept drift, and settings with doubly robust correction \citep{Yang2024DRCalibration, Wu2024MCOOD}.
+  \item Freeze the score, target population, tolerance \(\tau\), error budget \(\delta\), score bins, and subgroup family. If subgroups will be searched adaptively, reserve a held-out source-audit split or certify over the full searched family.
+  \item Estimate density ratios using source and target covariates, preferably with source-side cross-fitting. Report the clipping rule, global ESS, local ESS distribution, and any cells dominated by a few weights.
+  \item Build a local weight-sensitivity envelope. Fit plausible alternative ratio models by varying regularization, clipping, features, folds, and resampling. For decision-driving cells, report \(\widehat\rho_c\) as the largest sensitivity penalty over that envelope. If the envelope is weak or unstable, label the result as sensitivity analysis rather than full target certification.
+  \item For every cell \(c\), compute \(\widehat r_c\), estimated target mass, source count, local ESS, and the simultaneous radius
+  \[
+  B_c=
+  \sqrt{\frac{\log(2M/\delta_1)}{2\widehat{\ess}_c}}
+  +\widehat\rho_c+\widehat\gamma_c .
+  \]
+  \item Report the certified excess
+  \[
+  \left[|\widehat r_c|-\tau-B_c\right]_+ .
+  \]
+  A cell is a certified failure only when this quantity is positive and the cell passes the pre-specified mass and support requirements.
+  \item Report \emph{insufficient evidence} when the naive gap exceeds \(\tau\) but certified excess is zero, local ESS is too small, \(\widehat\rho_c\) dominates the gap, the weight-sensitivity envelope is not credible, or the subgroup was selected adaptively without valid certification.
 \end{enumerate}
+\end{minipage}}
+\end{center}
 
-The broader claim is not about one library or one benchmark suite. It is a statistical claim about deployment auditing. If worst-group reliability is going to be used as evidence in shifted environments, then local overlap has to be part of the evidence. That is the main message of the paper.
+The phrase insufficient evidence is important. It does not mean the subgroup is safe. It means the available source labels and target covariates do not support the operational claim. Appropriate next steps are to collect target labels, coarsen fragile cells, reduce the searched subgroup family, improve the density-ratio model, or defer subgroup-specific intervention.
+
+\section{Discussion}\label{sec:discussion}
+
+Worst-group auditing is necessary because aggregate reliability can hide real subgroup failures. Under covariate shift, however, the reported worst subgroup is also where the audit is most vulnerable to local overlap collapse and search effects. The same mechanism that makes worst-group auditing operationally useful makes it statistically delicate. This is especially relevant for local validation of clinical AI and public-service prediction systems, where subgroup alarms can determine whether a model is rolled out, restricted, recalibrated, or sent back for data collection.
+
+The paper's central distinction is between transport and certification. Covariate-shift weighting can identify the target residual under overlap, but it does not guarantee that the selected cell has enough evidence. Global ESS measures the full weighted sample. A worst-group alarm is a local claim, so it needs a local certificate.
+
+The learned-weight result should be read in the same spirit. Cross-fitting is valuable because it restores the conditional label-noise argument for the source labels used in the audit. It does not solve density-ratio misspecification. A journal-level treatment should therefore be explicit about the nuisance term rather than hide it behind a point estimate. In practice, \(\widehat\rho_c\) should be reported as a local robustness number: the penalty induced by moving from the chosen ratio model to a plausible alternative ratio model in the decision-driving cell. If no credible envelope is available, the audit can still report a label-noise diagnostic, but it should not call the alarm fully target certified.
+
+Several extensions are natural. Rich subgroup classes call for sharper complexity penalties or max-statistic calibration. Doubly robust estimators can improve constants when outcome models are useful, but they still face the same local residual variance and no-overlap boundary. Mixed shifts require assumptions beyond covariate shift. These directions are important, but they do not change the main message: a worst-group alarm under shift is a statistical claim, and it should be treated as one.

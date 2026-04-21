@@ -18,12 +18,50 @@
 
 > Aggregate metrics can stay stable while calibration, subgroup reliability, or accepted-set risk quietly fails after deployment shift. ShiftStat is built to make those failures visible, compare interventions, and export reproducible evidence.
 
+## Certified worst-group audits under covariate shift
+
+ShiftStat now includes the inferential workflow behind the accompanying paper:
+local certification of worst-group reliability alarms under covariate shift. The
+key distinction is between a subgroup-bin gap that merely looks large and an
+alarm that is locally supported by enough weighted labels to be actionable.
+
+```python
+from shiftstat.certification import CertifiedWorstGroupAuditor
+from shiftstat.reweight import CrossFittedImportanceWeighter
+
+weights = CrossFittedImportanceWeighter(method="logistic", n_folds=5).fit_predict(
+    X_source,
+    X_target,
+)
+
+report = CertifiedWorstGroupAuditor(
+    n_bins=6,
+    tolerance=0.12,
+    alpha=0.10,
+).fit(
+    y_source=y_source,
+    scores_source=scores_source,
+    scores_target=scores_target,
+    weights=weights,
+    groups=source_groups,
+    target_groups=target_groups,
+).report()
+
+print(report.certified_failures())
+print(report.insufficient_evidence())
+```
+
+The certified report includes local ESS, simultaneous confidence radii,
+learned-weight sensitivity, certified excess, and explicit decisions:
+`certified_failure`, `insufficient_evidence`, `no_detected_failure`, or
+`out_of_scope`.
+
 ## At a glance
 
 | Item | Details |
 | --- | --- |
 | Package | `shiftstat` |
-| Version | `0.5.0` |
+| Version | `0.6.0` |
 | Python | `>=3.10` |
 | Focus | Scientific evaluation of predictive reliability under tabular distribution shift |
 | Includes | Core diagnostics, high-level workflows, benchmark scenarios, config-driven experiments, plots, and publication-ready artifacts |
@@ -157,7 +195,8 @@ flowchart LR
 
 ```bash
 pip install -e .[dev,docs,examples]
-pytest
+pytest -m "not slow"
+pytest --cov=shiftstat --cov-report=term-missing
 ruff check .
 mypy src
 mkdocs build
@@ -171,11 +210,16 @@ python -m venv .venv
 pip install -e .[dev,docs,examples]
 ```
 
+Slow example and benchmark checks are marked with `examples`, `benchmark`, and
+`slow`; the full CI suite also builds the wheel, smoke-installs it, and checks
+the documentation. Release steps are documented in [RELEASE.md](RELEASE.md) and
+[docs/release_process.md](docs/release_process.md).
+
 ## Project status
 
-ShiftStat `0.5.0` is the V5 release. It adds the benchmark framework, config-driven experiments, publication-friendly exports, and repository-level paper assets on top of the earlier detection, weighting, calibration, subgroup-auditing, and selective-prediction layers.
+ShiftStat `0.6.0` adds certified worst-group auditing under covariate shift on top of the earlier detection, weighting, calibration, subgroup-auditing, selective-prediction, and benchmark layers.
 
-Uncertainty intervals, multiclass benchmarking, and richer appendix automation are intentionally still deferred.
+Multiclass certification, sharper complexity penalties for very large adaptive subgroup classes, and richer appendix automation are intentionally still deferred.
 
 ## Citation and license
 

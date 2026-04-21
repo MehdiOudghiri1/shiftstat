@@ -197,8 +197,14 @@ def evaluate_selective_under_shift(
     subgroup_disparities = _subgroup_abstention_disparities(subgroup_summary)
 
     threshold_comparison = None
-    if compare_threshold_tuning and reference_weight is not None and (
-        target_coverage is not None or target_risk is not None or base_policy.method == "learned_risk"
+    if (
+        compare_threshold_tuning
+        and reference_weight is not None
+        and (
+            target_coverage is not None
+            or target_risk is not None
+            or base_policy.method == "learned_risk"
+        )
     ):
         alternative_policy = base_policy.copy()
         alternative_predictor = SelectivePredictor(alternative_policy, n_bins=n_bins)
@@ -271,7 +277,9 @@ def _merge_subgroup_abstention_summaries(
         merged[f"{prefix}_n_samples"] = merged[f"n_samples_{prefix}"].fillna(0.0)
         merged[f"{prefix}_coverage"] = merged[f"coverage_{prefix}"].fillna(0.0)
         merged[f"{prefix}_abstention_rate"] = merged[f"abstention_rate_{prefix}"].fillna(1.0)
-        merged[f"{prefix}_selective_accuracy"] = merged[f"selective_accuracy_{prefix}"].fillna(float("nan"))
+        merged[f"{prefix}_selective_accuracy"] = merged[f"selective_accuracy_{prefix}"].fillna(
+            float("nan")
+        )
         merged[f"{prefix}_support_ok"] = merged[f"support_ok_{prefix}"].fillna(False)
     merged["supported_both"] = merged["support_ok_reference"] & merged["support_ok_target"]
     merged["delta_abstention_rate"] = (

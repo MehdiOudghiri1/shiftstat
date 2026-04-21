@@ -27,3 +27,15 @@ class NumericalStabilityWarning(ShiftStatWarning):
 
 class SmallSampleWarning(ShiftStatWarning):
     """Warning emitted when subgroup or slice-level estimates are underpowered."""
+
+
+class InsufficientOverlapWarning(ShiftStatWarning):
+    """Warning emitted when a certified audit cell lacks local weighted support."""
+
+
+class NuisanceDominatesWarning(ShiftStatWarning):
+    """Warning emitted when learned-weight sensitivity dominates a subgroup alarm."""
+
+
+class AdaptiveSearchWarning(ShiftStatWarning):
+    """Warning emitted when a searched subgroup family is not validly certified."""

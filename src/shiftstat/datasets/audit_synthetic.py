@@ -23,9 +23,11 @@ def make_hidden_subgroup_shift_classification(
     ----------
     pattern:
         One of:
-        - ``"masked_subgroup_shift"`` for subgroup-specific degradation with stable-looking aggregates
+        - ``"masked_subgroup_shift"`` for subgroup-specific degradation with
+          stable-looking aggregates
         - ``"minority_subgroup_degradation"`` for a sharper minority-group failure mode
-        - ``"operational_calibration_drift"`` for calibration drift concentrated in operational slices
+        - ``"operational_calibration_drift"`` for calibration drift concentrated in
+          operational slices
     """
 
     rng = check_random_state(random_state)
@@ -67,7 +69,9 @@ def _make_frame(
 ) -> pd.DataFrame:
     minority_rate = 0.18 if not target else 0.24
     urgent_rate = 0.22 if not target else 0.38
-    region = rng.choice(["majority", "minority"], size=n_samples, p=[1 - minority_rate, minority_rate])
+    region = rng.choice(
+        ["majority", "minority"], size=n_samples, p=[1 - minority_rate, minority_rate]
+    )
     channel = rng.choice(["standard", "urgent"], size=n_samples, p=[1 - urgent_rate, urgent_rate])
     score = rng.normal(loc=0.0 if not target else 0.25, scale=1.0, size=n_samples)
     load = rng.normal(loc=0.0 if not target else 0.35, scale=1.0, size=n_samples)
@@ -91,7 +95,10 @@ def _base_model_logit(frame: pd.DataFrame) -> np.ndarray:
     signal = frame["signal"].to_numpy(dtype=float)
     minority = (frame["region"] == "minority").to_numpy(dtype=float)
     urgent = (frame["channel"] == "urgent").to_numpy(dtype=float)
-    return 0.95 * score - 0.75 * load + 0.55 * signal + 0.3 * minority + 0.25 * urgent
+    return np.asarray(
+        0.95 * score - 0.75 * load + 0.55 * signal + 0.3 * minority + 0.25 * urgent,
+        dtype=float,
+    )
 
 
 def _pattern_shift(frame: pd.DataFrame, *, pattern: str) -> np.ndarray:
@@ -101,11 +108,14 @@ def _pattern_shift(frame: pd.DataFrame, *, pattern: str) -> np.ndarray:
     negative_score = (frame["score"].to_numpy(dtype=float) < 0.0).astype(float)
 
     if pattern == "masked_subgroup_shift":
-        return 1.15 * minority * high_load - 0.18 * (1.0 - minority) * urgent
+        return np.asarray(
+            1.15 * minority * high_load - 0.18 * (1.0 - minority) * urgent,
+            dtype=float,
+        )
     if pattern == "minority_subgroup_degradation":
-        return 1.6 * minority + 0.9 * minority * urgent
+        return np.asarray(1.6 * minority + 0.9 * minority * urgent, dtype=float)
     if pattern == "operational_calibration_drift":
-        return 0.95 * urgent * negative_score - 0.1 * minority
+        return np.asarray(0.95 * urgent * negative_score - 0.1 * minority, dtype=float)
     raise ValueError(
         "pattern must be one of 'masked_subgroup_shift', "
         "'minority_subgroup_degradation', or 'operational_calibration_drift'."
@@ -113,4 +123,4 @@ def _pattern_shift(frame: pd.DataFrame, *, pattern: str) -> np.ndarray:
 
 
 def _sigmoid(values: np.ndarray) -> np.ndarray:
-    return 1.0 / (1.0 + np.exp(-values))
+    return np.asarray(1.0 / (1.0 + np.exp(-values)), dtype=float)

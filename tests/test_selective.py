@@ -9,8 +9,13 @@ from shiftstat.datasets import (
     make_covariate_shift_classification,
     make_hidden_subgroup_shift_classification,
 )
-from shiftstat.metrics import retained_coverage, risk_coverage_table, selective_accuracy, selective_summary
-from shiftstat.selective import AbstentionPolicy, SelectivePredictor, evaluate_selective_under_shift
+from shiftstat.metrics import (
+    retained_coverage,
+    risk_coverage_table,
+    selective_accuracy,
+    selective_summary,
+)
+from shiftstat.selective import AbstentionPolicy, evaluate_selective_under_shift
 
 
 def _mixed_estimator() -> Pipeline:
@@ -108,5 +113,7 @@ def test_subgroup_abstention_summary_is_exposed() -> None:
     summary = result.to_report().subgroup_abstention_frame()
     disparity = result.to_report().subgroup_disparity_frame()
 
-    assert {"slice_name", "group", "target_coverage", "target_abstention_rate"}.issubset(summary.columns)
+    assert {"slice_name", "group", "target_coverage", "target_abstention_rate"}.issubset(
+        summary.columns
+    )
     assert {"metric", "worst_group", "absolute_gap"}.issubset(disparity.columns)

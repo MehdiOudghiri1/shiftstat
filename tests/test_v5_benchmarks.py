@@ -2,9 +2,12 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import pytest
 from benchmarks.run_v5_benchmark_suite import run_v5_benchmark_suite
 
 
+@pytest.mark.benchmark
+@pytest.mark.integration
 def test_v5_benchmark_suite_runner(tmp_path: Path) -> None:
     config_path = tmp_path / "suite.yaml"
     config_path.write_text(

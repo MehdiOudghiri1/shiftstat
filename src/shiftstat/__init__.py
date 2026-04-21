@@ -8,12 +8,18 @@ from ._version import __version__
 
 __all__ = [
     "AbstentionPolicy",
+    "AuditDecision",
     "BaselineRegistry",
     "BenchmarkResult",
     "BenchmarkRunner",
     "BenchmarkScenario",
     "CalibrationEvaluator",
+    "CertifiedAuditConfig",
+    "CertifiedAuditReport",
+    "CertifiedCellResult",
+    "CertifiedWorstGroupAuditor",
     "ConditionalReliabilityAuditor",
+    "CrossFittedImportanceWeighter",
     "ImportanceWeighter",
     "IsotonicCalibrator",
     "PlattCalibrator",
@@ -27,12 +33,14 @@ __all__ = [
     "TemperatureScaler",
     "__version__",
     "compute_effective_sample_size",
+    "certified_excess",
     "discover_failure_slices",
     "evaluate_under_shift",
     "evaluate_selective_under_shift",
     "group_by_feature",
     "group_metrics",
     "run_experiment",
+    "simultaneous_radius",
     "weighted_mean",
     "weighted_risk",
 ]
@@ -45,6 +53,35 @@ def __getattr__(name: str) -> Any:
         if name == "ConditionalReliabilityAuditor":
             return ConditionalReliabilityAuditor
         return ReliabilityAuditor
+    if name in {
+        "AuditDecision",
+        "CertifiedAuditConfig",
+        "CertifiedAuditReport",
+        "CertifiedCellResult",
+        "CertifiedWorstGroupAuditor",
+        "certified_excess",
+        "simultaneous_radius",
+    }:
+        from .certification import (
+            AuditDecision,
+            CertifiedAuditConfig,
+            CertifiedAuditReport,
+            CertifiedCellResult,
+            CertifiedWorstGroupAuditor,
+            certified_excess,
+            simultaneous_radius,
+        )
+
+        mapping = {
+            "AuditDecision": AuditDecision,
+            "CertifiedAuditConfig": CertifiedAuditConfig,
+            "CertifiedAuditReport": CertifiedAuditReport,
+            "CertifiedCellResult": CertifiedCellResult,
+            "CertifiedWorstGroupAuditor": CertifiedWorstGroupAuditor,
+            "certified_excess": certified_excess,
+            "simultaneous_radius": simultaneous_radius,
+        }
+        return mapping[name]
     if name in {"SliceDiscoverer", "discover_failure_slices"}:
         from .audit import SliceDiscoverer, discover_failure_slices
 
@@ -99,7 +136,12 @@ def __getattr__(name: str) -> Any:
             "BenchmarkScenario": BenchmarkScenario,
         }
         return mapping[name]
-    if name in {"CalibrationEvaluator", "IsotonicCalibrator", "PlattCalibrator", "TemperatureScaler"}:
+    if name in {
+        "CalibrationEvaluator",
+        "IsotonicCalibrator",
+        "PlattCalibrator",
+        "TemperatureScaler",
+    }:
         from .calibration import (
             CalibrationEvaluator,
             IsotonicCalibrator,
@@ -125,12 +167,14 @@ def __getattr__(name: str) -> Any:
             return ReliabilityAnalyzer
         return evaluate_under_shift
     if name in {
+        "CrossFittedImportanceWeighter",
         "ImportanceWeighter",
         "compute_effective_sample_size",
         "weighted_mean",
         "weighted_risk",
     }:
         from .reweight import (
+            CrossFittedImportanceWeighter,
             ImportanceWeighter,
             compute_effective_sample_size,
             weighted_mean,
@@ -138,6 +182,7 @@ def __getattr__(name: str) -> Any:
         )
 
         mapping = {
+            "CrossFittedImportanceWeighter": CrossFittedImportanceWeighter,
             "ImportanceWeighter": ImportanceWeighter,
             "compute_effective_sample_size": compute_effective_sample_size,
             "weighted_mean": weighted_mean,

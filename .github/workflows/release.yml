@@ -5,25 +5,82 @@ on:
     tags:
       - "v*"
   workflow_dispatch:
+    inputs:
+      publish:
+        description: "Publication target"
+        required: true
+        default: "none"
+        type: choice
+        options:
+          - none
+          - testpypi
+          - pypi
+
+permissions:
+  contents: read
 
 jobs:
   build:
+    name: Build release artifacts
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-python@v6
         with:
           python-version: "3.11"
-      - name: Install build tools
+          cache: pip
+      - name: Build distributions
         run: |
           python -m pip install --upgrade pip
-          pip install build twine
-      - name: Build distributions
-        run: python -m build
+          python -m pip install .[release]
+          python -m build
       - name: Check distributions
-        run: twine check dist/*
-      - name: Upload build artifacts
+        run: python -m twine check dist/*
+      - name: Smoke install wheel
+        run: |
+          python -m venv /tmp/shiftstat-release-smoke
+          /tmp/shiftstat-release-smoke/bin/python -m pip install --upgrade pip
+          /tmp/shiftstat-release-smoke/bin/python -m pip install dist/*.whl
+          /tmp/shiftstat-release-smoke/bin/python -c "import shiftstat; print(shiftstat.__version__)"
+          /tmp/shiftstat-release-smoke/bin/shiftstat-experiment --help
+      - name: Upload distributions
         uses: actions/upload-artifact@v4
         with:
           name: shiftstat-dist
           path: dist/*
+
+  publish-testpypi:
+    name: Publish to TestPyPI
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' && inputs.publish == 'testpypi'
+    permissions:
+      id-token: write
+    environment:
+      name: testpypi
+      url: https://test.pypi.org/project/shiftstat/
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: shiftstat-dist
+          path: dist
+      - uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://test.pypi.org/legacy/
+
+  publish-pypi:
+    name: Publish to PyPI
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v') || (github.event_name == 'workflow_dispatch' && inputs.publish == 'pypi')
+    permissions:
+      id-token: write
+    environment:
+      name: pypi
+      url: https://pypi.org/project/shiftstat/
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: shiftstat-dist
+          path: dist
+      - uses: pypa/gh-action-pypi-publish@release/v1

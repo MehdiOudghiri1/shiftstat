@@ -3,15 +3,17 @@ title: ShiftStat
 message: "If you use ShiftStat in scientific work, please cite the software record."
 type: software
 authors:
-  - name: ShiftStat contributors
+  - family-names: Oudghiri
+    given-names: Mehdi
 repository-code: https://github.com/open-source-labs/shiftstat
 url: https://github.com/open-source-labs/shiftstat
 license: BSD-3-Clause
-version: 0.5.0
-date-released: 2026-04-16
+version: 0.6.0
+date-released: 2026-04-21
 abstract: >
   ShiftStat is a Python library for scientific studies of predictive reliability,
-  subgroup failures, and selective prediction under tabular distribution shift.
+  certified worst-group subgroup auditing, and selective prediction under
+  tabular distribution shift.
 keywords:
   - distribution shift
   - reliability

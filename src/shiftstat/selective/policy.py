@@ -65,7 +65,11 @@ class AbstentionPolicy:
         y_true_arr = None if y_true is None else ensure_1d(y_true, name="y_true").astype(int)
         if y_true_arr is not None:
             validate_same_length(y_true_arr, probabilities)
-        weights = None if sample_weight is None else ensure_1d(sample_weight, name="sample_weight").astype(float)
+        weights = (
+            None
+            if sample_weight is None
+            else ensure_1d(sample_weight, name="sample_weight").astype(float)
+        )
         if weights is not None:
             validate_same_length(probabilities, weights)
 
@@ -84,9 +88,7 @@ class AbstentionPolicy:
         if explicit_threshold is not None and (
             target_coverage is not None or target_risk is not None
         ):
-            raise ValueError(
-                "Use either a fixed threshold or a tuning target, not both at once."
-            )
+            raise ValueError("Use either a fixed threshold or a tuning target, not both at once.")
         if explicit_threshold is not None:
             accepted = scores >= float(explicit_threshold)
             if weights is None:
@@ -96,7 +98,9 @@ class AbstentionPolicy:
             selection = _ThresholdSelection(
                 threshold=float(explicit_threshold),
                 achieved_coverage=achieved_coverage,
-                achieved_selective_risk=float("nan") if y_true_arr is None else float(
+                achieved_selective_risk=float("nan")
+                if y_true_arr is None
+                else float(
                     risk_coverage_table(
                         y_true_arr,
                         probabilities,
@@ -107,7 +111,9 @@ class AbstentionPolicy:
                         strategy=strategy,
                     )["selective_risk"].iloc[0]
                 ),
-                achieved_selective_accuracy=float("nan") if y_true_arr is None else float(
+                achieved_selective_accuracy=float("nan")
+                if y_true_arr is None
+                else float(
                     risk_coverage_table(
                         y_true_arr,
                         probabilities,
@@ -135,11 +141,12 @@ class AbstentionPolicy:
                 strategy=strategy,
                 max_points=max_thresholds,
             )
-            selection = (
-                self._select_threshold_for_coverage(curve, float(target_coverage))
-                if target_coverage is not None
-                else self._select_threshold_for_risk(curve, float(target_risk))
-            )
+            if target_coverage is not None:
+                selection = self._select_threshold_for_coverage(curve, float(target_coverage))
+            else:
+                if target_risk is None:
+                    raise ValueError("target_risk is required when target_coverage is absent.")
+                selection = self._select_threshold_for_risk(curve, float(target_risk))
             self.threshold_curve_ = curve
         elif self.method == "learned_risk":
             selection = _ThresholdSelection(

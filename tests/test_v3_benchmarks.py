@@ -3,12 +3,15 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import pytest
 from benchmarks.run_v3_audit_benchmark import (
     run_v3_audit_benchmark,
     save_v3_audit_benchmark,
 )
 
 
+@pytest.mark.benchmark
+@pytest.mark.slow
 def test_v3_audit_benchmark_runner(tmp_path: Path) -> None:
     config = {
         "name": "test_v3_benchmark",

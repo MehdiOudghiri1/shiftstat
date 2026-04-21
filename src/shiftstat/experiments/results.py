@@ -9,6 +9,7 @@ from typing import Any
 import pandas as pd
 
 from shiftstat.bench.results import BenchmarkResult
+from shiftstat.utils.artifacts import portable_path
 
 
 @dataclass(frozen=True)
@@ -24,6 +25,8 @@ class ExperimentResult:
     started_at_utc: str
     completed_at_utc: str
     shiftstat_version: str
+    config_sha256: str | None = None
+    environment: dict[str, str] | None = None
     manifest_path: str | None = None
     summary_csv_path: str | None = None
     markdown_path: str | None = None
@@ -41,22 +44,29 @@ class ExperimentResult:
             return pd.DataFrame()
         return pd.concat(frames, ignore_index=True)  # type: ignore[no-any-return]
 
-    def to_dict(self) -> dict[str, Any]:
+    def to_dict(self, *, relative_to: str | Path | None = None) -> dict[str, Any]:
         """Return a machine-readable experiment manifest."""
+
+        def path_value(value: str | None) -> str | None:
+            if value is None:
+                return None
+            return portable_path(value, relative_to=relative_to)
 
         return {
             "experiment_name": self.experiment_name,
-            "config_path": self.config_path,
-            "output_dir": self.output_dir,
+            "config_path": path_value(self.config_path),
+            "output_dir": path_value(self.output_dir),
             "figure_format": self.figure_format,
             "started_at_utc": self.started_at_utc,
             "completed_at_utc": self.completed_at_utc,
             "shiftstat_version": self.shiftstat_version,
+            "config_sha256": self.config_sha256,
+            "environment": self.environment or {},
             "scenario_artifacts": self.scenario_artifacts,
-            "manifest_path": self.manifest_path,
-            "summary_csv_path": self.summary_csv_path,
-            "markdown_path": self.markdown_path,
-            "log_path": self.log_path,
+            "manifest_path": path_value(self.manifest_path),
+            "summary_csv_path": path_value(self.summary_csv_path),
+            "markdown_path": path_value(self.markdown_path),
+            "log_path": path_value(self.log_path),
             "benchmarks": [result.to_dict() for result in self.benchmark_results],
         }
 
@@ -91,7 +101,7 @@ class ExperimentResult:
     def rerun_command(self) -> str:
         """Return a reproducible rerun command."""
 
-        return f"python -m shiftstat.experiments \"{self.config_path}\""
+        return f'python -m shiftstat.experiments "{self.config_path}"'
 
     def artifact_root(self) -> Path:
         """Return the artifact root as a Path object."""

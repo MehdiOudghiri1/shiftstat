@@ -78,12 +78,10 @@ class SubgroupReport:
         else:
             for _, row in degradation_frame.iterrows():
                 lines.append(
-                    (
-                        f"- {row['slice_name']} -> {row['group']}: "
-                        f"delta error {row['delta_error_rate']:.3f}, "
-                        f"delta ECE {row['delta_ece']:.3f}, "
-                        f"severity {row['severity_score']:.3f}"
-                    )
+                    f"- {row['slice_name']} -> {row['group']}: "
+                    f"delta error {row['delta_error_rate']:.3f}, "
+                    f"delta ECE {row['delta_ece']:.3f}, "
+                    f"severity {row['severity_score']:.3f}"
                 )
 
         if self.warnings:
