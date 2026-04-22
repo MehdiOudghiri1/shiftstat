@@ -82,10 +82,10 @@ security = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/open-source-labs/shiftstat"
-Documentation = "https://github.com/open-source-labs/shiftstat/tree/main/docs"
-Repository = "https://github.com/open-source-labs/shiftstat"
-Issues = "https://github.com/open-source-labs/shiftstat/issues"
+Homepage = "https://github.com/MehdiOudghiri1/shiftstat"
+Documentation = "https://github.com/MehdiOudghiri1/shiftstat/tree/main/docs"
+Repository = "https://github.com/MehdiOudghiri1/shiftstat"
+Issues = "https://github.com/MehdiOudghiri1/shiftstat/issues"
 
 [tool.setuptools]
 package-dir = { "" = "src" }
