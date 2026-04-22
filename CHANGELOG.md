@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.4
+
+- Enlarged the LaTeX-generated README equation SVGs for better readability on
+  the PyPI project page.
+
 ## 0.6.3
 
 - Rendered README scientific equations as LaTeX-generated SVG assets for a more

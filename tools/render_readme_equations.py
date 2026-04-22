@@ -123,7 +123,7 @@ EQUATIONS: tuple[Equation, ...] = (
 
 def _latex_document(equation: Equation) -> str:
     return rf"""
-\documentclass[preview,border=2pt]{{standalone}}
+\documentclass[preview,border=2pt,12pt]{{standalone}}
 \usepackage{{amsmath,amssymb}}
 \begin{{document}}
 $\displaystyle {equation.tex}$

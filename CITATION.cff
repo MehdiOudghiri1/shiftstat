@@ -8,7 +8,7 @@ authors:
 repository-code: https://github.com/MehdiOudghiri1/shiftstat
 url: https://github.com/MehdiOudghiri1/shiftstat
 license: BSD-3-Clause
-version: 0.6.3
+version: 0.6.4
 date-released: 2026-04-22
 abstract: >
   ShiftStat is a Python library for scientific studies of predictive reliability,
