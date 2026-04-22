@@ -5,11 +5,11 @@ type: software
 authors:
   - family-names: Oudghiri
     given-names: Mehdi
-repository-code: https://github.com/open-source-labs/shiftstat
-url: https://github.com/open-source-labs/shiftstat
+repository-code: https://github.com/MehdiOudghiri1/shiftstat
+url: https://github.com/MehdiOudghiri1/shiftstat
 license: BSD-3-Clause
-version: 0.6.0
-date-released: 2026-04-21
+version: 0.6.3
+date-released: 2026-04-22
 abstract: >
   ShiftStat is a Python library for scientific studies of predictive reliability,
   certified worst-group subgroup auditing, and selective prediction under

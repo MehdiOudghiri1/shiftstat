@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.6.3
+
+- Rendered README scientific equations as LaTeX-generated SVG assets for a more
+  polished PyPI project page.
+- Added a reproducible equation-rendering helper for regenerating the README
+  equation assets from TeX source.
+- Updated citation metadata to point at the public GitHub repository.
+
 ## 0.6.0
 
 - Added `shiftstat.certification` for certified worst-group reliability audits under covariate shift.

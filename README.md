@@ -56,33 +56,29 @@ train / validate model       audit reliability under shift
 The target risk of a predictor `f` is
 
 <p align="center">
-  <strong>R<sub>tgt</sub>(f)</strong>
-  =
-  <strong>&#x1D53C;<sub>(X,Y)&sim;P<sub>tgt</sub></sub>
-  [ &ell;(Y, f(X)) ]</strong>
+  <img src="https://raw.githubusercontent.com/MehdiOudghiri1/shiftstat/main/docs/assets/equations/target-risk.svg" alt="R_tgt(f) = E_{(X,Y)~P_tgt}[ell(Y, f(X))]">
 </p>
 
 If only reference labels are abundant, the naive reference estimate
 
 <p align="center">
-  <strong>(1 / n) &sum;<sub>i=1</sub><sup>n</sup>
-  &ell;(y<sub>i</sub>, f(x<sub>i</sub>))</strong>
+  <img src="https://raw.githubusercontent.com/MehdiOudghiri1/shiftstat/main/docs/assets/equations/reference-risk-estimator.svg" alt="(1 / n) sum_i ell(y_i, f(x_i))">
 </p>
 
-can be biased for the target population. Under covariate shift, where
-<strong>P<sub>ref</sub>(Y | X) = P<sub>tgt</sub>(Y | X)</strong> but
-<strong>P<sub>ref</sub>(X) &ne; P<sub>tgt</sub>(X)</strong>, the target risk can
-be estimated with density-ratio weights:
+can be biased for the target population. Under covariate shift,
 
 <p align="center">
-  <strong>w(x) = p<sub>tgt</sub>(x) / p<sub>ref</sub>(x)</strong>
+  <img src="https://raw.githubusercontent.com/MehdiOudghiri1/shiftstat/main/docs/assets/equations/covariate-shift-assumption.svg" alt="P_ref(Y | X) = P_tgt(Y | X), P_ref(X) != P_tgt(X)">
+</p>
+
+the target risk can be estimated with density-ratio weights:
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/MehdiOudghiri1/shiftstat/main/docs/assets/equations/density-ratio.svg" alt="w(x) = p_tgt(x) / p_ref(x)">
 </p>
 
 <p align="center">
-  <strong>R<sub>tgt</sub>(f)</strong>
-  =
-  <strong>&#x1D53C;<sub>P<sub>ref</sub></sub>
-  [ w(X) &ell;(Y, f(X)) ]</strong>
+  <img src="https://raw.githubusercontent.com/MehdiOudghiri1/shiftstat/main/docs/assets/equations/weighted-target-risk.svg" alt="R_tgt(f) = E_{P_ref}[w(X) ell(Y, f(X))]">
 </p>
 
 ShiftStat turns this idea into an inspectable workflow rather than a black-box
@@ -109,41 +105,24 @@ ShiftStat estimates target-over-reference weights by fitting a domain classifier
 that predicts whether a row came from the target sample:
 
 <p align="center">
-  <strong>d(x) = P(D = target | X = x)</strong>
+  <img src="https://raw.githubusercontent.com/MehdiOudghiri1/shiftstat/main/docs/assets/equations/domain-posterior.svg" alt="d(x) = P(D = target | X = x)">
 </p>
 
 <p align="center">
-  <strong>
-    w(x) =
-    [ d(x) / (1 - d(x)) ]
-    [ &pi;<sub>ref</sub> / &pi;<sub>tgt</sub> ]
-  </strong>
+  <img src="https://raw.githubusercontent.com/MehdiOudghiri1/shiftstat/main/docs/assets/equations/domain-density-ratio.svg" alt="w(x) = d(x) / (1 - d(x)) times pi_ref / pi_tgt">
 </p>
 
 The weighted empirical risk is then
 
 <p align="center">
-  <strong>
-    R&#770;<sub>w</sub>(f)
-    =
-    &sum;<sub>i=1</sub><sup>n</sup>
-    w<sub>i</sub>&ell;(y<sub>i</sub>, f(x<sub>i</sub>))
-    /
-    &sum;<sub>i=1</sub><sup>n</sup>w<sub>i</sub>
-  </strong>
+  <img src="https://raw.githubusercontent.com/MehdiOudghiri1/shiftstat/main/docs/assets/equations/weighted-empirical-risk.svg" alt="R_hat_w(f) = sum_i w_i ell(y_i, f(x_i)) / sum_i w_i">
 </p>
 
 and the Kish effective sample size diagnoses whether the weighted estimate is
 stable:
 
 <p align="center">
-  <strong>
-    n<sub>eff</sub>
-    =
-    ( &sum;<sub>i=1</sub><sup>n</sup> w<sub>i</sub> )<sup>2</sup>
-    /
-    &sum;<sub>i=1</sub><sup>n</sup> w<sub>i</sub><sup>2</sup>
-  </strong>
+  <img src="https://raw.githubusercontent.com/MehdiOudghiri1/shiftstat/main/docs/assets/equations/kish-effective-sample-size.svg" alt="n_eff = (sum_i w_i)^2 / sum_i w_i^2">
 </p>
 
 Large weights with small `n_eff` are treated as evidence limitations, not as a
@@ -156,33 +135,13 @@ bin-wise reliability gaps. With bins `B_1, ..., B_K`, Expected Calibration Error
 is
 
 <p align="center">
-  <strong>
-    ECE
-    =
-    &sum;<sub>k=1</sub><sup>K</sup>
-    ( |B<sub>k</sub>| / n )
-    |
-    mean<sub>i&isin;B<sub>k</sub></sub>(p<sub>i</sub>)
-    -
-    mean<sub>i&isin;B<sub>k</sub></sub>(y<sub>i</sub>)
-    |
-  </strong>
+  <img src="https://raw.githubusercontent.com/MehdiOudghiri1/shiftstat/main/docs/assets/equations/ece.svg" alt="ECE = sum_k |B_k| / n times |mean_{i in B_k}(p_i) - mean_{i in B_k}(y_i)|">
 </p>
 
 The weighted version replaces counts and means with weighted mass:
 
 <p align="center">
-  <strong>
-    ECE<sub>w</sub>
-    =
-    &sum;<sub>k=1</sub><sup>K</sup>
-    ( W<sub>k</sub> / W )
-    |
-    avg<sub>w</sub>(p<sub>i</sub> | i&isin;B<sub>k</sub>)
-    -
-    avg<sub>w</sub>(y<sub>i</sub> | i&isin;B<sub>k</sub>)
-    |
-  </strong>
+  <img src="https://raw.githubusercontent.com/MehdiOudghiri1/shiftstat/main/docs/assets/equations/weighted-ece.svg" alt="ECE_w = sum_k W_k / W times |avg_w(p_i | i in B_k) - avg_w(y_i | i in B_k)|">
 </p>
 
 ShiftStat also reports Brier score, log loss, maximum calibration error, and
@@ -192,20 +151,19 @@ the failure.
 ### 3. Selective prediction and risk-coverage curves
 
 Selective prediction introduces an acceptance function
-<strong>&phi;(x) &isin; {0, 1}</strong>. The accepted-set target risk is
 
 <p align="center">
-  <strong>
-    R<sub>tgt</sub>(f, &phi;)
-    =
-    &#x1D53C;<sub>tgt</sub>[ &phi;(X)&ell;(Y, f(X)) ]
-    /
-    &#x1D53C;<sub>tgt</sub>[ &phi;(X) ]
-  </strong>
+  <img src="https://raw.githubusercontent.com/MehdiOudghiri1/shiftstat/main/docs/assets/equations/acceptance-function.svg" alt="phi(x) in {0, 1}">
+</p>
+
+The accepted-set target risk is
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/MehdiOudghiri1/shiftstat/main/docs/assets/equations/selective-risk.svg" alt="R_tgt(f, phi) = E_tgt[phi(X) ell(Y, f(X))] / E_tgt[phi(X)]">
 </p>
 
 <p align="center">
-  <strong>coverage(&phi;) = &#x1D53C;<sub>tgt</sub>[ &phi;(X) ]</strong>
+  <img src="https://raw.githubusercontent.com/MehdiOudghiri1/shiftstat/main/docs/assets/equations/selective-coverage.svg" alt="coverage(phi) = E_tgt[phi(X)]">
 </p>
 
 ShiftStat sweeps score thresholds to build the risk-coverage curve: lower risk
@@ -217,26 +175,14 @@ operational sense.
 For a subgroup-bin cell `c`, ShiftStat audits the weighted residual gap
 
 <p align="center">
-  <strong>
-    g<sub>c</sub>
-    =
-    avg<sub>w</sub>( y<sub>i</sub> - p<sub>i</sub> | i&isin;c )
-  </strong>
+  <img src="https://raw.githubusercontent.com/MehdiOudghiri1/shiftstat/main/docs/assets/equations/weighted-residual-gap.svg" alt="g_c = avg_w(y_i - p_i | i in c)">
 </p>
 
 It then computes a local effective sample size and a simultaneous finite-family
 radius over `K` tested cells:
 
 <p align="center">
-  <strong>
-    r<sub>c</sub>
-    =
-    &radic;(
-    log(2K / &alpha;)
-    /
-    (2 n<sub>eff,c</sub>)
-    )
-  </strong>
+  <img src="https://raw.githubusercontent.com/MehdiOudghiri1/shiftstat/main/docs/assets/equations/simultaneous-radius.svg" alt="r_c = sqrt(log(2K / alpha) / (2 n_eff,c))">
 </p>
 
 When learned weights are uncertain, a sensitivity envelope `rho_c` can be added.
@@ -244,14 +190,7 @@ With practical tolerance `tau` and optional population radius `gamma`, the
 certified excess is
 
 <p align="center">
-  <strong>
-    excess<sub>c</sub>
-    =
-    max(
-    |g<sub>c</sub>| - r<sub>c</sub> - &rho;<sub>c</sub> - &gamma; - &tau;,
-    0
-    )
-  </strong>
+  <img src="https://raw.githubusercontent.com/MehdiOudghiri1/shiftstat/main/docs/assets/equations/certified-excess.svg" alt="excess_c = max(|g_c| - r_c - rho_c - gamma - tau, 0)">
 </p>
 
 The result is not just a sorted list of scary cells. Each cell receives an
