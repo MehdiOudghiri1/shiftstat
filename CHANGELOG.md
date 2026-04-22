@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.6
+
+- Reduced the README equation SVG display size by 4% so formulas sit more
+  naturally beside the surrounding PyPI text.
+
 ## 0.6.5
 
 - Increased the rendered README equation SVG display size by 15% for a more

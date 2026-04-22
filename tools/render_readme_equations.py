@@ -14,7 +14,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT_DIR = ROOT / "docs" / "assets" / "equations"
-SVG_ZOOM = "1.15"
+SVG_ZOOM = "1.104"
 
 
 @dataclasses.dataclass(frozen=True)
