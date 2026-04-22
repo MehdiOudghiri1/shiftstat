@@ -17,7 +17,7 @@ We compare four audit rules on the same finite subgroup-bin family: a naive wors
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.98\linewidth]{figures/certified_audit_main.png}
-\caption{Synthetic covariate-shift audit. Under the calibrated null, naive and global-ESS-gated audits produce frequent false alarms, while simultaneous local certificates produce none in this run. Under a planted subgroup failure, certificates retain power when local overlap is adequate and lose power when overlap collapses. The loss of power is a feature: unsupported alarms are not certified.}
+\caption{Synthetic covariate-shift audit. Point-estimate and global-ESS rules false-alarm under the null; simultaneous local certificates control false alarms and lose power as local overlap weakens.}
 \label{fig:certified-audit-main}
 \end{figure}
 
@@ -54,11 +54,11 @@ For adaptive search, we expand the subgroup class to roughly \(500\)--\(600\) th
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.98\linewidth]{figures/estimated_weight_and_search.png}
-\caption{Estimated weights and adaptive search. Learned density-ratio weights can have reasonable global behavior while still producing large local nuisance error. Same-data adaptive search is invalid under the null; simultaneous inference or held-out certification controls false alarms but pays a power cost.}
+\caption{Estimated weights and adaptive search. Ratio estimation and subgroup search add uncertainty beyond the oracle local-ESS setting.}
 \label{fig:estimated-search-main}
 \end{figure}
 
-The learned-weight results match the theorem's decomposition. At shift \(0.8\), the median weight RMSE is \(0.49\) for plugin weights and \(0.64\) for cross-fitted weights; at shift \(1.2\), it rises to \(2.85\) and \(3.06\). The label-noise band with cross-fitted weights has zero null false alarms in these runs, but without a credible \(\rho_c\) envelope it certifies only the learned weighted estimand. Adding the oracle \(\rho_c\) term makes the planted-failure certificate much more conservative, detecting \(1\%\) and \(0\%\) at shifts \(0.8\) and \(1.2\). In a real audit, the oracle term would be replaced by a sensitivity envelope over plausible cross-fitted ratio models, as described in \cref{sec:recipe}. The lesson is not that learned weights are useless. It is that local learned-weight uncertainty can dominate the alarm, and a target-certified report must show that it does not.
+The learned-weight results match the theorem's decomposition. At shift \(0.8\), the median weight RMSE is \(0.49\) for plugin weights and \(0.64\) for cross-fitted weights; at shift \(1.2\), it rises to \(2.85\) and \(3.06\). The label-noise band with cross-fitted weights has zero null false alarms in these runs, but without a credible \(\rho_c\) envelope it certifies only the learned weighted estimand. Adding the oracle \(\rho_c\) term makes the planted-failure certificate much more conservative, detecting \(1\%\) and \(0\%\) at shifts \(0.8\) and \(1.2\). In a real audit, the oracle term would be replaced by a sensitivity envelope over plausible cross-fitted ratio models, as described in \cref{sec:recipe}. Thus learned weights are admissible only with a local sensitivity analysis showing that ratio uncertainty is small relative to the alarm.
 
 The adaptive-search results are equally direct. Under the calibrated null, same-data search false-alarms in \(100\%\) of runs at both tested shifts. A naive held-out threshold still false-alarms in about \(39\%\) and \(38\%\). Full-family simultaneous inference and sample-split certification produce zero false alarms in these runs. Search is allowed, but the final alarm must pay for it.
 
@@ -69,7 +69,7 @@ The real-data case study asks whether the distinction matters in a plausible aud
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.98\linewidth]{figures/adult_case_study.png}
-\caption{Adult Census deployment-style audit. The naive audit reports multiple large subgroup-bin gaps. The top alarm, \(\texttt{workclass=Federal-gov}\) in the highest score bin, has estimated gap \(0.346\). Its local ESS is only \(10.65\), its simultaneous half-width is \(0.612\), and the held-out target gap is \(0.0005\). The certified decision is insufficient evidence, not escalation.}
+\caption{Adult Census audit. The largest naive alarms have wide local intervals and small held-out target gaps; certification reports insufficient evidence.}
 \label{fig:adult-case-study}
 \end{figure}
 
@@ -77,22 +77,24 @@ The real-data case study asks whether the distinction matters in a plausible aud
 \centering
 \caption{Operational interpretation of the Adult Census audit.}
 \label{tab:adult-operational}
-\resizebox{\linewidth}{!}{%
-\begin{tabular}{@{}p{0.18\linewidth}p{0.32\linewidth}p{0.36\linewidth}@{}}
+{\small
+\setlength{\tabcolsep}{5pt}
+\renewcommand{\arraystretch}{1.18}
+\begin{tabularx}{\linewidth}{@{}L{0.20\linewidth}L{0.31\linewidth}Y@{}}
 \toprule
 Audit stage & Quantity & Decision-relevant conclusion \\
 \midrule
-Global readiness & global ESS \(=5043\), domain AUC \(=0.679\), \(145\) cells & Global diagnostics would not reject the audit. \\
+Global readiness & global ESS \(=5043\)\newline domain AUC \(=0.679\)\newline \(145\) cells & Global diagnostics would not reject the audit. \\
 Naive alarm & \(19\) cells exceed \(\tau=0.12\) & A point-estimate report would flag several subgroup-bin failures. \\
-Top candidate & \(\texttt{workclass=Federal-gov}\), score bin \([0.83,1.00]\), \(|\widehat r_c|=0.346\) & The alarm looks operationally serious. \\
-Local certificate & local ESS \(=10.65\), half-width \(=0.612\), certified excess \(=0\) & The correct audit decision is insufficient evidence. \\
-Retrospective validation & held-out target gap \(=0.0005\) for the top candidate & The later labels support the certificate's caution. \\
+Top candidate & \(\texttt{workclass=Federal-gov}\)\newline score bin \([0.83,1.00]\)\newline \(|\widehat r_c|=0.346\) & The alarm looks operationally serious. \\
+Local certificate & local ESS \(=10.65\)\newline half-width \(=0.612\)\newline certified excess \(=0\) & The correct audit decision is insufficient evidence. \\
+Retrospective validation & held-out target gap \(=0.0005\)\newline top candidate & Later labels support the certificate's caution. \\
 \bottomrule
-\end{tabular}
+\end{tabularx}
 }
 \end{table}
 
-\Cref{fig:adult-case-study,tab:adult-operational} show the operational consequence. A naive audit would escalate the \(\texttt{Federal-gov}\) high-score subgroup. The certified audit does not claim the model is safe; it says the evidence for this alarm is too weak. Retrospective target labels support that caution for the top candidate. This is the desired behavior in deployment: avoid acting on unsupported subgroup alarms while preserving the need for more labels or coarser analysis when evidence is insufficient.
+\Cref{fig:adult-case-study,tab:adult-operational} show the operational consequence. A naive audit would escalate the \(\texttt{Federal-gov}\) high-score subgroup. The certified audit does not claim the model is safe; it says the evidence for this alarm is too weak. Retrospective target labels support that caution for the top candidate. Operationally, the certificate separates unsupported subgroup alarms from cases that require more target labels or a coarser subgroup-bin analysis.
 
 \subsection{ACS Public-Service External Validation}
 
@@ -101,7 +103,7 @@ To connect the method to a broader and more current deployment setting, we add a
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.98\linewidth]{figures/acs_external_validation.png}
-\caption{ACSIncome public-service external-validation audit. A California-trained income model audited for a New York target population produces many naive subgroup-bin alarms. The top alarm has estimated gap \(0.272\), but local ESS is \(13.49\), the label half-width is \(0.527\), and the sensitivity envelope for learned weights is \(\widehat\rho_c=1.143\). The retrospective target gap is only \(0.018\).}
+\caption{ACSIncome external validation. Large naive gaps coexist with low local ESS and learned-weight sensitivity; held-out target labels support the insufficient-evidence decision.}
 \label{fig:acs-external-validation}
 \end{figure}
 
@@ -109,18 +111,20 @@ To connect the method to a broader and more current deployment setting, we add a
 \centering
 \caption{ACSIncome audit summary. The target labels are held out from the audit and used only to interpret the selected alarm.}
 \label{tab:acs-operational}
-\resizebox{\linewidth}{!}{%
-\begin{tabular}{@{}p{0.18\linewidth}p{0.32\linewidth}p{0.36\linewidth}@{}}
+{\small
+\setlength{\tabcolsep}{5pt}
+\renewcommand{\arraystretch}{1.18}
+\begin{tabularx}{\linewidth}{@{}L{0.20\linewidth}L{0.31\linewidth}Y@{}}
 \toprule
 Audit stage & Quantity & Decision-relevant conclusion \\
 \midrule
-Global readiness & global ESS \(=1055\), domain AUC \(=0.952\), \(91\) cells & The target population is clearly shifted, but the weighted audit has substantial global support. \\
+Global readiness & global ESS \(=1055\)\newline domain AUC \(=0.952\)\newline \(91\) cells & The target population is shifted, but the weighted audit has substantial global support. \\
 Naive alarm & \(30\) cells exceed \(\tau=0.08\) & A point-estimate report would flag many subgroup-bin failures. \\
-Top candidate & \(\texttt{Age>45 \& Bachelor+}\), score bin \([0.00,0.17]\), \(|\widehat r_c|=0.272\) & The alarm looks operationally meaningful in a public-service audit. \\
-Local certificate & local ESS \(=13.49\), label half-width \(=0.527\), \(\widehat\rho_c=1.143\) & Neither the label-only nor sensitivity-adjusted certificate supports escalation. \\
-Retrospective validation & held-out target gap \(=0.018\) for the top candidate & Later target labels support the insufficient-evidence decision for the top alarm. \\
+Top candidate & \(\texttt{Age>45 \& Bachelor+}\)\newline score bin \([0.00,0.17]\)\newline \(|\widehat r_c|=0.272\) & The alarm is action-relevant before uncertainty is accounted for. \\
+Local certificate & local ESS \(=13.49\)\newline label half-width \(=0.527\)\newline \(\widehat\rho_c=1.143\) & Neither the label-only nor sensitivity-adjusted certificate supports escalation. \\
+Retrospective validation & held-out target gap \(=0.018\)\newline top candidate & Later target labels support the insufficient-evidence decision for the top alarm. \\
 \bottomrule
-\end{tabular}
+\end{tabularx}
 }
 \end{table}
 

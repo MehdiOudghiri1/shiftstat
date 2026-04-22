@@ -114,7 +114,7 @@ def main() -> None:
         value_column="median_weight_rmse",
         hue_column="weight_mode",
         hue_values=["oracle", "logistic_plugin", "logistic_crossfit"],
-        title="A. Estimated ratios add nuisance error",
+        title="A. Ratio error",
         ylabel="Median weight RMSE",
     )
 
@@ -130,7 +130,7 @@ def main() -> None:
         value_column="alarm_rate",
         hue_column="method",
         hue_values=["naive_max", "label_ci", "nuisance_ci"],
-        title="B. Cross-fitted weights still need certification",
+        title="B. Weight uncertainty",
         ylabel="Null false-alarm rate",
     )
     axes[0, 1].set_ylim(0.0, 1.05)
@@ -160,7 +160,7 @@ def main() -> None:
             "split_search_certified",
             "full_family_simultaneous",
         ],
-        title="C. Sample splitting repairs audit-after-search",
+        title="C. Split search",
         ylabel="Null false-alarm rate",
     )
     axes[1, 0].set_ylim(0.0, 1.05)
@@ -190,7 +190,7 @@ def main() -> None:
             "split_search_certified",
             "full_family_simultaneous",
         ],
-        title="D. Valid search pays a power price",
+        title="D. Search power",
         ylabel="Planted-failure detection rate",
     )
     axes[1, 1].set_ylim(0.0, 1.05)
@@ -199,7 +199,7 @@ def main() -> None:
         ax.legend(frameon=False, fontsize=7.4, loc="upper right")
 
     fig.suptitle(
-        "Estimated weights and adaptive search add uncertainty beyond oracle local ESS",
+        "Estimated weights and search",
         fontsize=13,
         fontweight="bold",
         y=1.02,

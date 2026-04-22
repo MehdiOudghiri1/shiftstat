@@ -122,9 +122,7 @@ def _plot_selected_support(ax: plt.Axes, decisions: pd.DataFrame) -> None:
     ax.set_yscale("log")
     ax.set_ylabel("Selected cell local ESS", fontsize=10)
     ax.set_xlabel("Shift severity", fontsize=10)
-    ax.set_title(
-        "C. The naive alarm often selects weak cells", loc="left", fontsize=11, fontweight="bold"
-    )
+    ax.set_title("C. Selected-cell support", loc="left", fontsize=11, fontweight="bold")
     ax.legend(frameon=False, fontsize=8, loc="upper right")
     _style_axis(ax)
 
@@ -169,9 +167,7 @@ def _plot_decision_geometry(ax: plt.Axes, cells: pd.DataFrame) -> None:
     ax.set_ylim(0.0, min(1.0, max(0.55, float(sub["abs_gap"].quantile(0.995)) + 0.05)))
     ax.set_xlabel("Local ESS of subgroup-bin cell", fontsize=10)
     ax.set_ylabel("Estimated absolute gap", fontsize=10)
-    ax.set_title(
-        "D. Certification needs effect size and overlap", loc="left", fontsize=11, fontweight="bold"
-    )
+    ax.set_title("D. Certification frontier", loc="left", fontsize=11, fontweight="bold")
     ax.legend(frameon=False, fontsize=8, loc="upper right")
     _style_axis(ax)
 
@@ -208,7 +204,7 @@ def main() -> None:
         scenario="null",
         metric="alarm_rate",
         ylabel="False-alarm rate",
-        title="A. Under the calibrated null, point audits over-alarm",
+        title="A. Null false alarms",
     )
     _plot_method_lines(
         axes[0, 1],
@@ -216,7 +212,7 @@ def main() -> None:
         scenario="planted",
         metric="alarm_rate",
         ylabel="Detection power",
-        title="B. Certified alarms trade power for validity",
+        title="B. Planted failures",
     )
     _plot_selected_support(axes[1, 0], decisions)
     _plot_decision_geometry(axes[1, 1], cells)
@@ -232,7 +228,7 @@ def main() -> None:
         bbox_to_anchor=(0.5, 1.015),
     )
     fig.suptitle(
-        "Worst-group alarms need simultaneous inference, not only reweighting",
+        "Certified worst-group audits",
         y=1.06,
         fontsize=14,
         fontweight="bold",

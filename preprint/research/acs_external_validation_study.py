@@ -271,7 +271,7 @@ def _plot_case(table: pd.DataFrame, *, output: Path, tolerance: float) -> None:
     ax.set_yticks(y_positions)
     ax.set_yticklabels(labels, fontsize=8)
     ax.set_xlabel("Absolute residual gap", fontsize=10)
-    ax.set_title("A. External-validation alarms", loc="left", fontweight="bold")
+    ax.set_title("A. Audit gaps", loc="left", fontweight="bold")
     ax.grid(axis="x", color="#D8D2C4", alpha=0.6)
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)
@@ -299,7 +299,7 @@ def _plot_case(table: pd.DataFrame, *, output: Path, tolerance: float) -> None:
     ax.spines["right"].set_visible(False)
 
     fig.suptitle(
-        "ACS public-service audit: target labels validate why local certification matters",
+        "ACS external validation",
         fontsize=13,
         fontweight="bold",
         y=1.02,

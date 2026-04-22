@@ -322,7 +322,7 @@ def _plot_case(table: pd.DataFrame, *, output: Path, tolerance: float) -> None:
     ax.set_yticks(y_positions)
     ax.set_yticklabels(labels, fontsize=8)
     ax.set_xlabel("Absolute subgroup-bin residual gap", fontsize=10)
-    ax.set_title("A. Naive Adult Census alarms versus certification", loc="left", fontweight="bold")
+    ax.set_title("A. Naive alarms", loc="left", fontweight="bold")
     ax.grid(axis="x", color="#D8D2C4", alpha=0.6)
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)
@@ -334,13 +334,13 @@ def _plot_case(table: pd.DataFrame, *, output: Path, tolerance: float) -> None:
     ax.set_yticklabels([])
     ax.set_xscale("log")
     ax.set_xlabel("Local ESS (log scale)", fontsize=10)
-    ax.set_title("B. The scary cells are locally thin", loc="left", fontweight="bold")
+    ax.set_title("B. Local support", loc="left", fontweight="bold")
     ax.grid(axis="x", color="#D8D2C4", alpha=0.6)
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)
 
     fig.suptitle(
-        "Real-data audit: certification separates evidence from thin-support alarms",
+        "Adult Census audit",
         fontsize=13,
         fontweight="bold",
         y=1.02,
