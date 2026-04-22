@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.5
+
+- Increased the rendered README equation SVG display size by 15% for a more
+  readable PyPI front page.
+
 ## 0.6.4
 
 - Enlarged the LaTeX-generated README equation SVGs for better readability on
